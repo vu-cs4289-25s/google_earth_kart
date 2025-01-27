@@ -2,7 +2,7 @@ import { keyCodes } from "../utils/keycodes";
 import * as THREE from "three";
 
 export class KeyboardControls {
-    constructor(player, camera) {
+    constructor(player, camera, obstacles) {
         this.upKey = "w";
         this.downKey = "s";
         this.leftKey = "a";
@@ -12,6 +12,7 @@ export class KeyboardControls {
 
         this.player = player;
         this.camera = camera;
+        this.obstacles = obstacles; // Array of obstacle meshes
         this.moveSpeed = 1;
         this.rotationSpeed = 0.1;
         this.flySpeed = 3;
@@ -63,6 +64,8 @@ export class KeyboardControls {
     }
 
     update() {
+        const previousPosition = this.player.position.clone();
+
         if (this.keysPressed.up) {
             const forward = new THREE.Vector3(0, 0, -1)
                 .applyQuaternion(this.player.quaternion)
@@ -96,6 +99,11 @@ export class KeyboardControls {
         }
 
         this.calculateGravity();
+
+        if (this.checkCollisions()) {
+            this.player.position.copy(previousPosition); // Revert to previous position if collision detected
+        }
+
         this.updateCameraPosition();
     }
 
@@ -118,7 +126,7 @@ export class KeyboardControls {
     }
 
     calculateGravity() {
-        const deltaTime = 0.03333; //assuming 30fps
+        const deltaTime = 0.033; // Assuming 60 FPS
 
         if (this.player.position.y > 0) {
             this.velocityY += this.gravity * deltaTime;
@@ -135,5 +143,18 @@ export class KeyboardControls {
         if (this.keysPressed.fly) {
             this.velocityY = this.flySpeed;
         }
+    }
+
+    checkCollisions() {
+        const playerBox = new THREE.Box3().setFromObject(this.player);
+
+        for (const obstacle of this.obstacles) {
+            const obstacleBox = new THREE.Box3().setFromObject(obstacle);
+            if (playerBox.intersectsBox(obstacleBox) && obstacle.position.y > 0) {
+                console.log("Collision Detected");
+                return true;
+            }
+        }
+        return false;
     }
 }

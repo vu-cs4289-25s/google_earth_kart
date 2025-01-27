@@ -7,7 +7,7 @@ const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000,
+    1000
 );
 
 const renderer = new THREE.WebGLRenderer();
@@ -27,18 +27,25 @@ const loader = new OBJLoader();
 
 let player;
 let keyboardControls;
+const obstacles = [];
 
 loader.load(
     "ObjFiles/TestObj.obj",
     function (object) {
         object.scale.set(0.01, 0.01, 0.01);
         scene.add(object);
+        object.traverse(function (child) {
+            if (child.isMesh) {
+                console.log("child added", child);
+                obstacles.push(child);
+            }
+        });
         console.log("city added");
     },
     function (xhr) {},
     function (error) {
         console.log("An error happened");
-    },
+    }
 );
 
 loader.load(
@@ -49,12 +56,12 @@ loader.load(
         scene.add(player);
         console.log("player added");
 
-        keyboardControls = new KeyboardControls(player, camera);
+        keyboardControls = new KeyboardControls(player, camera, obstacles);
     },
     function (xhr) {},
     function (error) {
         console.log("An error happened");
-    },
+    }
 );
 
 function animate() {
