@@ -93,6 +93,7 @@ export class KeyboardControls {
             this.player.position.y -= this.flySpeed;
         }
 
+        this.calculateGravity();
         this.updateCameraPosition();
     }
 
@@ -112,5 +113,12 @@ export class KeyboardControls {
         this.camera.position.copy(cameraPosition);
 
         this.camera.lookAt(this.player.position);
+    }
+
+    //very crude implementation right now, do math stuff to make it better
+    calculateGravity() {
+        if (this.player.position.y > 0 && !this.keysPressed.fly) {
+            this.player.position.y -= this.flySpeed * 2;
+        }
     }
 }
