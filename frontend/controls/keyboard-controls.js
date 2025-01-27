@@ -14,7 +14,9 @@ export class KeyboardControls {
         this.camera = camera;
         this.moveSpeed = 1;
         this.rotationSpeed = 0.1;
-        this.flySpeed = 0.1;
+        this.flySpeed = 3;
+        this.gravity = -9.81;
+        this.velocityY = 0;
 
         this.keysPressed = {
             up: false,
@@ -115,10 +117,23 @@ export class KeyboardControls {
         this.camera.lookAt(this.player.position);
     }
 
-    //very crude implementation right now, do math stuff to make it better
     calculateGravity() {
-        if (this.player.position.y > 0 && !this.keysPressed.fly) {
-            this.player.position.y -= this.flySpeed * 2;
+        const deltaTime = 0.03333; //assuming 30fps
+
+        if (this.player.position.y > 0) {
+            this.velocityY += this.gravity * deltaTime;
+            this.player.position.y += this.velocityY * deltaTime;
+
+            if (this.player.position.y < 0) {
+                this.player.position.y = 0;
+                this.velocityY = 0;
+            }
+        } else {
+            this.velocityY = 0;
+        }
+
+        if (this.keysPressed.fly) {
+            this.velocityY = this.flySpeed;
         }
     }
 }
