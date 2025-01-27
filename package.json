@@ -1,19 +1,23 @@
 {
-  "name": "google_earth_kart",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "concurrently": "^9.1.2",
-    "express": "^4.21.2",
-    "socket.io": "^4.8.1",
-    "three": "^0.172.0"
-  },
-  "devDependencies": {
-    "vite": "^6.0.7"
-  },
-  "scripts": {
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "dev:frontend": "cd frontend && npx vite",
-    "dev:backend": "cd backend && node server.js"
-  }
+    "name": "google_earth_kart",
+    "version": "1.0.0",
+    "type": "module",
+    "dependencies": {
+        "concurrently": "^9.1.2",
+        "express": "^4.21.2",
+        "socket.io": "^4.8.1",
+        "three": "^0.172.0"
+    },
+    "devDependencies": {
+        "prettier": "3.4.2",
+        "vite": "^6.0.7"
+    },
+    "scripts": {
+        "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+        "dev:frontend": "cd frontend && npx vite",
+        "dev:backend": "cd backend && node server.js"
+    },
+    "prettier": {
+        "tabWidth": 4
+    }
 }
