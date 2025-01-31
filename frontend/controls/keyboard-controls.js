@@ -13,7 +13,7 @@ export class KeyboardControls {
         
         this.player = player;
         this.camera = camera;
-        this.moveSpeed = 0.25;
+        this.moveSpeed = 1;
         this.rotationSpeed = 0.1;
         this.flySpeed = 0.1
 
