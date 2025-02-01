@@ -29,7 +29,7 @@ let player;
 let keyboardControls;
 
 loader.load(
-    "ObjFiles/TestObj.obj",
+    'ObjFiles/nashville.obj',
     function (object) {
         object.scale.set(0.01, 0.01, 0.01);
         scene.add(object);
