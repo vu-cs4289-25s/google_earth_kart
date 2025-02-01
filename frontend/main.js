@@ -1,67 +1,37 @@
-import * as THREE from "three";
-import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
-import { KeyboardControls } from "./controls/keyboard-controls";
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
+import CannonDebugger from 'cannon-es-debugger';
+import SceneInit from './utils/SceneInit';
+import {loadCity} from "./ObjectAdders/CityLoader.js";
+import {Car} from "./ObjectAdders/CarLoader.js";
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000,
-);
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+const threejsWorld = new SceneInit('myThreeJsCanvas');
+threejsWorld.initialize();
+threejsWorld.animate();
 
-const color = 0xffffff;
-const intensity = 3;
-const light = new THREE.DirectionalLight(color, intensity);
-light.position.set(-1, 2, 4);
-scene.add(light);
+const physicsWorld = new CANNON.World({
+    gravity: new CANNON.Vec3(0, -9.82, 0),
+});
 
-camera.position.y = 3;
-camera.position.z = 5;
+const axesHelper = new THREE.AxesHelper(8);
+threejsWorld.scene.add(axesHelper);
 
-const loader = new OBJLoader();
+const cannonDebugger = new CannonDebugger(threejsWorld.scene, physicsWorld, {
+});
+loadCity(threejsWorld, physicsWorld);
 
-let player;
-let keyboardControls;
+let car = new Car(threejsWorld, physicsWorld);
 
-loader.load(
-    'ObjFiles/nashville.obj',
-    function (object) {
-        object.scale.set(0.01, 0.01, 0.01);
-        scene.add(object);
-        console.log("city added");
-    },
-    function (xhr) {},
-    function (error) {
-        console.log("An error happened");
-    },
-);
 
-loader.load(
-    "ObjFiles/jeff.obj",
-    function (object) {
-        object.scale.set(0.01, 0.01, 0.01);
-        player = object;
-        scene.add(player);
-        console.log("player added");
+const animate = () => {
+    physicsWorld.fixedStep();
+    cannonDebugger.update();
 
-        keyboardControls = new KeyboardControls(player, camera);
-    },
-    function (xhr) {},
-    function (error) {
-        console.log("An error happened");
-    },
-);
+    car.animateCar(threejsWorld);
 
-function animate() {
-    if (keyboardControls) {
-        keyboardControls.update();
-    }
-    renderer.render(scene, camera);
-}
+    window.requestAnimationFrame(animate);
+};
+animate();
 
-renderer.setAnimationLoop(animate);
+
