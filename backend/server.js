@@ -6,7 +6,7 @@ import { Server } from "socket.io";
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server); // For websocket functions
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -15,15 +15,11 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-    console.log("a user connected");
+    console.log("A user connected");
+    io.emit("connected"); // sends signal to frontend
     socket.on("disconnect", () => {
-        console.log("user disconnected");
-    });
-});
-
-io.on("connection", (socket) => {
-    socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
+        console.log("A user disconnected");
+        io.emit("disconnected");
     });
 });
 
