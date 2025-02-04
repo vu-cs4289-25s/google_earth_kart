@@ -32,6 +32,7 @@
             const socket = io();
             const broadcast = document.getElementById("broadcast");
 
+            // User connected
             socket.on("connected", () => {
                 const item = document.createElement("li");
                 item.textContent = "A user connected";
@@ -40,6 +41,7 @@
                 window.scrollTo(0, document.body.scrollHeight);
             });
 
+            // User disconnected
             socket.on("disconnected", () => {
                 const item = document.createElement("li");
                 item.textContent = "A user disconnected";
@@ -48,6 +50,7 @@
                 window.scrollTo(0, document.body.scrollHeight);
             })
 
+            // Timeout for broadcasts
             function msgTimeout(item) {
                 setTimeout(() => {broadcast.removeChild(item);}, 5000);
             }
