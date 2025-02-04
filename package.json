@@ -3,6 +3,8 @@
     "version": "1.0.0",
     "type": "module",
     "dependencies": {
+        "cannon-es": "^0.20.0",
+        "cannon-es-debugger": "^1.0.0",
         "concurrently": "^9.1.2",
         "express": "^4.21.2",
         "socket.io": "^4.8.1",
