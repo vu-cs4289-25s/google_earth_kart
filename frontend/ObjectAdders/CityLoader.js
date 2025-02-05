@@ -1,17 +1,17 @@
-import {OBJLoader} from "three/addons/loaders/OBJLoader.js";
-import * as CANNON from 'cannon-es';
+import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+import * as CANNON from "cannon-es";
 import * as THREE from "three";
 import CannonDebugger from "cannon-es-debugger";
 
-export function loadCity(world, physicsWorld){
+export function loadCity(world, physicsWorld) {
     const loader = new OBJLoader();
 
     loader.load(
-        'ObjFiles/small-city-buildings.obj',
+        "ObjFiles/small-city-buildings.obj",
         function (object) {
-            object.scale.set(1,1,1);
+            object.scale.set(1, 1, 1);
             world.scene.add(object);
-            createCannonBody(object, physicsWorld)
+            createCannonBody(object, physicsWorld);
             console.log("city added");
         },
         function (xhr) {},
@@ -27,22 +27,20 @@ export function loadCity(world, physicsWorld){
         shape: new CANNON.Plane(),
     });
 
-
-// rotate ground body by 90 degrees
+    // rotate ground body by 90 degrees
     groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
     physicsWorld.addBody(groundBody);
 
-
-
     const floorGeometry = new THREE.PlaneGeometry(200, 200); // Adjust size as needed
-    const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x888888, side: THREE.DoubleSide });
+    const floorMaterial = new THREE.MeshStandardMaterial({
+        color: 0x888888,
+        side: THREE.DoubleSide,
+    });
     const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
     floorMesh.rotation.x = -Math.PI / 2; // Rotate to be horizontal
     floorMesh.position.y = 0; // Set at y = 0
     world.scene.add(floorMesh);
-
 }
-
 
 function createCannonBody(model, physicsWorld) {
     model.traverse((child) => {
@@ -57,7 +55,7 @@ function createCannonBody(model, physicsWorld) {
             const halfExtents = new CANNON.Vec3(
                 (max.x - min.x) / 2,
                 (max.y - min.y) / 2,
-                (max.z - min.z) / 2
+                (max.z - min.z) / 2,
             );
 
             const shape = new CANNON.Box(halfExtents);
@@ -70,7 +68,7 @@ function createCannonBody(model, physicsWorld) {
             body.position.set(
                 (max.x + min.x) / 2,
                 (max.y + min.y) / 2,
-                (max.z + min.z) / 2
+                (max.z + min.z) / 2,
             );
 
             physicsWorld.addBody(body);

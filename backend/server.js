@@ -21,6 +21,11 @@ io.on("connection", (socket) => {
         console.log("A user disconnected");
         io.emit("disconnected");
     });
+
+    socket.on("chat message", (input) => {
+        console.log("sending message...");
+        io.emit("chat message", input);
+    });
 });
 
 server.listen(3001, () => {
