@@ -14,17 +14,16 @@ app.get("/", (req, res) => {
     res.sendFile(join(__dirname, "./chat.html"));
 });
 
-io.on("connection", (socket) => {
+io.on("connection", (socket) => { // all websocket functions that occur while connected need to go in here
     console.log("A user connected");
-    io.emit("connected"); // sends signal to frontend
+    io.emit("connected"); 
     socket.on("disconnect", () => {
         console.log("A user disconnected");
         io.emit("disconnected");
     });
 
-    socket.on("chat message", (input) => {
-        console.log("sending message...");
-        io.emit("chat message", input);
+    socket.on("chat message", (input) => { // receives signal from frontend
+        io.emit("chat message", input); // send signal to frontend
     });
 });
 

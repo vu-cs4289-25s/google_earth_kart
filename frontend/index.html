@@ -43,6 +43,7 @@
                 padding: 5px;
                 border-radius: 5px;
                 font-size: 14px;
+                outline: none;
             }
         </style>
     </head>
@@ -64,9 +65,9 @@
                 e.preventDefault();
                 console.log("event listener");
                 if (input.value) {
-                    console.log("input received");
                     socket.emit("chat message", input.value);
                     input.value = "";
+                    input.blur();
                 }
             });
 
