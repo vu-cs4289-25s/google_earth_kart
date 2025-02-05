@@ -1,12 +1,11 @@
-import * as THREE from 'three';
-import * as CANNON from 'cannon-es';
-import CannonDebugger from 'cannon-es-debugger';
-import SceneInit from './utils/SceneInit';
-import {loadCity} from "./ObjectAdders/CityLoader.js";
-import {Car} from "./ObjectAdders/CarLoader.js";
+import * as THREE from "three";
+import * as CANNON from "cannon-es";
+import CannonDebugger from "cannon-es-debugger";
+import SceneInit from "./utils/SceneInit";
+import { loadCity } from "./ObjectAdders/CityLoader.js";
+import { Car } from "./ObjectAdders/CarLoader.js";
 
-
-const threejsWorld = new SceneInit('myThreeJsCanvas');
+const threejsWorld = new SceneInit("myThreeJsCanvas");
 threejsWorld.initialize();
 threejsWorld.animate();
 
@@ -17,12 +16,10 @@ const physicsWorld = new CANNON.World({
 const axesHelper = new THREE.AxesHelper(8);
 threejsWorld.scene.add(axesHelper);
 
-const cannonDebugger = new CannonDebugger(threejsWorld.scene, physicsWorld, {
-});
+const cannonDebugger = new CannonDebugger(threejsWorld.scene, physicsWorld, {});
 loadCity(threejsWorld, physicsWorld);
 
 let car = new Car(threejsWorld, physicsWorld);
-
 
 const animate = () => {
     physicsWorld.fixedStep();
@@ -33,5 +30,3 @@ const animate = () => {
     window.requestAnimationFrame(animate);
 };
 animate();
-
-

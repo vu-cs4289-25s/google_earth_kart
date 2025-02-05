@@ -7,8 +7,8 @@ export default defineConfig({
                 target: "http://localhost:3001", // API requests forwarded to Express
                 changeOrigin: true, // for cross-origin requests
             },
-            '/socket.io': {
-                target: 'http://localhost:3001',
+            "/socket.io": {
+                target: "http://localhost:3001",
                 ws: true, // Enable WebSockets
                 changeOrigin: true,
             },

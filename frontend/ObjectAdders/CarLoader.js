@@ -1,28 +1,33 @@
-import * as CANNON from 'cannon-es';
+import * as CANNON from "cannon-es";
 import * as THREE from "three";
-import {handleKeyDown, handleKeyUp} from "../controls/keyboard-controls.js";
+import { handleKeyDown, handleKeyUp } from "../controls/keyboard-controls.js";
 const carDimensions = {
     width: 2,
     height: 1,
-    depth: 4
-}
+    depth: 4,
+};
 
 const mass = 2;
 const axisWidth = 2.5;
 
-const wheelRadius = .5;
+const wheelRadius = 0.5;
 
 const wheelShape = new CANNON.Sphere(wheelRadius);
-const wheelMaterial = new CANNON.Material('wheel');
+const wheelMaterial = new CANNON.Material("wheel");
 const down = new CANNON.Vec3(0, -1, 0);
 
-export class Car{
-
+export class Car {
     constructor(threejsWorld, physicsWorld) {
         this.carBody = new CANNON.Body({
             mass: 5,
             position: new CANNON.Vec3(0, 6, 0),
-            shape: new CANNON.Box(new CANNON.Vec3(carDimensions.width/2, carDimensions.height/2, carDimensions.depth/2)),
+            shape: new CANNON.Box(
+                new CANNON.Vec3(
+                    carDimensions.width / 2,
+                    carDimensions.height / 2,
+                    carDimensions.depth / 2,
+                ),
+            ),
         });
 
         this.vehicle = new CANNON.RigidVehicle({
@@ -34,8 +39,12 @@ export class Car{
         this.wheelBody1.angularDamping = 0.4;
 
         this.vehicle.addWheel({
-            body:  this.wheelBody1,
-            position: new CANNON.Vec3(-.5 * (carDimensions.width), -.5, axisWidth / 2),
+            body: this.wheelBody1,
+            position: new CANNON.Vec3(
+                -0.5 * carDimensions.width,
+                -0.5,
+                axisWidth / 2,
+            ),
             axis: new CANNON.Vec3(1, 0, 0),
             direction: down,
         });
@@ -45,7 +54,11 @@ export class Car{
         this.wheelBody2.angularDamping = 0.4;
         this.vehicle.addWheel({
             body: this.wheelBody2,
-            position: new CANNON.Vec3(-.5*(carDimensions.width), -.5, -axisWidth / 2),
+            position: new CANNON.Vec3(
+                -0.5 * carDimensions.width,
+                -0.5,
+                -axisWidth / 2,
+            ),
             axis: new CANNON.Vec3(1, 0, 0),
             direction: down,
         });
@@ -55,7 +68,11 @@ export class Car{
         this.wheelBody3.angularDamping = 0.4;
         this.vehicle.addWheel({
             body: this.wheelBody3,
-            position: new CANNON.Vec3(.5*(carDimensions.width), -.5, axisWidth / 2),
+            position: new CANNON.Vec3(
+                0.5 * carDimensions.width,
+                -0.5,
+                axisWidth / 2,
+            ),
             axis: new CANNON.Vec3(1, 0, 0),
             direction: down,
         });
@@ -65,13 +82,20 @@ export class Car{
         this.wheelBody4.angularDamping = 0.4;
         this.vehicle.addWheel({
             body: this.wheelBody4,
-            position: new CANNON.Vec3(.5*(carDimensions.width), -.5, -axisWidth / 2),
+            position: new CANNON.Vec3(
+                0.5 * carDimensions.width,
+                -0.5,
+                -axisWidth / 2,
+            ),
             axis: new CANNON.Vec3(1, 0, 0),
             direction: down,
         });
 
-
-        const boxGeometry = new THREE.BoxGeometry(carDimensions.width, carDimensions.height, carDimensions.depth);
+        const boxGeometry = new THREE.BoxGeometry(
+            carDimensions.width,
+            carDimensions.height,
+            carDimensions.depth,
+        );
         const boxMaterial = new THREE.MeshNormalMaterial();
         this.carBodyMesh = new THREE.Mesh(boxGeometry, boxMaterial);
         threejsWorld.scene.add(this.carBodyMesh);
@@ -98,17 +122,17 @@ export class Car{
 
         this.vehicle.addToWorld(physicsWorld);
 
-        document.addEventListener('keydown', (event) => {
-            handleKeyDown(this.vehicle, event)
+        document.addEventListener("keydown", (event) => {
+            handleKeyDown(this.vehicle, event);
         });
 
-// reset car force to zero when key is released
-        document.addEventListener('keyup', (event) => {
-            handleKeyUp(this.vehicle, event)
+        // reset car force to zero when key is released
+        document.addEventListener("keyup", (event) => {
+            handleKeyUp(this.vehicle, event);
         });
     }
 
-    animateCar(threejsWorld){
+    animateCar(threejsWorld) {
         // Update car body and wheel positions
         this.carBodyMesh.position.copy(this.carBody.position);
         this.carBodyMesh.quaternion.copy(this.carBody.quaternion);
@@ -123,7 +147,9 @@ export class Car{
 
         // Camera follows and rotates with the car
         let carPosition = new THREE.Vector3().copy(this.carBody.position);
-        const carQuaternion = new THREE.Quaternion().copy(this.carBody.quaternion);
+        const carQuaternion = new THREE.Quaternion().copy(
+            this.carBody.quaternion,
+        );
 
         // Offset in local car space (behind and above)
         const localOffset = new THREE.Vector3(0, 5, -20); // 3 above, 5 behind

@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import Stats from 'three/examples/jsm/libs/stats.module';
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import Stats from "three/examples/jsm/libs/stats.module";
 
 export default class SceneInit {
     constructor(canvasId) {
@@ -31,7 +31,7 @@ export default class SceneInit {
             this.fov,
             window.innerWidth / window.innerHeight,
             1,
-            1000
+            1000,
         );
         this.camera.position.z = 15;
         this.camera.position.y = 3;
@@ -48,7 +48,10 @@ export default class SceneInit {
         document.body.appendChild(this.renderer.domElement);
 
         this.clock = new THREE.Clock();
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = new OrbitControls(
+            this.camera,
+            this.renderer.domElement,
+        );
         this.stats = Stats();
         document.body.appendChild(this.stats.dom);
 
@@ -64,7 +67,7 @@ export default class SceneInit {
         this.scene.add(this.directionalLight);
 
         // if window resizes
-        window.addEventListener('resize', () => this.onWindowResize(), false);
+        window.addEventListener("resize", () => this.onWindowResize(), false);
 
         // NOTE: Load space background.
         // this.loader = new THREE.TextureLoader();
