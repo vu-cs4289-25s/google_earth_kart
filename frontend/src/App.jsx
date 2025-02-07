@@ -1,8 +1,16 @@
 import Game from "../components/Game.jsx";
+import "./App.css"
 
 function App() {
   return (
-       <Game/>
+      <>
+        <ul id="broadcast"></ul>
+        <form id="form" action="">
+          <input id="input" autoComplete="off"/>
+          <button>Send</button>
+        </form>
+        <Game/>
+      </>
   )
 }
 
