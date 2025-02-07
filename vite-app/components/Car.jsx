@@ -1,30 +1,26 @@
 import { useBox, useRaycastVehicle } from '@react-three/cannon'
-import { useFrame } from '@react-three/fiber'
-import { useEffect, useRef } from 'react'
+import { useFrame, useThree} from '@react-three/fiber'
+import { useRef } from 'react'
+import * as THREE from "three";
+
 
 import { Chassis } from './Chassis'
 import { useControls } from '../controls/keyboard-controls.js'
 import { Wheel } from './Wheel'
-import {Group, Mesh} from "three";
-
-const carDimensions = { width: 2, height: 1, depth: 4 };
-const wheelRadius = 0.5;
-const axisWidth = 2.5;
-const wheelMass = 2;
 
 export default function Car({
-                                angularVelocity,
-                                back = -1.15,
-                                force = 1500,
-                                front = 1.3,
-                                height = -0.04,
-                                maxBrake = 50,
-                                position,
-                                radius = 0.7,
-                                rotation,
-                                steer = 0.5,
-                                width = 1.2,
-                            }) {
+        angularVelocity,
+        back = -1.15,
+        force = 3000,
+        front = 1.3,
+        height = -0.04,
+        maxBrake = 50,
+        position,
+        radius = 0.7,
+        rotation,
+        steer = 0.5,
+        width = 1.2,
+    }) {
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)]
 
     const controls = useControls()
@@ -87,7 +83,8 @@ export default function Car({
         useRef(null),
     )
 
-    // useEffect(() => vehicleApi.sliding.subscribe((v) => console.log('sliding', v)), [])
+    // Camera follow setup
+    const { camera } = useThree()
 
     useFrame(() => {
         const { backward, brake, forward, left, reset, right } = controls.current
@@ -109,6 +106,24 @@ export default function Car({
             chassisApi.velocity.set(0, 0, 0)
             chassisApi.angularVelocity.set(...angularVelocity)
             chassisApi.rotation.set(...rotation)
+        }
+
+        // Camera follows and rotates with the car
+        if (chassisBody.current) {
+            const carPosition = chassisBody.current.getWorldPosition(new THREE.Vector3());
+            const carQuaternion = chassisBody.current.getWorldQuaternion(new THREE.Quaternion());
+
+            // Define the camera's offset relative to the car
+            const offset = new THREE.Vector3(0, 3, -12);
+            offset.applyQuaternion(carQuaternion); // Apply car's rotation to the offset
+
+            const targetPosition = carPosition.clone().add(offset);
+
+            // Smooth movement and rotation
+            camera.position.lerp(targetPosition, 0.1);
+            camera.quaternion.slerp(carQuaternion, 0.1); // Smoothly rotate the camera with the car
+
+            camera.lookAt(carPosition);
         }
     })
 

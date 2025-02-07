@@ -46,16 +46,7 @@ export default function City() {
 
 // Creates physics-based collision boxes for each building mesh
 function CityCollisionBox({ mesh }) {
-    const oldbbox = mesh.geometry.boundingBox;
     let bbox = mesh.geometry.boundingBox;
-    // const change = 1;
-    // bbox.max.x = oldbbox.max.x - change;
-    // bbox.max.y = oldbbox.max.y - change;
-    // bbox.max.z = oldbbox.max.z - change;
-    //
-    // bbox.min.x = oldbbox.min.x + change;
-    // bbox.min.y = oldbbox.min.y + change;
-    // bbox.min.z = oldbbox.min.z + change;
 
     if (!bbox) return null;
 
@@ -66,7 +57,7 @@ function CityCollisionBox({ mesh }) {
     ];
     const position = [
         (bbox.max.x + bbox.min.x) / 2,
-        (bbox.max.y + bbox.min.y) / 2,
+        ((bbox.max.y + bbox.min.y) / 2)-1,
         (bbox.max.z + bbox.min.z) / 2,
     ];
 
