@@ -1,17 +1,7 @@
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vite.dev/config/
 export default defineConfig({
-    server: {
-        proxy: {
-            "/api": {
-                target: "http://localhost:3001", // API requests forwarded to Express
-                changeOrigin: true, // for cross-origin requests
-            },
-            "/socket.io": {
-                target: "http://localhost:3001",
-                ws: true, // Enable WebSockets
-                changeOrigin: true,
-            },
-        },
-    },
-});
+  plugins: [react()],
+})
