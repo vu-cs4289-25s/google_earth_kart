@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
-// import CANNON from "cannon-es";
+import { useEffect, useState } from "react";
+import { useLoader } from "@react-three/fiber";
+import { useBox, usePlane } from "@react-three/cannon";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
-export default function City(props) {
+export default function City() {
     const [cityObj, setCityObj] = useState(null);
 
     useEffect(() => {
@@ -10,8 +11,12 @@ export default function City(props) {
         loader.load(
             "../assets/small-city-buildings.obj",
             (object) => {
-                console.log("city loaded")
-                object.scale.set(1, 1, 1);
+                object.position.set(0, -1, 0);
+                object.traverse((child) => {
+                    if (child.isMesh) {
+                        child.geometry.computeBoundingBox();
+                    }
+                });
                 setCityObj(object);
             },
             undefined,
@@ -19,42 +24,73 @@ export default function City(props) {
         );
     }, []);
 
-    if (!cityObj) return null; // Don't render anything until the model is loaded
+    if (!cityObj) return null;
 
-    return <primitive object={cityObj} />;
+    return (
+        <group>
+            {/* Physics collisions for each mesh */}
+            {cityObj.children.map((child, index) =>
+                child.isMesh ? (
+                    <CityCollisionBox key={index} mesh={child} />
+                ) : null
+            )}
+
+            {/* Render the visual city model */}
+            <primitive object={cityObj} />
+
+            {/* Add a static floor */}
+            <CityFloor />
+        </group>
+    );
 }
 
-// function createCannonBody(model, physicsWorld) {
-//     model.traverse((child) => {
-//         if (child.isMesh) {
-//             const geometry = child.geometry;
-//             geometry.computeBoundingBox(); // Ensure bounding box exists
-//
-//             const min = geometry.boundingBox.min;
-//             const max = geometry.boundingBox.max;
-//
-//             // Create a simple box shape based on the bounding box
-//             const halfExtents = new CANNON.Vec3(
-//                 (max.x - min.x) / 2,
-//                 (max.y - min.y) / 2,
-//                 (max.z - min.z) / 2,
-//             );
-//
-//             const shape = new CANNON.Box(halfExtents);
-//             const body = new CANNON.Body({
-//                 mass: 0, // Static
-//                 shape: shape,
-//             });
-//
-//             // Position the physics body at the center of the Three.js object
-//             body.position.set(
-//                 (max.x + min.x) / 2,
-//                 (max.y + min.y) / 2,
-//                 (max.z + min.z) / 2,
-//             );
-//
-//             physicsWorld.addBody(body);
-//         }
-//     });
-// }
+// Creates physics-based collision boxes for each building mesh
+function CityCollisionBox({ mesh }) {
+    const oldbbox = mesh.geometry.boundingBox;
+    let bbox = mesh.geometry.boundingBox;
+    // const change = 1;
+    // bbox.max.x = oldbbox.max.x - change;
+    // bbox.max.y = oldbbox.max.y - change;
+    // bbox.max.z = oldbbox.max.z - change;
+    //
+    // bbox.min.x = oldbbox.min.x + change;
+    // bbox.min.y = oldbbox.min.y + change;
+    // bbox.min.z = oldbbox.min.z + change;
 
+    if (!bbox) return null;
+
+    const size = [
+        bbox.max.x - bbox.min.x,
+        bbox.max.y - bbox.min.y,
+        bbox.max.z - bbox.min.z,
+    ];
+    const position = [
+        (bbox.max.x + bbox.min.x) / 2,
+        (bbox.max.y + bbox.min.y) / 2,
+        (bbox.max.z + bbox.min.z) / 2,
+    ];
+
+    useBox(() => ({
+        args: size,
+        position,
+        type: "Static",
+    }));
+
+    return null;
+}
+
+// Adds a large static floor for the city
+function CityFloor() {
+    const [floorRef] = usePlane(() => ({
+        position: [0, -0.5, 0],
+        rotation: [-Math.PI / 2, 0, 0],
+        type: "Static",
+    }));
+
+    return (
+        <mesh ref={floorRef} receiveShadow>
+            <planeGeometry args={[200, 200]} />
+            <meshStandardMaterial color="gray" />
+        </mesh>
+    );
+}
