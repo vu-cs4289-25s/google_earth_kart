@@ -8,57 +8,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="/src/main.jsx"></script>
-    <script>
-      // Websocket scripts
-      const socket = io();
-      const broadcast = document.getElementById("broadcast");
-      const form = document.getElementById("form");
-      const input = document.getElementById("input");
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        console.log("event listener");
-        if (input.value) {
-          console.log("input received");
-          socket.emit("chat message", input.value);
-          input.value = "";
-        }
-      });
-
-      socket.on("chat message", (msg) => {
-        const item = document.createElement("li");
-        item.textContent = msg;
-        broadcast.appendChild(item);
-        msgTimeout(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-
-      // User connected
-      socket.on("connected", () => {
-        const item = document.createElement("li");
-        item.textContent = "A user connected";
-        broadcast.appendChild(item);
-        msgTimeout(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-
-      // User disconnected
-      socket.on("disconnected", () => {
-        const item = document.createElement("li");
-        item.textContent = "A user disconnected";
-        broadcast.appendChild(item);
-        msgTimeout(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-
-      // Timeout for broadcasts
-      function msgTimeout(item) {
-        setTimeout(() => {
-          broadcast.removeChild(item);
-        }, 5000);
-      }
-    </script>
   </body>
 </html>
