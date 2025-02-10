@@ -1,58 +1,56 @@
-export function handleKeyDown(vehicle, event) {
-    const maxSteerVal = Math.PI / 8;
-    const maxForce = 13;
+import { useEffect, useRef } from 'react'
 
-    switch (event.key) {
-        case "w":
-        case "ArrowUp":
-            vehicle.setWheelForce(maxForce, 0);
-            vehicle.setWheelForce(maxForce, 2);
-            break;
-
-        case "s":
-        case "ArrowDown":
-            vehicle.setWheelForce(-maxForce / 2, 0);
-            vehicle.setWheelForce(-maxForce / 2, 2);
-            break;
-
-        case "a":
-        case "ArrowLeft":
-            vehicle.setSteeringValue(maxSteerVal, 0);
-            vehicle.setSteeringValue(maxSteerVal, 2);
-            break;
-
-        case "d":
-        case "ArrowRight":
-            vehicle.setSteeringValue(-maxSteerVal, 0);
-            vehicle.setSteeringValue(-maxSteerVal, 2);
-            break;
-    }
+function useKeyControls(
+    { current },
+map,
+) {
+    useEffect(() => {
+        const handleKeydown = ({ key }) => {
+            if (!isKeyCode(key)) return
+            current[map[key]] = true
+        }
+        window.addEventListener('keydown', handleKeydown)
+        const handleKeyup = ({ key }) => {
+            if (!isKeyCode(key)) return
+            current[map[key]] = false
+        }
+        window.addEventListener('keyup', handleKeyup)
+        return () => {
+            window.removeEventListener('keydown', handleKeydown)
+            window.removeEventListener('keyup', handleKeyup)
+        }
+    }, [current, map])
 }
 
-export function handleKeyUp(vehicle, event) {
-    switch (event.key) {
-        case "w":
-        case "ArrowUp":
-            vehicle.setWheelForce(0, 0);
-            vehicle.setWheelForce(0, 2);
-            break;
+const keyControlMap = {
+    ' ': 'brake',
+    ArrowDown: 'backward',
+    ArrowLeft: 'left',
+    ArrowRight: 'right',
+    ArrowUp: 'forward',
+    a: 'left',
+    d: 'right',
+    r: 'reset',
+    s: 'backward',
+    w: 'forward',
+}
 
-        case "s":
-        case "ArrowDown":
-            vehicle.setWheelForce(0, 0);
-            vehicle.setWheelForce(0, 2);
-            break;
 
-        case "a":
-        case "ArrowLeft":
-            vehicle.setSteeringValue(0, 0);
-            vehicle.setSteeringValue(0, 2);
-            break;
 
-        case "d":
-        case "ArrowRight":
-            vehicle.setSteeringValue(0, 0);
-            vehicle.setSteeringValue(0, 2);
-            break;
-    }
+const keyCodes = Object.keys(keyControlMap)
+const isKeyCode = (v)=> keyCodes.includes(v)
+
+export function useControls() {
+    const controls = useRef({
+        backward: false,
+        brake: false,
+        forward: false,
+        left: false,
+        reset: false,
+        right: false,
+    })
+
+    useKeyControls(controls, keyControlMap)
+
+    return controls
 }
