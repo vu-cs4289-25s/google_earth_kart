@@ -4,13 +4,17 @@ import viteLogo from '/vite.svg'
 import { Canvas } from '@react-three/fiber'
 import { Stats } from '@react-three/drei'
 import {Physics, Debug} from '@react-three/cannon';
+import { onPlayerJoin, insertCoin, isHost, myPlayer } from "playroomkit";
 
 
 
 import City from "../components/City.jsx";
 import Car from "../components/Car.jsx";
 
-function Game() {
+async function Game() {
+    await insertCoin();
+    startGame();
+
     return (
         <Canvas camera={{ position: [0, 3, 15], fov:45, near: 1, far: 1000 }}>
             <color attach="background" args={['#aeccfc']} />

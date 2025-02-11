@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import Game from "../components/Game.jsx";
 import "./App.css"
-import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3001"); // Needs to match backend port
 
 function App() {
   const [messages, setMessages] = useState([]);
