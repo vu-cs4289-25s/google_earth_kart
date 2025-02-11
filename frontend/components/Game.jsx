@@ -1,27 +1,28 @@
 import { Canvas } from '@react-three/fiber'
 import { Stats } from '@react-three/drei'
 import {Physics, Debug} from '@react-three/cannon';
-import { onPlayerJoin, usePlayersList, insertCoin } from 'playroomkit';
-import { useEffect, useState } from 'react';
+import { onPlayerJoin, insertCoin } from 'playroomkit';
+import { useEffect, useState, useRef } from 'react';
 
 import City from "../components/City.jsx";
 import Car from "../components/Car.jsx";
 
 function Game() {
+    const [players, setPlayers] = useState([]);
+
     insertCoin({
         skipLobby: true
     });
 
-    const [players, setPlayers] = useState([]);
-
     useEffect(() => {
-        console.log("Use effect");
         onPlayerJoin((state) => {
-            setPlayers((prev) => [...prev, { state }]);
-            console.log("Player joined");
-        
+
+            setPlayers((prev) => {
+                if (prev.some((p) => p.state.id === state.id)) return prev; // don't add if player already joined
+                return [...prev, { state }];
+            });
             state.onQuit(() => {
-                setPlayers((prev) => prev.filter((p) => p.state !== state));
+                setPlayers((prev) => prev.filter((p) => p.state.id !== state.id));
             });
         });
     }, []);
@@ -34,7 +35,7 @@ function Game() {
             <Physics>
                 {/*<Debug color="black" >*/}
                     <City/>
-                    {players.map(({ state, controls }) => (
+                    {(players || []).map(({ state, controls }) => (
                         <Car key={state.id} state={state} controls={controls} />
                     ))}
                     {/* <Car></Car> */}
