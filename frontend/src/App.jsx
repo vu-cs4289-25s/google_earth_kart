@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Game from "../components/Game.jsx";
 import "./App.css"
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:3001"); // Needs to match backend port
+import { useMultiplayerState } from 'playroomkit'
 
 function App() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useMultiplayerState('messages',[]);
 
   useEffect(() => {
     const form = document.getElementById("form");
@@ -14,27 +12,12 @@ function App() {
 
     form.addEventListener("submit",(e) => {
       e.preventDefault();
-      if (input.value) {
-        socket.emit("chat message", input.value);
+      const msg = input.value;
+      if (msg) {
+        setMessages((prev) => [...prev, msg]);
+        msgTimeout(msg);
         input.value = "";
       }
-    });
-
-    socket.on("chat message", (msg) => {
-      setMessages((prev) => [...prev, msg]);
-      msgTimeout(msg);
-    });
-
-    // User connected
-    socket.on("connected", () => {
-      setMessages((prev) => [...prev, "A user connected"]);
-      msgTimeout("A user connected");
-    });
-
-    // User disconnected
-    socket.on("disconnected", () => {
-      setMessages((prev) => [...prev, "A user disconnected"]);
-      msgTimeout("A user disconnected");
     });
 
     function msgTimeout(msg) {
@@ -46,12 +29,6 @@ function App() {
       }, 5000);
     }
     
-    return () => {
-      socket.off("chat message");
-      socket.off("connected");
-      socket.off("disconnected");
-    };
-
   }, []);
 
   return (
@@ -61,7 +38,7 @@ function App() {
             <li key={index}>{msg}</li>
           ))}
         </ul>
-        <form id="form" action="">
+        <form id="form" action="submit">
           <input id="input" autoComplete="off"/>
           <button>Send</button>
         </form>

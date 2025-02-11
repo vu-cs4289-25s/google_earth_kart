@@ -2,8 +2,10 @@ import { useBox, useRaycastVehicle } from '@react-three/cannon'
 import { useFrame, useThree} from '@react-three/fiber'
 import { useRef } from 'react'
 import * as THREE from "three";
-
-
+import { isHost, myPlayer, usePlayerState } from "playroomkit";
+import { Vector3 } from "three";
+import { randInt } from "three/src/math/MathUtils";
+import { RigidBody, euler, quat, vec3 } from "@react-three/rapier";
 import { Chassis } from './Chassis'
 import { useControls } from '../controls/keyboard-controls.js'
 import { Wheel } from './Wheel'
@@ -20,7 +22,12 @@ export default function Car({
         rotation,
         steer = 0.5,
         width = 1.2,
+        state
     }) {
+
+    const rb = useRef();
+    const me = myPlayer();
+
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)]
 
     const controls = useControls()
@@ -85,7 +92,22 @@ export default function Car({
 
     // Camera follow setup
     const { camera } = useThree()
+    if (chassisBody.current) {
+        const carPosition = chassisBody.current.getWorldPosition(new THREE.Vector3());
+        const carQuaternion = chassisBody.current.getWorldQuaternion(new THREE.Quaternion());
 
+        // Define the camera's offset relative to the car
+        const offset = new THREE.Vector3(0, 3, -12);
+        offset.applyQuaternion(carQuaternion); // Apply car's rotation to the offset
+
+        const targetPosition = carPosition.clone().add(offset);
+
+        // Smooth movement and rotation
+        camera.position.lerp(targetPosition, 0.1);
+        camera.quaternion.slerp(carQuaternion, 0.1); // Smoothly rotate the camera with the car
+
+        camera.lookAt(carPosition);
+    }
     useFrame(() => {
         const { backward, brake, forward, left, reset, right } = controls.current
 
@@ -99,13 +121,6 @@ export default function Car({
 
         for (let b = 2; b < 4; b++) {
             vehicleApi.setBrake(brake ? maxBrake : 0, b)
-        }
-
-        if (reset) {
-            chassisApi.position.set(...position)
-            chassisApi.velocity.set(0, 0, 0)
-            chassisApi.angularVelocity.set(...angularVelocity)
-            chassisApi.rotation.set(...rotation)
         }
 
         // Camera follows and rotates with the car
@@ -125,7 +140,41 @@ export default function Car({
 
             camera.lookAt(carPosition);
         }
-    })
+        if (!rb.current) {
+            return;
+          }
+          if (me?.id === state.id) {
+            const targetLookAt = vec3(rb.current.translation());
+            lookAt.current.lerp(targetLookAt, 0.1);
+            camera.lookAt(lookAt.current);
+          }
+          const rotVel = rb.current.angvel();
+          if (controls.isJoystickPressed()) {
+            const angle = controls.angle();
+            const dir = angle > Math.PI / 2 ? 1 : -1;
+            rotVel.y = -dir * Math.sin(angle) * rotationSpeed;
+            const impulse = vec3({
+              x: 0,
+              y: 0,
+              z: (CAR_SPEEDS[carModel] || carSpeed) * delta * dir,
+            });
+            const eulerRot = euler().setFromQuaternion(quat(rb.current.rotation()));
+            impulse.applyEuler(eulerRot);
+            rb.current.applyImpulse(impulse, true);
+          }
+          rb.current.setAngvel(rotVel, true);
+          if (isHost()) {
+            state.setState("pos", rb.current.translation());
+            state.setState("rot", rb.current.rotation());
+          } else {
+            const pos = state.getState("pos");
+            if (pos) {
+              rb.current.setTranslation(pos);
+              rb.current.setRotation(state.getState("rot"));
+            }
+          }
+    });
+        // const [carModel] = usePlayerState(state, "car"); // show by default with state.getState("car") and non refresh
 
     return (
         <group ref={vehicle} position={[0, -0.4, 0]}>
