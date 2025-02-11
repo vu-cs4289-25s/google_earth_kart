@@ -11,6 +11,6 @@ app.get("/", (req, res) => {
     res.sendFile(join(__dirname, "./chat.html"));
 });
 
-server.listen(3001, () => {
+app.listen(3001, () => {
     console.log("Backend server running at http://localhost:3001");
 });

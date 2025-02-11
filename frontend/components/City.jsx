@@ -30,58 +30,14 @@ export default function City() {
         <group>
             {/* Physics collisions for each mesh */}
             {cityObj.children.map((child, index) =>
-                child.isMesh ? (
-                    <CityCollisionBox key={index} mesh={child} />
-                ) : null
+                child
             )}
 
             {/* Render the visual city model */}
             <primitive object={cityObj} />
 
             {/* Add a static floor */}
-            <CityFloor />
+            <planeGeometry args={[18, 18]} />
         </group>
-    );
-}
-
-// Creates physics-based collision boxes for each building mesh
-function CityCollisionBox({ mesh }) {
-    let bbox = mesh.geometry.boundingBox;
-
-    if (!bbox) return null;
-
-    const size = [
-        bbox.max.x - bbox.min.x,
-        bbox.max.y - bbox.min.y,
-        bbox.max.z - bbox.min.z,
-    ];
-    const position = [
-        (bbox.max.x + bbox.min.x) / 2,
-        ((bbox.max.y + bbox.min.y) / 2)-1,
-        (bbox.max.z + bbox.min.z) / 2,
-    ];
-
-    useBox(() => ({
-        args: size,
-        position,
-        type: "Static",
-    }));
-
-    return null;
-}
-
-// Adds a large static floor for the city
-function CityFloor() {
-    const [floorRef] = usePlane(() => ({
-        position: [0, -0.5, 0],
-        rotation: [-Math.PI / 2, 0, 0],
-        type: "Static",
-    }));
-
-    return (
-        <mesh ref={floorRef} receiveShadow>
-            <planeGeometry args={[200, 200]} />
-            <meshStandardMaterial color="gray" />
-        </mesh>
     );
 }
