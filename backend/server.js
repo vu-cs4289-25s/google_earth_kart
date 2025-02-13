@@ -4,24 +4,28 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { Server } from "socket.io";
 import cors from "cors";
+import { db } from "./firebase.js";
 
 const app = express();
 const server = createServer(app);
 
-app.use(cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true
-}));
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Content-Type"],
+        credentials: true,
+    }),
+);
 
-const io = new Server(server, { // Allow websockets to connect
+const io = new Server(server, {
+    // Allow websockets to connect
     cors: {
         origin: "http://localhost:5173",
         methods: ["GET", "POST"],
         allowedHeaders: ["Access-Control-Allow-Origin"],
-        credentials: true
-    }
+        credentials: true,
+    },
 });
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -38,9 +42,20 @@ io.on("connection", (socket) => {
         io.emit("disconnected");
     });
 
-    socket.on("chat message", (input) => {
+    socket.on("chat message", async (input) => {
         console.log("sending message...");
         io.emit("chat message", input);
+
+        // Save message to Firestore because funny haha
+        try {
+            await db.collection("messages").add({
+                message: input,
+                timestamp: new Date(),
+            });
+            console.log("Message saved to Firestore");
+        } catch (error) {
+            console.error("Error saving message to Firestore:", error);
+        }
     });
 });
 
