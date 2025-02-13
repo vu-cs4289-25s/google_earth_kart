@@ -89,7 +89,9 @@ function Game() {
             <directionalLight color="white" position={[0, 32, 64]}  intensity={1}/>
             <Physics>
                     <City/>
-                    <Car/>
+                    {players.map((player) => (
+                      <Car key={player.id} position={player.position} />
+                    ))}
             </Physics>
             <Stats />
         </Canvas>

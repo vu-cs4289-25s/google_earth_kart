@@ -128,7 +128,7 @@ export default function Car({
     })
 
     return (
-        <group ref={vehicle} position={[0, -0.4, 0]}>
+        <group ref={vehicle} position={position}>
             <Chassis ref={chassisBody} />
             <Wheel ref={wheels[0]} radius={radius} leftSide />
             <Wheel ref={wheels[1]} radius={radius} />

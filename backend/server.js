@@ -34,14 +34,13 @@ let players = [];
 
 io.on("connection", (socket) => { // all websocket functions that occur while connected need to go in here
     console.log("A user connected");
-    players.push({ id: socket.id })
-    console.log(players);
+    players.push({ id: socket.id, position: [0, -0.4, 0] })
     io.emit("connected", players); 
+
     socket.on("disconnect", () => {
         console.log("A user disconnected");
         players = players.filter((p) => p.id != socket.id);
         io.emit("disconnected", players);
-        console.log(players);
     });
 
     socket.on("chat message", (input) => { // receieves signal from frontend
