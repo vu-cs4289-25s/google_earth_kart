@@ -17,8 +17,15 @@ function App() {
       if (input.value) {
         socket.emit("chat message", input.value);
         input.value = "";
+        input.blur();
       }
     });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        input.select();
+      }
+  });
 
     socket.on("chat message", (msg) => {
       setMessages((prev) => [...prev, msg]);
