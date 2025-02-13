@@ -12,6 +12,7 @@ const socket = io("http://localhost:3001"); // Needs to match backend port
 
 function Game() {
     const [messages, setMessages] = useState([]);
+    const [players, setPlayers] = useState([]);
 
   useEffect(() => {
     const form = document.getElementById("form");
@@ -38,15 +39,19 @@ function Game() {
     });
 
     // User connected
-    socket.on("connected", () => {
+    socket.on("connected", (playerList) => {
       setMessages((prev) => [...prev, "A user connected"]);
       msgTimeout("A user connected");
+
+      setPlayers(playerList);
     });
 
     // User disconnected
-    socket.on("disconnected", () => {
+    socket.on("disconnected", (playerList) => {
       setMessages((prev) => [...prev, "A user disconnected"]);
       msgTimeout("A user disconnected");
+
+      setPlayers(playerList);
     });
 
     function msgTimeout(msg) {
@@ -77,6 +82,7 @@ function Game() {
           <input id="input" autoComplete="off"/>
           <button>Send</button>
         </form>
+        <text style={{ right:"15px", zIndex:256, position: "absolute"}}>Players Connected: {players.length}</text>
         <Canvas camera={{ position: [0, 3, 15], fov:45, near: 1, far: 1000 }}>
             <color attach="background" args={['#aeccfc']} />
             <ambientLight intensity={0.5} color={"white"}/>

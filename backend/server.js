@@ -30,12 +30,18 @@ app.get("/", (req, res) => {
     res.sendFile(join(__dirname, "./chat.html"));
 });
 
+let players = [];
+
 io.on("connection", (socket) => { // all websocket functions that occur while connected need to go in here
     console.log("A user connected");
-    io.emit("connected"); 
+    players.push({ id: socket.id })
+    console.log(players);
+    io.emit("connected", players); 
     socket.on("disconnect", () => {
         console.log("A user disconnected");
-        io.emit("disconnected");
+        players = players.filter((p) => p.id != socket.id);
+        io.emit("disconnected", players);
+        console.log(players);
     });
 
     socket.on("chat message", (input) => { // receieves signal from frontend
