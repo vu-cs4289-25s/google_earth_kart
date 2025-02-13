@@ -17,6 +17,7 @@ function App() {
       if (input.value) {
         socket.emit("chat message", input.value);
         input.value = "";
+        input.blur();
       }
     });
 

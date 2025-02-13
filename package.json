@@ -5,6 +5,7 @@
     "dependencies": {
         "@react-three/cannon": "^6.6.0",
         "@react-three/drei": "^9.121.4",
+        "@react-three/fiber": "^8.17.14",
         "cannon-es": "^0.20.0",
         "cannon-es-debugger": "^1.0.0",
         "concurrently": "^9.1.2",
