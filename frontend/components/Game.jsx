@@ -3,11 +3,8 @@ import { Canvas } from '@react-three/fiber'
 import { Stats } from '@react-three/drei'
 import {Physics, Debug} from '@react-three/cannon';
 import { onPlayerJoin, Joystick, usePlayersList } from 'playroomkit';
-import ReactNipple from 'react-nipple';
-
 
 import City from "../components/City.jsx";
-import Car from "../components/Car.jsx";
 import { Player } from './Lobby.jsx';
 
 function Game() {
@@ -40,10 +37,6 @@ function Game() {
             </Physics>
             <Stats />
         </Canvas>
-        <ReactNipple
-        onEnd={()=> myPlayer().setState("dir", undefined)}
-        onPlain={(e, data)=> 
-          myPlayer().setState("dir", data.direction)} />
         </group>
     )
 }
