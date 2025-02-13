@@ -21,6 +21,12 @@ function App() {
       }
     });
 
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        input.select();
+      }
+  });
+
     socket.on("chat message", (msg) => {
       setMessages((prev) => [...prev, msg]);
       msgTimeout(msg);
