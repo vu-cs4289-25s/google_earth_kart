@@ -1,73 +1,78 @@
 import { useEffect, useState } from "react";
 import Game from "../components/Game.jsx";
-import "./App.css"
+import Login from "../components/Login.jsx";
+import "./App.css";
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3001"); // Needs to match backend port
 
 function App() {
-  const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const [username, setUsername] = useState("");
 
-  useEffect(() => {
-    const form = document.getElementById("form");
-    const input = document.getElementById("input");
+    useEffect(() => {
+        if (!username) return;
 
-    form.addEventListener("submit",(e) => {
-      e.preventDefault();
-      if (input.value) {
-        socket.emit("chat message", input.value);
-        input.value = "";
-      }
-    });
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
 
-    socket.on("chat message", (msg) => {
-      setMessages((prev) => [...prev, msg]);
-      msgTimeout(msg);
-    });
+        //right now just concatenating the username with the message and sending it to the server, could change in future
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit("chat message", `${username}: ${input.value}`);
+                input.value = "";
+            }
+        });
 
-    // User connected
-    socket.on("connected", () => {
-      setMessages((prev) => [...prev, "A user connected"]);
-      msgTimeout("A user connected");
-    });
+        socket.on("chat message", (msg) => {
+            setMessages((prev) => [...prev, msg]);
+            msgTimeout(msg);
+        });
 
-    // User disconnected
-    socket.on("disconnected", () => {
-      setMessages((prev) => [...prev, "A user disconnected"]);
-      msgTimeout("A user disconnected");
-    });
+        // User connected
+        socket.on("connected", () => {
+            setMessages((prev) => [...prev, "A user connected"]);
+            msgTimeout("A user connected");
+        });
 
-    function msgTimeout(msg) {
-      // IMPORTANT: Right now this function will filter out (delete) the message matching the one passed in as a parameter.
-      // This means all messages with the same content are removed. We can adjust this, but it will involve creating
-      // an object with a date-time key which is more involved. Can consider later.
-      setTimeout(() => {
-        setMessages((prev) => prev.filter((m) => m !== msg));
-      }, 5000);
+        // User disconnected
+        socket.on("disconnected", () => {
+            setMessages((prev) => [...prev, "A user disconnected"]);
+            msgTimeout("A user disconnected");
+        });
+
+        function msgTimeout(msg) {
+            setTimeout(() => {
+                setMessages((prev) => prev.filter((m) => m !== msg));
+            }, 5000);
+        }
+
+        return () => {
+            socket.off("chat message");
+            socket.off("connected");
+            socket.off("disconnected");
+        };
+    }, [username]);
+
+    if (!username) {
+        return <Login onLogin={setUsername} />;
     }
-    
-    return () => {
-      socket.off("chat message");
-      socket.off("connected");
-      socket.off("disconnected");
-    };
 
-  }, []);
-
-  return (
-      <>
-        <ul id="broadcast">
-          {messages.map((msg, index) => (
-            <li key={index}>{msg}</li>
-          ))}
-        </ul>
-        <form id="form" action="">
-          <input id="input" autoComplete="off"/>
-          <button>Send</button>
-        </form>
-        <Game/>
-      </>
-  )
+    return (
+        <>
+            <ul id="broadcast">
+                {messages.map((msg, index) => (
+                    <li key={index}>{msg}</li>
+                ))}
+            </ul>
+            <form id="form" action="">
+                <input id="input" autoComplete="off" />
+                <button>Send</button>
+            </form>
+            <Game />
+        </>
+    );
 }
 
-export default App
+export default App;
