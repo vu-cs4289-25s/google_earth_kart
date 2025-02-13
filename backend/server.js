@@ -43,8 +43,8 @@ io.on("connection", (socket) => { // all websocket functions that occur while co
         io.emit("disconnected", players);
     });
 
-    socket.on("chat message", (input) => { // receieves signal from frontend
-        io.emit("chat message", input); // sends back signal to frontend
+    socket.on("chat message", (input) => { // receieves signal from one user
+        io.emit("chat message", input); // sends back signal to all users
     });
 });
 
