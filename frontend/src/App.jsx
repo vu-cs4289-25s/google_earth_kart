@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Game from "../components/Game.jsx";
+import Lobby from "../components/Lobby.jsx";
 import "./App.css"
 import { io } from "socket.io-client";
 
@@ -65,7 +65,7 @@ function App() {
           <input id="input" autoComplete="off"/>
           <button>Send</button>
         </form>
-        <Game/>
+        <Lobby/>
       </>
   )
 }
