@@ -64,9 +64,9 @@ io.on("connection", (socket) => { // all websocket functions that occur while co
             console.error("Error saving message to Firestore:", error);
         }
     });
-    socket.on("player moves", ({player, position}) => {
-        console.log("Updating player: ", player.id, ", position: ", position);
-        let p = players.findIndex((p) => p.id === player.id);
+    socket.on("player moves", ({playerid, position}) => {
+        console.log("Updating player: ", playerid, ", position: ", position);
+        let p = players.findIndex((p) => p.id === playerid);
         if (p !== -1) {
             players[p].position = position;
             io.emit("update players", players);

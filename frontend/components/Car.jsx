@@ -20,7 +20,7 @@ export default function Car({
         rotation,
         steer = 0.5,
         width = 1.2,
-        player,
+        id,
         socket
     }) {
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)]
@@ -127,7 +127,7 @@ export default function Car({
 
             camera.lookAt(carPosition);
 
-            socket.emit("player moves", { player: player, position: carPosition.toArray()});
+            socket.emit("player moves", { playerid: id, position: carPosition.toArray()});
         }
     });
 

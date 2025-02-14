@@ -104,9 +104,10 @@ function Game() {
             <directionalLight color="white" position={[0, 32, 64]}  intensity={1}/>
             <Physics>
                     <City/>
-                    {players.map((player) => (
-                      <Car key={player.id} position={player.position} player={player} socket={socket}/>
-                    ))}
+                    {/* {players.map((player) => ( */}
+                    {/* Only mapping one car for now to ensure position vectors are correct. Need to separate "this" Car and others*/}
+                      <Car key={/*player.id*/ me} position={[0,-0.4,0]} id={/*player.id*/ me} socket={socket}/>
+                    {/* ))} */}
             </Physics>
             <Stats />
         </Canvas>
