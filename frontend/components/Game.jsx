@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Stats } from '@react-three/drei'
 import {Physics, Debug} from '@react-three/cannon';
@@ -13,6 +13,8 @@ const socket = io("http://localhost:3001"); // Needs to match backend port
 function Game() {
     const [messages, setMessages] = useState([]);
     const [players, setPlayers] = useState([]);
+    const playersRef = useRef([]);
+    const me = socket.id;
 
     useEffect(() => {
       /* Chat feature */
@@ -51,6 +53,7 @@ function Game() {
       setMessages((prev) => [...prev, "A user connected"]);
       msgTimeout("A user connected");
 
+      playersRef.current = playerList;
       setPlayers(playerList); // sync player list
     });
 
@@ -58,7 +61,21 @@ function Game() {
       setMessages((prev) => [...prev, "A user disconnected"]);
       msgTimeout("A user disconnected");
 
+      playersRef.current = playerList;
       setPlayers(playerList);
+    });
+
+    /* Update player locations */
+    socket.on("update players", (playerList) => {
+      setPlayers(playerList);
+      playersRef.current = playerList;
+    });
+  
+    socket.on("announce positions", () => {  
+      const newMessages = playersRef.current.map((player) => (
+        `Player: ${player.id}, position: ${JSON.stringify(player.position)}`
+      ));
+      setMessages((prev) => [...prev, ...newMessages]);
     });
     
     return () => {
@@ -88,7 +105,7 @@ function Game() {
             <Physics>
                     <City/>
                     {players.map((player) => (
-                      <Car key={player.id} position={player.position} />
+                      <Car key={player.id} position={player.position} player={player} socket={socket}/>
                     ))}
             </Physics>
             <Stats />

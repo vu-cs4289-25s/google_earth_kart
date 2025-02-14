@@ -1,6 +1,6 @@
 import { useBox, useRaycastVehicle } from '@react-three/cannon'
 import { useFrame, useThree} from '@react-three/fiber'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import * as THREE from "three";
 
 
@@ -20,6 +20,8 @@ export default function Car({
         rotation,
         steer = 0.5,
         width = 1.2,
+        player,
+        socket
     }) {
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)]
 
@@ -124,8 +126,10 @@ export default function Car({
             camera.quaternion.slerp(carQuaternion, 0.1); // Smoothly rotate the camera with the car
 
             camera.lookAt(carPosition);
+
+            socket.emit("player moves", { player: player, position: carPosition.toArray()});
         }
-    })
+    });
 
     return (
         <group ref={vehicle} position={position}>
