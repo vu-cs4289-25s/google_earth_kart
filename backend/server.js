@@ -34,16 +34,15 @@ app.get("/", (req, res) => {
     res.sendFile(join(__dirname, "./chat.html"));
 });
 
-io.on("connection", (socket) => {
+io.on("connection", (socket) => { // all websocket functions that occur while connected need to go in here
     console.log("A user connected");
-    io.emit("connected"); // sends signal to frontend
+    io.emit("connected"); 
     socket.on("disconnect", () => {
         console.log("A user disconnected");
         io.emit("disconnected");
     });
 
     socket.on("chat message", async (input) => {
-        console.log("sending message...");
         io.emit("chat message", input);
 
         // Save message to Firestore because funny haha
@@ -56,7 +55,6 @@ io.on("connection", (socket) => {
         } catch (error) {
             console.error("Error saving message to Firestore:", error);
         }
-    });
 });
 
 server.listen(3001, () => {
