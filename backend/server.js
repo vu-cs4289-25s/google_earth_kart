@@ -55,6 +55,7 @@ io.on("connection", (socket) => { // all websocket functions that occur while co
         } catch (error) {
             console.error("Error saving message to Firestore:", error);
         }
+    });
 });
 
 server.listen(3001, () => {

@@ -4,7 +4,7 @@ import { readFileSync } from "fs";
 // Load your service account key JSON file
 const serviceAccount = JSON.parse(
     readFileSync(
-        "./earth-kart-firebase-adminsdk-fbsvc-38a8552ebb.json",
+        "./earth-kart-firebase-adminsdk-fbsvc-ae1c5ecb2f.json",
         "utf8",
     ),
 );
