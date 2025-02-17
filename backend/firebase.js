@@ -15,4 +15,4 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-export { db };
+export default db;
