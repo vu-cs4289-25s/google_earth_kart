@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Stats } from '@react-three/drei'
 import {Physics, Debug} from '@react-three/cannon';
-import "./Game.css"
+import "../src/index.css"
 import { io } from 'socket.io-client';
 
 import City from "../components/City.jsx";
