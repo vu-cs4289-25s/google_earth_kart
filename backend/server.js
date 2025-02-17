@@ -34,16 +34,24 @@ app.get("/", (req, res) => {
     res.sendFile(join(__dirname, "./chat.html"));
 });
 
+let players = [];
+
 io.on("connection", (socket) => { // all websocket functions that occur while connected need to go in here
     console.log("A user connected");
-    io.emit("connected"); 
+    players.push({ id: socket.id, position: [0, -0.4, 0] })
+    io.emit("connected", players); 
+
     socket.on("disconnect", () => {
         console.log("A user disconnected");
-        io.emit("disconnected");
+        players = players.filter((p) => p.id != socket.id);
+        io.emit("disconnected", players);
     });
-
     socket.on("chat message", async (input) => {
         io.emit("chat message", input);
+
+        if (input === "pos") {
+            io.emit("announce positions");
+        }
 
         // Save message to Firestore because funny haha
         try {
@@ -56,6 +64,14 @@ io.on("connection", (socket) => { // all websocket functions that occur while co
             console.error("Error saving message to Firestore:", error);
         }
     });
+    socket.on("player moves", ({playerid, position}) => {
+        console.log("Updating player: ", playerid, ", position: ", position);
+        let p = players.findIndex((p) => p.id === playerid);
+        if (p !== -1) {
+            players[p].position = position;
+            io.emit("update players", players);
+        }
+    })
 });
 
 server.listen(3001, () => {
