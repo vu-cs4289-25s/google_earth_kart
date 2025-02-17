@@ -4,9 +4,9 @@ import { Stats } from '@react-three/drei'
 import {Physics, Debug} from '@react-three/cannon';
 import "../src/index.css"
 import { io } from 'socket.io-client';
-
 import City from "../components/City.jsx";
 import Car from "../components/Car.jsx";
+import Broadcast from "../components/Broadcast.jsx";
 
 const socket = io("http://localhost:3001"); // Needs to match backend port
 
@@ -17,50 +17,15 @@ function Game() {
     const me = socket.id;
 
     useEffect(() => {
-      /* Chat feature */
-      const form = document.getElementById("form");
-      const input = document.getElementById("input");
-
-      form.addEventListener("submit",(e) => {
-        e.preventDefault();
-        if (input.value) {
-          socket.emit("chat message", input.value);
-          input.value = "";
-          input.blur();
-        }
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-          input.select();
-        }
-    });
-
-    function msgTimeout(msg) {
-      setTimeout(() => {
-        setMessages((prev) => prev.filter((m) => m !== msg));
-      }, 5000);
-    }
-
-    socket.on("chat message", (msg) => {
-      setMessages((prev) => [...prev, msg]);
-      msgTimeout(msg);
-    });
 
     /* User connection / disconnection */
 
     socket.on("connected", (playerList) => {
-      setMessages((prev) => [...prev, "A user connected"]);
-      msgTimeout("A user connected");
-
       playersRef.current = playerList;
       setPlayers(playerList); // sync player list
     });
 
     socket.on("disconnected", (playerList) => {
-      setMessages((prev) => [...prev, "A user disconnected"]);
-      msgTimeout("A user disconnected");
-
       playersRef.current = playerList;
       setPlayers(playerList);
     });
@@ -70,33 +35,19 @@ function Game() {
       setPlayers(playerList);
       playersRef.current = playerList;
     });
-  
-    socket.on("announce positions", () => {  
-      const newMessages = playersRef.current.map((player) => (
-        `Player: ${player.id}, position: ${JSON.stringify(player.position)}`
-      ));
-      setMessages((prev) => [...prev, ...newMessages]);
-    });
     
     return () => {
       socket.off("chat message");
       socket.off("connected");
       socket.off("disconnected");
+      socket.off("update players");
     };
 
   }, []);
 
     return (
         <>
-        <ul id="broadcast">
-          {messages.map((msg, index) => (
-            <li key={index}>{msg}</li>
-          ))}
-        </ul>
-        <form id="form" action="">
-          <input id="input" autoComplete="off"/>
-          <button>Send</button>
-        </form>
+        <Broadcast/>
         <text style={{ right:"15px", zIndex:256, position: "absolute"}}>Players Connected: {players.length}</text>
         <Canvas camera={{ position: [0, 3, 15], fov:45, near: 1, far: 1000 }}>
             <color attach="background" args={['#aeccfc']} />

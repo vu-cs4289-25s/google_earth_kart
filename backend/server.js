@@ -47,11 +47,8 @@ io.on("connection", (socket) => { // all websocket functions that occur while co
         io.emit("disconnected", players);
     });
     socket.on("chat message", async (input) => {
+        console.log("Received message!");
         io.emit("chat message", input);
-
-        if (input === "pos") {
-            io.emit("announce positions");
-        }
 
         // Save message to Firestore because funny haha
         try {
@@ -64,6 +61,7 @@ io.on("connection", (socket) => { // all websocket functions that occur while co
             console.error("Error saving message to Firestore:", error);
         }
     });
+
     socket.on("player moves", ({playerid, position}) => {
         console.log("Updating player: ", playerid, ", position: ", position);
         let p = players.findIndex((p) => p.id === playerid);
