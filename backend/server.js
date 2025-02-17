@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { Server } from "socket.io";
 import cors from "cors";
-import { db } from "./firebase.js";
+import db from "./firebase.js";
 
 const app = express();
 const server = createServer(app);
