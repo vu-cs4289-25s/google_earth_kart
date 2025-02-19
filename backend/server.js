@@ -62,11 +62,11 @@ io.on("connection", (socket) => { // all websocket functions that occur while co
         }
     });
 
-    socket.on("player moves", ({playerid, position}) => {
-        console.log("Updating player: ", playerid, ", position: ", position);
+    socket.on("player moves", ({playerid, position, quaternion}) => {
         let p = players.findIndex((p) => p.id === playerid);
         if (p !== -1) {
             players[p].position = position;
+            players[p].quaternion = quaternion
             io.emit("update players", players);
         }
     })

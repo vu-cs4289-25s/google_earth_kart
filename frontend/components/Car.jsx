@@ -1,38 +1,37 @@
 import { useBox, useRaycastVehicle } from '@react-three/cannon'
-import { useFrame, useThree} from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 import * as THREE from "three";
-
 
 import { Chassis } from './Chassis'
 import { useControls } from '../controls/keyboard-controls.js'
 import { Wheel } from './Wheel'
 
 export default function Car({
-        angularVelocity,
-        back = -1.15,
-        force = 3000,
-        front = 1.3,
-        height = -0.04,
-        maxBrake = 50,
-        position,
-        radius = 0.7,
-        rotation,
-        steer = 0.5,
-        width = 1.2,
-        id,
-        socket
-    }) {
+                                angularVelocity,
+                                back = -1.15,
+                                force = 3000,
+                                front = 1.3,
+                                height = -0.04,
+                                maxBrake = 50,
+                                position,
+                                radius = 0.7,
+                                rotation,
+                                steer = 0.5,
+                                width = 1.2,
+                                id,
+                                socket
+                            }) {
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)]
-
     const controls = useControls()
+    const lastPosition = useRef(new THREE.Vector3())
 
     const wheelInfo = {
-        axleLocal: [-1, 0, 0], // This is inverted for asymmetrical wheel models (left v. right sided)
+        axleLocal: [-1, 0, 0],
         customSlidingRotationalSpeed: -30,
         dampingCompression: 4.4,
         dampingRelaxation: 10,
-        directionLocal: [0, -1, 0], // set to same as Physics Gravity
+        directionLocal: [0, -1, 0],
         frictionSlip: 2,
         maxSuspensionForce: 1e4,
         maxSuspensionTravel: 0.3,
@@ -42,50 +41,27 @@ export default function Car({
         useCustomSlidingRotationalSpeed: true,
     }
 
-    const wheelInfo1 = {
-        ...wheelInfo,
-        chassisConnectionPointLocal: [-width / 2, height, front],
-        isFrontWheel: true,
-    }
-    const wheelInfo2 = {
-        ...wheelInfo,
-        chassisConnectionPointLocal: [width / 2, height, front],
-        isFrontWheel: true,
-    }
-    const wheelInfo3 = {
-        ...wheelInfo,
-        chassisConnectionPointLocal: [-width / 2, height, back],
-        isFrontWheel: false,
-    }
-    const wheelInfo4 = {
-        ...wheelInfo,
-        chassisConnectionPointLocal: [width / 2, height, back],
-        isFrontWheel: false,
-    }
+    const wheelInfo1 = { ...wheelInfo, chassisConnectionPointLocal: [-width / 2, height, front], isFrontWheel: true }
+    const wheelInfo2 = { ...wheelInfo, chassisConnectionPointLocal: [width / 2, height, front], isFrontWheel: true }
+    const wheelInfo3 = { ...wheelInfo, chassisConnectionPointLocal: [-width / 2, height, back], isFrontWheel: false }
+    const wheelInfo4 = { ...wheelInfo, chassisConnectionPointLocal: [width / 2, height, back], isFrontWheel: false }
 
-    const [chassisBody, chassisApi] = useBox(
-        () => ({
-            allowSleep: false,
-            angularVelocity,
-            args: [1.7, 1, 4],
-            mass: 500,
-            onCollide: (e) => console.log('bonk'),
-            position,
-            rotation,
-        }),
-        useRef(null),
-    )
+    const [chassisBody, chassisApi] = useBox(() => ({
+        allowSleep: false,
+        angularVelocity,
+        args: [1.7, 1, 4],
+        mass: 500,
+        onCollide: () => console.log('bonk'),
+        position,
+        rotation,
+    }), useRef(null))
 
-    const [vehicle, vehicleApi] = useRaycastVehicle(
-        () => ({
-            chassisBody,
-            wheelInfos: [wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4],
-            wheels,
-        }),
-        useRef(null),
-    )
+    const [vehicle, vehicleApi] = useRaycastVehicle(() => ({
+        chassisBody,
+        wheelInfos: [wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4],
+        wheels,
+    }), useRef(null))
 
-    // Camera follow setup
     const { camera } = useThree()
 
     useFrame(() => {
@@ -117,17 +93,20 @@ export default function Car({
 
             // Define the camera's offset relative to the car
             const offset = new THREE.Vector3(0, 3, -12);
-            offset.applyQuaternion(carQuaternion); // Apply car's rotation to the offset
+            offset.applyQuaternion(carQuaternion);
 
             const targetPosition = carPosition.clone().add(offset);
 
             // Smooth movement and rotation
             camera.position.lerp(targetPosition, 0.1);
-            camera.quaternion.slerp(carQuaternion, 0.1); // Smoothly rotate the camera with the car
-
+            camera.quaternion.slerp(carQuaternion, 0.1);
             camera.lookAt(carPosition);
 
-            socket.emit("player moves", { playerid: id, position: carPosition.toArray()});
+            // Emit movement if the car has moved more than 1 meter
+            if (lastPosition.current.distanceTo(carPosition) > 1) {
+                socket.emit("player moves", { playerid: id, position: carPosition.toArray(), quaternion: [carQuaternion.x, carQuaternion.y, carQuaternion.z, carQuaternion.w] });
+                lastPosition.current.copy(carPosition);
+            }
         }
     });
 
