@@ -1,25 +1,42 @@
-name: Format Check
+name: Format and Fix
 
 on:
   push:
     branches:
-      - '**'
+      - '**' # Matches any branch
   pull_request:
 
 jobs:
-  prettier:
+  format:
     runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Check out the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '16' # Use the Node.js version your project requires
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      - name: Run Prettier
+      # Step 4: Run Prettier to fix formatting
+      - name: Format code with Prettier
         run: npx prettier --write .
+
+      # Step 5: Commit changes if any files were modified
+      - name: Commit changes
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git add .
+          git commit -m "chore: auto-format code with Prettier" || echo "No changes to commit"
+
+      # Step 6: Push changes back to the branch
+      - name: Push changes
+        run: git push
