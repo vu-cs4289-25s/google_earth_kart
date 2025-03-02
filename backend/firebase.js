@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 
 // Load your service account key JSON file
 const serviceAccount = JSON.parse(
-            readFileSync(
+                                readFileSync(
         "./firebase.json",
         "utf8",
     ),
