@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useLoader } from "@react-three/fiber";
 import { useBox, usePlane } from "@react-three/cannon";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
@@ -8,8 +7,10 @@ export default function City() {
 
     useEffect(() => {
         const loader = new GLTFLoader();
+        const modelPath = new URL("../assets/zeppos.gltf", import.meta.url).href;
+
         loader.load(
-            "../assets/zeppos.gltf",
+            modelPath,
             (gltf) => {
                 const cityScene = gltf.scene;
                 cityScene.position.set(0, 6, 0);
@@ -25,7 +26,7 @@ export default function City() {
                 setCityGltf(cityScene);
             },
             undefined,
-            (error) => console.error(error)
+            (error) => console.error("Error loading GLTF:", error)
         );
     }, []);
 
@@ -33,26 +34,19 @@ export default function City() {
 
     return (
         <group>
-            {/* Create physics collision boxes for each building */}
-            {cityGltf.children.map((child, index) =>
-                child.isMesh ? (
-                    <CityCollisionBox key={index} mesh={child} />
-                ) : null
+            {cityGltf.children.map((child) =>
+                child.isMesh ? <CityCollisionBox key={child.uuid} mesh={child} /> : null
             )}
-
-            {/* Render the city model */}
             <primitive object={cityGltf} />
-
-            {/* Add a static floor */}
             <CityFloor />
         </group>
     );
 }
 
-// Creates physics-based collision boxes for each building mesh
+// An attempt to add physics / collision, but this does not work yet
 function CityCollisionBox({ mesh }) {
+    mesh.geometry.computeBoundingBox();
     let bbox = mesh.geometry.boundingBox;
-
     if (!bbox) return null;
 
     const size = [
@@ -62,7 +56,7 @@ function CityCollisionBox({ mesh }) {
     ];
     const position = [
         (bbox.max.x + bbox.min.x) / 2,
-        ((bbox.max.y + bbox.min.y) / 2)-1,
+        (bbox.max.y + bbox.min.y) / 2,
         (bbox.max.z + bbox.min.z) / 2,
     ];
 
@@ -75,17 +69,16 @@ function CityCollisionBox({ mesh }) {
     return null;
 }
 
-// Adds a large static floor for the city
 function CityFloor() {
     const [floorRef] = usePlane(() => ({
-        position: [0, -0.5, 0],
+        position: [0, 0, 0],
         rotation: [-Math.PI / 2, 0, 0],
         type: "Static",
     }));
 
     return (
-        <mesh ref={floorRef} visible={false} receiveShadow>
-            <planeGeometry args={[200, 200]} />
+        <mesh ref={floorRef} visible={false}>
+            <planeGeometry args={[500, 500]} />
             <meshStandardMaterial color="gray" />
         </mesh>
     );
