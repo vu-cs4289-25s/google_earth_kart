@@ -1,42 +1,47 @@
 import { useEffect, useState } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useBox, usePlane } from "@react-three/cannon";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export default function City() {
-    const [cityObj, setCityObj] = useState(null);
+    const [cityGltf, setCityGltf] = useState(null);
 
     useEffect(() => {
-        const loader = new OBJLoader();
+        const loader = new GLTFLoader();
         loader.load(
-            "../assets/small-city-buildings.obj",
-            (object) => {
-                object.position.set(0, -1, 0);
-                object.traverse((child) => {
+            "../assets/zeppos.gltf",
+            (gltf) => {
+                const cityScene = gltf.scene;
+                cityScene.position.set(0, 6, 0);
+                cityScene.scale.set(100, 100, 100);
+
+                // Compute bounding boxes for physics
+                cityScene.traverse((child) => {
                     if (child.isMesh) {
                         child.geometry.computeBoundingBox();
                     }
                 });
-                setCityObj(object);
+
+                setCityGltf(cityScene);
             },
             undefined,
             (error) => console.error(error)
         );
     }, []);
 
-    if (!cityObj) return null;
+    if (!cityGltf) return null;
 
     return (
         <group>
-            {/* Physics collisions for each mesh */}
-            {cityObj.children.map((child, index) =>
+            {/* Create physics collision boxes for each building */}
+            {cityGltf.children.map((child, index) =>
                 child.isMesh ? (
                     <CityCollisionBox key={index} mesh={child} />
                 ) : null
             )}
 
-            {/* Render the visual city model */}
-            <primitive object={cityObj} />
+            {/* Render the city model */}
+            <primitive object={cityGltf} />
 
             {/* Add a static floor */}
             <CityFloor />
@@ -79,7 +84,7 @@ function CityFloor() {
     }));
 
     return (
-        <mesh ref={floorRef} receiveShadow>
+        <mesh ref={floorRef} visible={false} receiveShadow>
             <planeGeometry args={[200, 200]} />
             <meshStandardMaterial color="gray" />
         </mesh>

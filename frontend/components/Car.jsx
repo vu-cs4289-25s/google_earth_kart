@@ -102,8 +102,8 @@ export default function Car({
             camera.quaternion.slerp(carQuaternion, 0.1);
             camera.lookAt(carPosition);
 
-            // Emit movement if the car has moved more than 1 meter
-            if (lastPosition.current.distanceTo(carPosition) > 1) {
+            // Emit movement if the car has moved more than 0.1 meter
+            if (lastPosition.current.distanceTo(carPosition) > 0.1) {
                 socket.emit("player moves", { playerid: id, position: carPosition.toArray(), quaternion: [carQuaternion.x, carQuaternion.y, carQuaternion.z, carQuaternion.w] });
                 lastPosition.current.copy(carPosition);
             }
