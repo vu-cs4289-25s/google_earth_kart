@@ -20,8 +20,7 @@ export const SocketProvider = ({ children }) => {
             setPlayers(playerList);
         });
 
-        newSocket.on("update players", (msg) => {
-        });
+        newSocket.on("update players", (msg) => {});
 
         setSocket(newSocket);
 

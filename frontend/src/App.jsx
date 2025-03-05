@@ -5,11 +5,11 @@ import Login from "../components/Login.jsx";
 import Register from "../components/Register.jsx";
 import KartSelection from "../components/KartSelection.jsx";
 import Settings from "../components/Settings.jsx";
-import './index.css'
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import "./index.css";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import { getAuth } from "firebase/auth";
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <SocketProvider>
             <Router>
                 <Routes>
-                    <Route path="/game" element={<Game />}/>
+                    <Route path="/game" element={<Game />} />
                     <Route path="/" element={<Login />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />

@@ -20,7 +20,7 @@ export default function City() {
                 setCityObj(object);
             },
             undefined,
-            (error) => console.error(error)
+            (error) => console.error(error),
         );
     }, []);
 
@@ -32,7 +32,7 @@ export default function City() {
             {cityObj.children.map((child, index) =>
                 child.isMesh ? (
                     <CityCollisionBox key={index} mesh={child} />
-                ) : null
+                ) : null,
             )}
 
             {/* Render the visual city model */}
@@ -57,7 +57,7 @@ function CityCollisionBox({ mesh }) {
     ];
     const position = [
         (bbox.max.x + bbox.min.x) / 2,
-        ((bbox.max.y + bbox.min.y) / 2)-1,
+        (bbox.max.y + bbox.min.y) / 2 - 1,
         (bbox.max.z + bbox.min.z) / 2,
     ];
 
