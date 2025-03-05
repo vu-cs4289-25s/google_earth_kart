@@ -16,23 +16,15 @@ function App() {
     const auth = getAuth();
 
     return (
-        <Router>
-            <Routes>
-                <Route path="/game" element={<Game />}/>
-                <Route path="/" element={<Login />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/kart-select" element={<KartSelection />} />
-                <Route path="/settings" element={<Settings />} />
-            </Routes>
-        </Router>
         <SocketProvider>
             <Router>
                 <Routes>
-                    <Route path="/game" element={<Game />} />
+                    <Route path="/game" element={<Game />}/>
                     <Route path="/" element={<Login />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/kart-select" element={<KartSelection />} />
+                    <Route path="/settings" element={<Settings />} />
                 </Routes>
             </Router>
         </SocketProvider>
