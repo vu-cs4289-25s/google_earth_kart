@@ -5,3 +5,4 @@ backend/node_modules
 backend/earth-kart-firebase-adminsdk-fbsvc-38a8552ebb.json
 backend/earth-kart-firebase-adminsdk-fbsvc-ae1c5ecb2f.json
 firebase.json
+/backend/.env

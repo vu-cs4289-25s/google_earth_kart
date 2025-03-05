@@ -1,10 +1,25 @@
+import dotenv from "dotenv";
 import express from "express";
 import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { Server } from "socket.io";
 import cors from "cors";
-import db from "./firebase.js";
+import {readFileSync} from "fs";
+import admin from "firebase-admin";
+
+dotenv.config()
+
+// console.log(`${process.env.FIREBASE_TOKEN}`)
+
+// import db from "./firebase.js";
+// const serviceAccount = JSON.parse(readFileSync("./firebase.json", "utf8"));
+const serviceAccount = JSON.parse(process.env.FIREBASE_TOKEN)
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
 
 const app = express();
 const server = createServer(app);
