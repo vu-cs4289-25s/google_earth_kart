@@ -16,7 +16,7 @@ import ForgotPassword from './components/ForgotPassword';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon } from './components/CustomIcons';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, setDoc, doc, getDoc } from "firebase/firestore"; // Import Firestore functions
 import app from "../../src/firebaseConfig.js"; 
 import { useNavigate } from 'react-router-dom';
@@ -71,10 +71,23 @@ export default function SignIn(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const provider = new GoogleAuthProvider();
+  const [user, setUser] = React.useState(null);
   const auth = getAuth(app); // Use the initialized Firebase app
   const db = getFirestore(app); // Initialize Firestore
   const navigate = useNavigate();
 
+  //prints out the currently logged in user uid for testing purposes
+  React.useEffect(() => {
+      onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        console.log(user.uid);
+      } else {
+        setUser(null);
+      }
+    });
+  }, []);
+  
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -87,8 +100,13 @@ export default function SignIn(props) {
     event.preventDefault();
   
     const data = new FormData(event.currentTarget);
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, data.get('email'), data.get('password'))
+    const email = data.get('email');
+    const password = data.get('password');
+
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password);
+      })
       .then((userCredential) => {
         const user = userCredential.user;
         navigate('/kart-select');
@@ -96,8 +114,8 @@ export default function SignIn(props) {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorCode)
         console.log(errorCode);
+        console.log(errorMessage);
   
         // Update the state to display the error message
         if (errorCode === 'auth/invalid-credential') {
@@ -138,6 +156,7 @@ export default function SignIn(props) {
   //checks to see if user is already in db and registers them if not 
   const handleGoogleSignIn = async () => {
     try {
+      await setPersistence(auth, browserLocalPersistence);
       const result = await signInWithPopup(auth, provider);
   
       const credential = GoogleAuthProvider.credentialFromResult(result);

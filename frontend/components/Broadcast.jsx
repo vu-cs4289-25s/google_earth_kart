@@ -1,64 +1,52 @@
-import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
+import { useSocket } from "./SocketContext";
 
-const socket = io("http://localhost:3001");
-
-
-export default function Broadcast () {
+export default function Broadcast() {
+    const { socket } = useSocket();
     const [messages, setMessages] = useState([]);
     const inputRef = useRef(null);
 
     useEffect(() => {
-        const input = inputRef.current;
-      
-        if (input) {
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    input.select();
-                }
-            });
-        }
-      
-          socket.on("chat message", (msg) => {
+        if (!socket) return;
+
+        const handleMessage = (msg) => {
             setMessages((prev) => [...prev, msg]);
             msgTimeout(msg);
-          });
-      
-          // User connected
-          socket.on("connected", () => {
+        };
+
+        const handleConnection = () => {
             setMessages((prev) => [...prev, "A user connected"]);
             msgTimeout("A user connected");
-          });
-      
-          // User disconnected
-          socket.on("disconnected", () => {
+        };
+
+        const handleDisconnection = () => {
             setMessages((prev) => [...prev, "A user disconnected"]);
             msgTimeout("A user disconnected");
-          });
-      
-          function msgTimeout(msg) {
-            // IMPORTANT: Right now this function will filter out (delete) the message matching the one passed in as a parameter.
-            // This means all messages with the same content are removed. We can adjust this, but it will involve creating
-            // an object with a date-time key which is more involved. Can consider later.
-            setTimeout(() => {
-              setMessages((prev) => prev.filter((m) => m !== msg));
-            }, 5000);
-          }
-          
-          return () => {
-            socket.off("chat message");
-            socket.off("connected");
-            socket.off("disconnected");
-          };
-      
-    }, []);
+        };
+
+        socket.on("chat message", handleMessage);
+        socket.on("connected", handleConnection);
+        socket.on("disconnected", handleDisconnection);
+
+        return () => {
+            socket.off("chat message", handleMessage);
+            socket.off("connected", handleConnection);
+            socket.off("disconnected", handleDisconnection);
+        };
+    }, [socket]);
+
+    function msgTimeout(msg) {
+        setTimeout(() => {
+            setMessages((prev) => prev.filter((m) => m !== msg));
+        }, 5000);
+    }
 
     function handleSubmit(e) {
         e.preventDefault();
-        if (input.value) {
-            socket.emit("chat message", input.value);
-            input.value = "";
-            input.blur();
+        if (inputRef.current.value) {
+            socket.emit("chat message", inputRef.current.value);
+            inputRef.current.value = "";
+            inputRef.current.blur();
         }
     }
 
@@ -70,10 +58,9 @@ export default function Broadcast () {
                 ))}
             </ul>
             <form id="form" onSubmit={handleSubmit}>
-                <input id="input" autoComplete="off" />
+                <input id="input" ref={inputRef} autoComplete="off" />
                 <button type="submit">Send</button>
             </form>
         </>
-    )
-
+    );
 }
