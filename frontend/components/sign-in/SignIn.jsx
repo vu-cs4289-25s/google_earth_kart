@@ -109,7 +109,7 @@ export default function SignIn(props) {
       })
       .then((userCredential) => {
         const user = userCredential.user;
-        navigate('/game');
+        navigate('/kart-select');
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -182,7 +182,7 @@ export default function SignIn(props) {
         console.log("User already exists in Firestore, logging in");
       }
         // Navigate to the game page
-      navigate('/game'); 
+      navigate('/kart-select'); 
     } catch (error) {
       console.error("Error during Google sign-in:", error);
     }

@@ -3,7 +3,9 @@ import { SocketProvider } from "../components/SocketContext"; // Import the prov
 import Game from "../components/Game.jsx";
 import Login from "../components/Login.jsx";
 import Register from "../components/Register.jsx";
-import './index.css';
+import KartSelection from "../components/KartSelection.jsx";
+import Settings from "../components/Settings.jsx";
+import './index.css'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -14,6 +16,16 @@ function App() {
     const auth = getAuth();
 
     return (
+        <Router>
+            <Routes>
+                <Route path="/game" element={<Game />}/>
+                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/kart-select" element={<KartSelection />} />
+                <Route path="/settings" element={<Settings />} />
+            </Routes>
+        </Router>
         <SocketProvider>
             <Router>
                 <Routes>
