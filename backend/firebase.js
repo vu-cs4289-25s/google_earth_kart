@@ -2,12 +2,7 @@ import admin from "firebase-admin";
 import { readFileSync } from "fs";
 
 // Load your service account key JSON file
-const serviceAccount = JSON.parse(
-    readFileSync(
-        "./firebase.json",
-        "utf8",
-    ),
-);
+const serviceAccount = JSON.parse(readFileSync("./firebase.json", "utf8"));
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),

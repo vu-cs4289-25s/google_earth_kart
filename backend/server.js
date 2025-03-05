@@ -36,10 +36,11 @@ app.get("/", (req, res) => {
 
 let players = [];
 
-io.on("connection", (socket) => { // all websocket functions that occur while connected need to go in here
+io.on("connection", (socket) => {
+    // all websocket functions that occur while connected need to go in here
     console.log("A user connected");
-    players.push({ id: socket.id, position: [0, -0.4, 0] })
-    io.emit("connected", players); 
+    players.push({ id: socket.id, position: [0, -0.4, 0] });
+    io.emit("connected", players);
 
     socket.on("disconnect", () => {
         console.log("A user disconnected");
@@ -62,14 +63,14 @@ io.on("connection", (socket) => { // all websocket functions that occur while co
         }
     });
 
-    socket.on("player moves", ({playerid, position, quaternion}) => {
+    socket.on("player moves", ({ playerid, position, quaternion }) => {
         let p = players.findIndex((p) => p.id === playerid);
         if (p !== -1) {
             players[p].position = position;
-            players[p].quaternion = quaternion
+            players[p].quaternion = quaternion;
             io.emit("update players", players);
         }
-    })
+    });
 });
 
 server.listen(3001, () => {

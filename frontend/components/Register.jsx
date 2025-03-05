@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import app from "../src/firebaseConfig.js"; 
+import app from "../src/firebaseConfig.js";
 import SignUp from "./sign-up/SignUp.jsx";
-
 
 function Register({ onLogin }) {
     const provider = new GoogleAuthProvider();
@@ -14,7 +13,6 @@ function Register({ onLogin }) {
             onLogin(username);
         }
     };
-
 
     return (
         <div>
