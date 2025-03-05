@@ -152,60 +152,36 @@ export default function SignUp(props) {
 
   const handleGoogleSignIn = async () => {
     try {
+      await setPersistence(auth, browserLocalPersistence);
       const result = await signInWithPopup(auth, provider);
-      // This gives you a Google Access Token. You can use it to access the Google API.
+  
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential.accessToken;
-      // The signed-in user info.
+  
       const user = result.user;
-      // Use the user's display name as the username
-      const userData = {
-        uid: user.uid,
-        username: user.displayName,
-        email: user.email,
-        authType: "google",
-      };
-
-      // Add the user data to Firestore
-      await addDoc(collection(db, "users"), userData);
-      console.log("User added to Firestore:", userData);
-      navigate('/kart-select'); // Navigate to the kart select
+  
+      const userRef = doc(db, "users", user.uid); 
+      const userDoc = await getDoc(userRef); 
+    
+      if (!userDoc.exists()) {
+        const userData = {
+          uid: user.uid,
+          username: user.displayName,
+          email: user.email,
+          authType: "google",
+        };
+  
+        await setDoc(userRef, userData);
+        console.log("User added to Firestore:", userData);
+      } else {
+        console.log("User already exists in Firestore, logging in");
+      }
+        // Navigate to the game page
+      navigate('/kart-select'); //navigate to kart select 
     } catch (error) {
       console.error("Error during Google sign-in:", error);
     }
   };
-      try {
-        await setPersistence(auth, browserLocalPersistence);
-        const result = await signInWithPopup(auth, provider);
-    
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-    
-        const user = result.user;
-    
-        const db = getFirestore();
-        const userRef = doc(db, "users", user.uid); 
-        const userDoc = await getDoc(userRef); 
-      
-        if (!userDoc.exists()) {
-          const userData = {
-            uid: user.uid,
-            username: user.displayName,
-            email: user.email,
-            authType: "google",
-          };
-    
-          await setDoc(userRef, userData);
-          console.log("User added to Firestore:", userData);
-        } else {
-          console.log("User already exists in Firestore, logging in");
-        }
-          // Navigate to the game page
-        navigate('/kart-select'); //navigate to kart select 
-      } catch (error) {
-        console.error("Error during Google sign-in:", error);
-      }
-    };
 
   return (
     <AppTheme {...props}>
