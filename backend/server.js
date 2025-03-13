@@ -10,10 +10,7 @@ import admin from "firebase-admin";
 
 dotenv.config()
 
-// console.log(`${process.env.FIREBASE_TOKEN}`)
 
-// import db from "./firebase.js";
-// const serviceAccount = JSON.parse(readFileSync("./firebase.json", "utf8"));
 const serviceAccount = JSON.parse(process.env.FIREBASE_TOKEN)
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -23,10 +20,11 @@ const db = admin.firestore();
 
 const app = express();
 const server = createServer(app);
+// app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: ["http://localhost:5173", "https://google-earth-kart.onrender.com"],
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true,

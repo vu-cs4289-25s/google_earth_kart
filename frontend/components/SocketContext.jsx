@@ -10,7 +10,7 @@ export const SocketProvider = ({ children }) => {
     const [players, setPlayers] = useState([]);
 
     useEffect(() => {
-        const newSocket = io("http://localhost:3001");
+        const newSocket = io(import.meta.env.VITE_BACKEND_URL);
 
         newSocket.on("connected", (playerList) => {
             setPlayers(playerList);

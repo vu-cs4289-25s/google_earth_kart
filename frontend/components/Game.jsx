@@ -30,7 +30,6 @@ function Game() {
 
         /* Update player locations */
         socket.on("update players", (playerList) => {
-            console.log(playerList);
             setPlayers(playerList);
             playersRef.current = playerList;
         });
