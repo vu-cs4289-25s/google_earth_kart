@@ -1,13 +1,13 @@
 import { useBox, useRaycastVehicle } from "@react-three/cannon";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import * as THREE from "three";
 
 import { Chassis } from "./Chassis";
 import { useControls } from "../controls/keyboard-controls.js";
 import { Wheel } from "./Wheel";
 
-export default function Car({
+const Car = forwardRef(function Car({
     angularVelocity,
     back = -1.15,
     force = 3000,
@@ -21,7 +21,7 @@ export default function Car({
     width = 1.2,
     id,
     socket,
-}) {
+}, ref) {
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)];
     const controls = useControls();
     const lastPosition = useRef(new THREE.Vector3());
@@ -74,6 +74,9 @@ export default function Car({
         }),
         useRef(null),
     );
+
+    // Expose the chassis's physics body to parent components.
+    useImperativeHandle(ref, () => chassisBody.current);
 
     const [vehicle, vehicleApi] = useRaycastVehicle(
         () => ({
@@ -163,4 +166,6 @@ export default function Car({
             <Wheel ref={wheels[3]} radius={radius} />
         </group>
     );
-}
+});
+
+export default Car;

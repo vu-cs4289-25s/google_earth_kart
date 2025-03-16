@@ -8,8 +8,10 @@ import Car from "../components/Car.jsx";
 import ExternalCar from "../components/ExternalCar.jsx";
 import Broadcast from "../components/Broadcast.jsx";
 import { useSocket } from "./SocketContext.jsx";
+import MiniMap from "../components/MiniMap.jsx";
 
 function Game() {
+    const carRef = useRef();
     const { socket, players } = useSocket();
     const [currentPlayers, setPlayers] = useState([]);
     const playersRef = useRef([]);
@@ -60,6 +62,7 @@ function Game() {
                 <Physics>
                     <City />
                     <Car
+                        ref={carRef} // added ref for the minimap target
                         key={socket?.id}
                         position={[0, -0.4, 0]}
                         id={socket?.id}
@@ -78,7 +81,8 @@ function Game() {
                         return null;
                     })}
                 </Physics>
-
+                {/* Render the minimap overlay */}
+                <MiniMap target={carRef} />
                 <Stats />
             </Canvas>
         </>
