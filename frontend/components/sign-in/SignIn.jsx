@@ -95,7 +95,7 @@ export default function SignIn(props) {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user);
-                console.log(user.uid);
+                navigate("/kart-select");
             } else {
                 setUser(null);
             }
