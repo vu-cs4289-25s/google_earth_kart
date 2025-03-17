@@ -21,32 +21,38 @@ function Game() {
     const [allowMove, setAllowMove] = useState(false);
 
     useEffect(() => {
-        /* Sync player list on connect */
+        // Player connects
         socket.on("connected", (playerList) => {
             playersRef.current = playerList;
             setPlayers(playerList);
         });
 
-        /* Sync player list on disconnect */
+        // Player disconnects
         socket.on("disconnected", (playerList) => {
             playersRef.current = playerList;
             setPlayers(playerList);
         });
 
-        /* Update player locations */
+        // Update player locations
         socket.on("update players", (playerList) => {
             setPlayers(playerList);
             playersRef.current = playerList;
         });
+        
+        // Race starts for all players
+        socket.on("race start", () => {
+            countdown();
+        })
 
         return () => {
             socket.off("connected");
             socket.off("disconnected");
             socket.off("update players");
+            socket.off("race start");
         };
     }, [socket]);
 
-    function ready() {
+    function countdown() {
         setShowButton(false);
         setCountDown("Ready?");
         setTimeout(() => { setCountDown("3"); }, 1000);
@@ -54,6 +60,11 @@ function Game() {
         setTimeout(() => { setCountDown("1"); }, 3000);
         setTimeout(() => { setCountDown("Go!"); setAllowMove(true); }, 4000);
         setTimeout(() => { setCountDown(""); }, 5000);
+    }
+
+    function ready() { 
+        socket.emit("race start");
+        countdown();
     }
 
     return (

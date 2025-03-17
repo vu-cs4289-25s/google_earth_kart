@@ -85,6 +85,10 @@ io.on("connection", (socket) => {
             io.emit("update players", players);
         }
     });
+
+    socket.on("race start", () => {
+        io.emit("race start");
+    })
 });
 
 server.listen(3001, () => {
