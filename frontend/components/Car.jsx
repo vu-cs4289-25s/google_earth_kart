@@ -21,6 +21,7 @@ const Car = forwardRef(function Car({
     width = 1.2,
     id,
     socket,
+    allowMove
 }, ref) {
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)];
     const controls = useControls();
@@ -90,6 +91,8 @@ const Car = forwardRef(function Car({
     const { camera } = useThree();
 
     useFrame(() => {
+        if (allowMove) {
+
         const { backward, brake, forward, left, reset, right } =
             controls.current;
 
@@ -119,6 +122,7 @@ const Car = forwardRef(function Car({
             chassisApi.angularVelocity.set(...angularVelocity);
             chassisApi.rotation.set(...rotation);
         }
+    }
 
         // Camera follows and rotates with the car
         if (chassisBody.current) {
