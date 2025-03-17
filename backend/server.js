@@ -12,6 +12,7 @@ dotenv.config()
 
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_TOKEN)
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
@@ -44,7 +45,7 @@ const io = new Server(server, {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.get("/", (req, res) => {
-    res.sendFile(join(__dirname, "./chat.html"));
+    res.sendFile(join(__dirname, "./index.html"));
 });
 
 let players = [];

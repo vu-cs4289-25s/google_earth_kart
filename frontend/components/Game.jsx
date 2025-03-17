@@ -16,6 +16,9 @@ function Game() {
     const [currentPlayers, setPlayers] = useState([]);
     const playersRef = useRef([]);
     const me = socket.id;
+    const [countDown, setCountDown] = useState("Waiting for Players...");
+    const [showButton, setShowButton] = useState(true);
+    const [allowMove, setAllowMove] = useState(false);
 
     useEffect(() => {
         /* Sync player list on connect */
@@ -43,12 +46,27 @@ function Game() {
         };
     }, [socket]);
 
+    function ready() {
+        setShowButton(false);
+        setCountDown("Ready?");
+        setTimeout(() => { setCountDown("3"); }, 1000);
+        setTimeout(() => { setCountDown("2");  }, 2000);
+        setTimeout(() => { setCountDown("1"); }, 3000);
+        setTimeout(() => { setCountDown("Go!"); setAllowMove(true); }, 4000);
+        setTimeout(() => { setCountDown(""); }, 5000);
+    }
+
     return (
         <>
             <Broadcast />
-            <text style={{ right: "15px", zIndex: 256, position: "absolute" }}>
+            <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white"}}>
                 Players Connected: {currentPlayers.length}
-            </text>
+            </h4>
+            <div style={{display: "flex", justifyContent: "center"}}>
+                <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
+                <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
+                    display: showButton ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
+            </div>
             <Canvas
                 camera={{ position: [0, 3, 15], fov: 45, near: 1, far: 1000 }}
             >
@@ -62,11 +80,12 @@ function Game() {
                 <Physics>
                     <City />
                     <Car
-                        ref={carRef} // added ref for the minimap target
+                        ref={carRef}
                         key={socket?.id}
                         position={[0, -0.4, 0]}
                         id={socket?.id}
                         socket={socket}
+                        allowMove={allowMove}
                     />
                     {currentPlayers.map((player) => {
                         if (player.id !== me) {
