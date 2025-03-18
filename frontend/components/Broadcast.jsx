@@ -1,17 +1,46 @@
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "./SocketContext";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs, getFirestore } from "firebase/firestore";
 
 export default function Broadcast() {
     const { socket } = useSocket();
     const [messages, setMessages] = useState([]);
+    const [username, setUsername] = useState("");
     const inputRef = useRef(null);
+    const db = getFirestore();
+    
+    // Fetch the user's username from Firestore
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userRef = collection(db, "users");
+                    const q = query(userRef, where("uid", "==", user.uid));
+                    const curUser = await getDocs(q);
+                    
+                    if (!curUser.empty) {
+                        const userData = curUser.docs[0].data();
+                        setUsername(userData.username);
+                    } else {
+                        setUsername(user.displayName);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                    setUsername(user.displayName || "User");
+                }
+            }
+        });
+        return () => unsubscribe();
+    }, [db]);
 
     useEffect(() => {
         if (!socket) return;
 
         const handleMessage = (msg) => {
-            setMessages((prev) => [...prev, msg]);
-            msgTimeout(msg);
+            setMessages((prev) => [...prev, `${username}: ${msg}`]);
+            msgTimeout(`${username}: ${msg}`);
         };
 
         const handleConnection = () => {
@@ -33,7 +62,7 @@ export default function Broadcast() {
             socket.off("connected", handleConnection);
             socket.off("disconnected", handleDisconnection);
         };
-    }, [socket]);
+    }, [socket, username]);
 
     function msgTimeout(msg) {
         setTimeout(() => {
