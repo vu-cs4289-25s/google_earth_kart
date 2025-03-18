@@ -38,9 +38,9 @@ export default function Broadcast() {
     useEffect(() => {
         if (!socket) return;
 
-        const handleMessage = (msg) => {
-            setMessages((prev) => [...prev, `${username}: ${msg}`]);
-            msgTimeout(`${username}: ${msg}`);
+        const handleMessage = (msg, user) => {
+            setMessages((prev) => [...prev, `${user}: ${msg}`]);
+            msgTimeout(`${user}: ${msg}`);
         };
 
         const handleConnection = () => {
@@ -73,7 +73,7 @@ export default function Broadcast() {
     function handleSubmit(e) {
         e.preventDefault();
         if (inputRef.current.value) {
-            socket.emit("chat message", inputRef.current.value);
+            socket.emit("chat message", inputRef.current.value, username);
             inputRef.current.value = "";
             inputRef.current.blur();
         }
