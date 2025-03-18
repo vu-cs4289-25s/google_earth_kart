@@ -61,9 +61,8 @@ io.on("connection", (socket) => {
         players = players.filter((p) => p.id != socket.id);
         io.emit("disconnected", players);
     });
-    socket.on("chat message", async (input) => {
-        console.log("Received message!");
-        io.emit("chat message", input);
+    socket.on("chat message", async (input, username) => {
+        io.emit("chat message", input, username);
 
         // Save message to Firestore because funny haha
         try {
