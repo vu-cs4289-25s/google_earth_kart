@@ -14,11 +14,11 @@ function Game() {
     const carRef = useRef();
     const { socket, players } = useSocket();
     const [currentPlayers, setPlayers] = useState([]);
-    const [readyPlayers, setReadyPlayers] = useState(0);
+    const [readyPlayers, setReadyPlayers] = useState([]);
     const playersRef = useRef([]);
     const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
-    const [showButton, setShowButton] = useState(true);
+    const [showButton, setShowButton] = useState(false);
     const [allowMove, setAllowMove] = useState(false);
 
     useEffect(() => {
@@ -29,7 +29,7 @@ function Game() {
         });
 
         // Player disconnects
-        socket.on("disconnected", (playerList) => {
+        socket.on("disconnected", (playerList, playersReady) => {
             playersRef.current = playerList;
             setPlayers(playerList);
         });
@@ -46,8 +46,11 @@ function Game() {
         });
 
         // A player selected kart and is ready
-        socket.on("player ready", () => {
-            setReadyPlayers(readyPlayers + 1);
+        socket.on("player ready", (playersReady) => {
+            setReadyPlayers(playersReady);
+            if (playersReady.length === playersRef.current.length) {
+                setShowButton(true);
+            }
         });
 
         return () => {
@@ -78,11 +81,11 @@ function Game() {
         <>
             <Broadcast />
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white"}}>
-                Players Connected: {readyPlayers} / {currentPlayers.length}
+                Players Ready: {readyPlayers.length} / {currentPlayers.length}
             </h4>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
-                <button onClick={ready} disabled={readyPlayers === currentPlayers.length} style={{zIndex: 256, position: "absolute", top: "60px", 
+                <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
                     display: showButton ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
             </div>
             <Canvas

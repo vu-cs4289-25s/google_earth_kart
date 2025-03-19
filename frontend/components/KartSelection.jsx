@@ -32,10 +32,11 @@ const KartSelection = () => {
     const [selectedKart, setSelectedKart] = useState(null);
     const navigate = useNavigate();
     const { socket } = useSocket();
+    const me = socket.id;
 
     function next() {
         if (selectedKart === null) return;
-        socket.emit("player ready");
+        socket.emit("player ready", me);
         navigate("/game");
     };
 
