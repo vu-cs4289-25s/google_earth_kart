@@ -14,6 +14,7 @@ function Game() {
     const carRef = useRef();
     const { socket, players } = useSocket();
     const [currentPlayers, setPlayers] = useState([]);
+    const [readyPlayers, setReadyPlayers] = useState(0);
     const playersRef = useRef([]);
     const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
@@ -42,13 +43,19 @@ function Game() {
         // Race starts for all players
         socket.on("race start", () => {
             countdown();
-        })
+        });
+
+        // A player selected kart and is ready
+        socket.on("player ready", () => {
+            setReadyPlayers(readyPlayers + 1);
+        });
 
         return () => {
             socket.off("connected");
             socket.off("disconnected");
             socket.off("update players");
             socket.off("race start");
+            socket.off("player ready");
         };
     }, [socket]);
 
@@ -71,11 +78,11 @@ function Game() {
         <>
             <Broadcast />
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white"}}>
-                Players Connected: {currentPlayers.length}
+                Players Connected: {readyPlayers} / {currentPlayers.length}
             </h4>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
-                <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
+                <button onClick={ready} disabled={readyPlayers === currentPlayers.length} style={{zIndex: 256, position: "absolute", top: "60px", 
                     display: showButton ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
             </div>
             <Canvas

@@ -5,6 +5,8 @@ import { Chassis } from "./Chassis";
 import { Box, IconButton, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "./SocketContext.jsx";
+
 
 const BeetlePreview = () => {
     return (
@@ -29,6 +31,13 @@ const KartSelection = () => {
     const [selectedCharacter, setSelectedCharacter] = useState(null);
     const [selectedKart, setSelectedKart] = useState(null);
     const navigate = useNavigate();
+    const { socket } = useSocket();
+
+    function next() {
+        if (selectedKart === null) return;
+        socket.emit("player ready");
+        navigate("/game");
+    };
 
     return (
         <div className="h-screen w-screen bg-[url('/path/to/background.jpg')] bg-cover bg-center">
@@ -194,9 +203,7 @@ const KartSelection = () => {
                     </IconButton>
 
                     <IconButton
-                        onClick={() =>
-                            selectedKart !== null && navigate("/game")
-                        }
+                        onClick={next}
                         sx={{
                             backgroundColor: "#4a90e2",
                             color: "white",

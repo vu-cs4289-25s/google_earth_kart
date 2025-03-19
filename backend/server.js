@@ -88,6 +88,10 @@ io.on("connection", (socket) => {
     socket.on("race start", () => {
         io.emit("race start");
     })
+
+    socket.on("player ready", () => {
+        io.emit("player ready");
+    })
 });
 
 server.listen(3001, () => {
