@@ -3,10 +3,12 @@ body {
     margin: 0;
 }
 #root {
+    background: linear-gradient(-45deg, #4990e2, #4a90e2, #6aa2e7, #4f7fc6);
     padding: 0;
     margin: 0;
     width: 100vw;
     height: 100vh;
+    animation: gradientAnimation 8s ease infinite;
 }
 
 #broadcast {
@@ -49,4 +51,10 @@ body {
     border-radius: 5px;
     font-size: 14px;
     outline: none;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
