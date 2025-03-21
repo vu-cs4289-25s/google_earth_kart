@@ -14,10 +14,11 @@ function Game() {
     const carRef = useRef();
     const { socket, players } = useSocket();
     const [currentPlayers, setPlayers] = useState([]);
+    const [readyPlayers, setReadyPlayers] = useState([]);
     const playersRef = useRef([]);
     const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
-    const [showButton, setShowButton] = useState(true);
+    const [showButton, setShowButton] = useState(false);
     const [allowMove, setAllowMove] = useState(false);
 
     const [selectedCar, setSelectedCar] = useState(() => {
@@ -33,7 +34,7 @@ function Game() {
         });
 
         // Player disconnects
-        socket.on("disconnected", (playerList) => {
+        socket.on("disconnected", (playerList, playersReady) => {
             playersRef.current = playerList;
             setPlayers(playerList);
         });
@@ -47,13 +48,22 @@ function Game() {
         // Race starts for all players
         socket.on("race start", () => {
             countdown();
-        })
+        });
+
+        // A player selected kart and is ready
+        socket.on("player ready", (playersReady) => {
+            setReadyPlayers(playersReady);
+            if (playersReady.length === playersRef.current.length) {
+                setShowButton(true);
+            }
+        });
 
         return () => {
             socket.off("connected");
             socket.off("disconnected");
             socket.off("update players");
             socket.off("race start");
+            socket.off("player ready");
         };
     }, [socket]);
 
@@ -76,7 +86,7 @@ function Game() {
         <>
             <Broadcast />
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white"}}>
-                Players Connected: {currentPlayers.length}
+                Players Ready: {readyPlayers.length} / {currentPlayers.length}
             </h4>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>

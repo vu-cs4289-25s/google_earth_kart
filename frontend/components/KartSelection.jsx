@@ -4,12 +4,21 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "./SocketContext.jsx";
 import CarPreview from "./CarPreview";
 import { getAllCars } from './CarRegistry';
 
 const KartSelection = () => {
     const [selectedKart, setSelectedKart] = useState('kia-soul');  // Default to Kia Soul
     const navigate = useNavigate();
+    const { socket } = useSocket();
+    const me = socket.id;
+
+    function next() {
+        if (selectedKart === null) return;
+        socket.emit("player ready", me);
+        navigate("/game");
+    };
   
     const cars = getAllCars();
     
@@ -62,6 +71,7 @@ const KartSelection = () => {
                     </Typography>
                     
                     <IconButton
+
                         onClick={() => navigate("/settings")}
                         sx={{
                             backgroundColor: "#ff8c00",
@@ -242,7 +252,7 @@ const KartSelection = () => {
 
                 {/* Start Race Button */}
                 <IconButton
-                    onClick={() => navigate("/game")}
+                    onClick={next}
                     sx={{
                         backgroundColor: "#4a90e2",
                         color: "white",

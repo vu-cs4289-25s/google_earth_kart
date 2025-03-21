@@ -49,6 +49,7 @@ app.get("/", (req, res) => {
 });
 
 let players = [];
+let playersReady = [];
 
 io.on("connection", (socket) => {
     // all websocket functions that occur while connected need to go in here
@@ -87,6 +88,11 @@ io.on("connection", (socket) => {
 
     socket.on("race start", () => {
         io.emit("race start");
+    })
+
+    socket.on("player ready", (id) => {
+        playersReady.push({ id: id });
+        io.emit("player ready", playersReady);
     })
 });
 
