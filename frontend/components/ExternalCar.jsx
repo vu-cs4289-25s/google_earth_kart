@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { Chassis } from "./Chassis";
 import { Wheel } from "./Wheel";
 
-export default function ExternalCar({ playerId, players }) {
+export default function ExternalCar({ playerId, players, carId }) {
     const carRef = useRef(null);
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export default function ExternalCar({ playerId, players }) {
 
     return (
         <group ref={carRef}>
-            <Chassis />
+            <Chassis carId={carId }/>
         </group>
     );
 }

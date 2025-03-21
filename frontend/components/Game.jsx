@@ -114,14 +114,14 @@ function Game() {
                         allowMove={allowMove}
                         carId={selectedCar}
                     />
-                    {currentPlayers.map((player) => {
+                    {readyPlayers.map((player) => {
                         if (player.id !== me) {
                             return (
                                 <ExternalCar
                                     key={player.id}
                                     playerId={player.id}
                                     players={currentPlayers}
-                                    carId={selectedCar} 
+                                    carId={player.kart} 
                                 />
                             );
                         }

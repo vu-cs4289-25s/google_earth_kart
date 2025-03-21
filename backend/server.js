@@ -90,8 +90,8 @@ io.on("connection", (socket) => {
         io.emit("race start");
     })
 
-    socket.on("player ready", (id) => {
-        playersReady.push({ id: id });
+    socket.on("player ready", (id, selectedKart) => {
+        playersReady.push({ id: id, kart: selectedKart });
         io.emit("player ready", playersReady);
     })
 });

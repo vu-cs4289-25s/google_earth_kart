@@ -15,8 +15,7 @@ const KartSelection = () => {
     const me = socket.id;
 
     function next() {
-        if (selectedKart === null) return;
-        socket.emit("player ready", me);
+        socket.emit("player ready", me, selectedKart);
         navigate("/game");
     };
   
