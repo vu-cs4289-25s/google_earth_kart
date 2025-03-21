@@ -21,6 +21,11 @@ function Game() {
     const [showButton, setShowButton] = useState(false);
     const [allowMove, setAllowMove] = useState(false);
 
+    const [selectedCar, setSelectedCar] = useState(() => {
+        return localStorage.getItem('selectedCar') || 'kia-soul';
+    });
+
+
     useEffect(() => {
         // Player connects
         socket.on("connected", (playerList) => {
@@ -107,6 +112,7 @@ function Game() {
                         id={socket?.id}
                         socket={socket}
                         allowMove={allowMove}
+                        carId={selectedCar}
                     />
                     {currentPlayers.map((player) => {
                         if (player.id !== me) {
@@ -115,6 +121,7 @@ function Game() {
                                     key={player.id}
                                     playerId={player.id}
                                     players={currentPlayers}
+                                    carId={selectedCar} 
                                 />
                             );
                         }

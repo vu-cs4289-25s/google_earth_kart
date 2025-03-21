@@ -21,7 +21,8 @@ const Car = forwardRef(function Car({
     width = 1.2,
     id,
     socket,
-    allowMove
+    allowMove,
+    carId = 'kia-soul' 
 }, ref) {
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)];
     const controls = useControls();
@@ -163,7 +164,7 @@ const Car = forwardRef(function Car({
 
     return (
         <group ref={vehicle} position={position}>
-            <Chassis ref={chassisBody} />
+            <Chassis ref={chassisBody} carId={carId} />
             <Wheel ref={wheels[0]} radius={radius} leftSide />
             <Wheel ref={wheels[1]} radius={radius} />
             <Wheel ref={wheels[2]} radius={radius} leftSide />
