@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
-import { Physics } from "@react-three/cannon";
+import { Physics, Debug } from "@react-three/cannon";
 import "../src/index.css";
 import City from "../components/City.jsx";
 import Car from "../components/Car.jsx";
@@ -58,10 +58,11 @@ function Game() {
                     intensity={1}
                 />
                 <Physics>
+                    <Debug color={"green"} scale={1}>
                     <City />
                     <Car
                         key={socket?.id}
-                        position={[0, -0.4, 0]}
+                        position={[0,0,0]}
                         id={socket?.id}
                         socket={socket}
                     />
@@ -77,6 +78,7 @@ function Game() {
                         }
                         return null;
                     })}
+                    </Debug>
                 </Physics>
 
                 <Stats />

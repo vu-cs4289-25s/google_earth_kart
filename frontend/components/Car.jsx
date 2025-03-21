@@ -75,6 +75,7 @@ export default function Car({
         useRef(null),
     );
 
+
     const [vehicle, vehicleApi] = useRaycastVehicle(
         () => ({
             chassisBody,
@@ -127,6 +128,7 @@ export default function Car({
             );
 
             // Define the camera's offset relative to the car
+            // const offset = new THREE.Vector3(0, 200, -5);
             const offset = new THREE.Vector3(0, 3, -12);
             offset.applyQuaternion(carQuaternion);
 
@@ -149,6 +151,7 @@ export default function Car({
                         carQuaternion.w,
                     ],
                 });
+                console.log(carPosition)
                 lastPosition.current.copy(carPosition);
             }
         }
