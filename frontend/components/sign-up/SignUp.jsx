@@ -43,6 +43,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
     padding: theme.spacing(4),
     gap: theme.spacing(2),
     margin: "auto",
+    position: "relative",
+    margin: "auto",
     boxShadow:
         "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
     [theme.breakpoints.up("sm")]: {
@@ -58,6 +60,8 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
     height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
     minHeight: "100%",
     padding: theme.spacing(2),
+    position: "relative",
+    zIndex: 10,
     [theme.breakpoints.up("sm")]: {
         padding: theme.spacing(4),
     },

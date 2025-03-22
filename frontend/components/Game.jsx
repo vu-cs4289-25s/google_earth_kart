@@ -22,9 +22,8 @@ function Game() {
     const [allowMove, setAllowMove] = useState(false);
 
     const [selectedCar, setSelectedCar] = useState(() => {
-        return localStorage.getItem('selectedCar') || 'kia-soul';
+        return localStorage.getItem("selectedCar") || "kia-soul";
     });
-
 
     useEffect(() => {
         // Player connects
@@ -44,7 +43,7 @@ function Game() {
             setPlayers(playerList);
             playersRef.current = playerList;
         });
-        
+
         // Race starts for all players
         socket.on("race start", () => {
             countdown();
@@ -70,14 +69,25 @@ function Game() {
     function countdown() {
         setShowButton(false);
         setCountDown("Ready?");
-        setTimeout(() => { setCountDown("3"); }, 1000);
-        setTimeout(() => { setCountDown("2");  }, 2000);
-        setTimeout(() => { setCountDown("1"); }, 3000);
-        setTimeout(() => { setCountDown("Go!"); setAllowMove(true); }, 4000);
-        setTimeout(() => { setCountDown(""); }, 5000);
+        setTimeout(() => {
+            setCountDown("3");
+        }, 1000);
+        setTimeout(() => {
+            setCountDown("2");
+        }, 2000);
+        setTimeout(() => {
+            setCountDown("1");
+        }, 3000);
+        setTimeout(() => {
+            setCountDown("Go!");
+            setAllowMove(true);
+        }, 4000);
+        setTimeout(() => {
+            setCountDown("");
+        }, 5000);
     }
 
-    function ready() { 
+    function ready() {
         socket.emit("race start");
         countdown();
     }
@@ -85,13 +95,40 @@ function Game() {
     return (
         <>
             <Broadcast />
-            <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white"}}>
+            <h4
+                style={{
+                    right: "20px",
+                    bottom: "5px",
+                    zIndex: 256,
+                    position: "absolute",
+                    color: "white",
+                }}
+            >
                 Players Ready: {readyPlayers.length} / {currentPlayers.length}
             </h4>
-            <div style={{display: "flex", justifyContent: "center"}}>
-                <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
-                <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
-                    display: showButton ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+                <h2
+                    style={{
+                        zIndex: 256,
+                        position: "absolute",
+                        color: "white",
+                    }}
+                >
+                    {countDown}
+                </h2>
+                <button
+                    onClick={ready}
+                    style={{
+                        zIndex: 256,
+                        position: "absolute",
+                        top: "60px",
+                        display: showButton ? "block" : "none",
+                        background: "black",
+                        color: "white",
+                    }}
+                >
+                    Ready!
+                </button>
             </div>
             <Canvas
                 camera={{ position: [0, 3, 15], fov: 45, near: 1, far: 1000 }}
@@ -114,14 +151,14 @@ function Game() {
                         allowMove={allowMove}
                         carId={selectedCar}
                     />
-                    {readyPlayers.map((player) => {
+                    {currentPlayers.map((player) => {
                         if (player.id !== me) {
                             return (
                                 <ExternalCar
                                     key={player.id}
                                     playerId={player.id}
                                     players={currentPlayers}
-                                    carId={player.kart} 
+                                    carId={selectedCar}
                                 />
                             );
                         }
