@@ -26,7 +26,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/kart-select" element={<KartSelection />} />
                     <Route path="/settings" element={<Settings />} />
-                    <Route path="/podium" element={<Podium />} />
+                    <Route path="/podium" element={<Podium leaderboard={[]}/>} />
 
                 </Routes>
             </Router>
