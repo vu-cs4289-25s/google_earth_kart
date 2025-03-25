@@ -88,8 +88,10 @@ function Game() {
 
     return (
         <>
-            <Broadcast />
-            <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white"}}>
+            <Broadcast show={gameStatus === "waiting"}/>
+            <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white",
+                display: gameStatus === "waiting" ? "block" : "none"
+            }}>
                 Players Ready: {readyPlayers.length} / {currentPlayers.length}
             </h4>
             <div style={{display: "flex", justifyContent: "center"}}>
