@@ -11,6 +11,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { getAuth } from "firebase/auth";
+import WaitingRoom from "../components/WaitingRoom.jsx";
 
 function App() {
     const auth = getAuth();
@@ -25,6 +26,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/kart-select" element={<KartSelection />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/waitingroom" element={<WaitingRoom />} />
                 </Routes>
             </Router>
         </SocketProvider>

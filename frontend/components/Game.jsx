@@ -9,6 +9,7 @@ import ExternalCar from "../components/ExternalCar.jsx";
 import Broadcast from "../components/Broadcast.jsx";
 import { useSocket } from "./SocketContext.jsx";
 import MiniMap from "../components/MiniMap.jsx";
+import { useNavigate } from "react-router-dom";
 
 function Game() {
     const carRef = useRef();
@@ -20,6 +21,8 @@ function Game() {
     const [countDown, setCountDown] = useState("Waiting for Players...");
     const [showButton, setShowButton] = useState(false);
     const [allowMove, setAllowMove] = useState(false);
+    const [gameStatus, setGameStatus] = useState("waiting");
+    const navigate = useNavigate();
 
     const [selectedCar, setSelectedCar] = useState(() => {
         return localStorage.getItem('selectedCar') || 'kia-soul';
@@ -28,15 +31,16 @@ function Game() {
 
     useEffect(() => {
         // Player connects
-        socket.on("connected", (playerList) => {
+        socket.on("connected", (playerList, newPlayer) => {
             playersRef.current = playerList;
-            setPlayers(playerList);
+            setPlayers([...playerList]);
         });
 
         // Player disconnects
-        socket.on("disconnected", (playerList, playersReady) => {
+        socket.on("disconnected", (playerList) => {
             playersRef.current = playerList;
-            setPlayers(playerList);
+            setPlayers([...playerList]);
+            setReadyPlayers([...playerList]);
         });
 
         // Update player locations
@@ -51,7 +55,7 @@ function Game() {
         });
 
         // A player selected kart and is ready
-        socket.on("player ready", (playersReady) => {
+        socket.on("player ready", (playersReady, id) => {
             setReadyPlayers(playersReady);
             if (playersReady.length === playersRef.current.length) {
                 setShowButton(true);
@@ -65,7 +69,7 @@ function Game() {
             socket.off("race start");
             socket.off("player ready");
         };
-    }, [socket]);
+    }, [socket, gameStatus]);
 
     function countdown() {
         setShowButton(false);
@@ -73,7 +77,7 @@ function Game() {
         setTimeout(() => { setCountDown("3"); }, 1000);
         setTimeout(() => { setCountDown("2");  }, 2000);
         setTimeout(() => { setCountDown("1"); }, 3000);
-        setTimeout(() => { setCountDown("Go!"); setAllowMove(true); }, 4000);
+        setTimeout(() => { setCountDown("Go!"); setAllowMove(true); setGameStatus("in progress"); }, 4000);
         setTimeout(() => { setCountDown(""); }, 5000);
     }
 

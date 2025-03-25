@@ -16,7 +16,9 @@ const KartSelection = () => {
 
     function next() {
         socket.emit("player ready", me, selectedKart);
-        navigate("/game");
+        fetch("http://localhost:3001/game-status") // CHANGE LATER TO URL
+            .then((res) => res.json())
+            .then((data) => (data.status === "waiting"? navigate("/game") : navigate("/waitingroom")));
     };
   
     const cars = getAllCars();

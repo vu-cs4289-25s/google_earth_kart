@@ -50,6 +50,11 @@ app.get("/", (req, res) => {
 
 let players = [];
 let playersReady = [];
+let gameStatus = "waiting";
+
+app.get("/game-status", (req, res) => {
+    res.json({ status: gameStatus });
+});
 
 io.on("connection", (socket) => {
     // all websocket functions that occur while connected need to go in here
@@ -87,12 +92,13 @@ io.on("connection", (socket) => {
     });
 
     socket.on("race start", () => {
+        gameStatus = "in progress";
         io.emit("race start");
     })
 
     socket.on("player ready", (id, selectedKart) => {
         playersReady.push({ id: id, kart: selectedKart });
-        io.emit("player ready", playersReady);
+        io.emit("player ready", playersReady, id);
     })
 });
 
