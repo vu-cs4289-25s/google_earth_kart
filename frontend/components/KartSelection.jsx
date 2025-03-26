@@ -109,7 +109,7 @@ const KartSelection = () => {
                         padding: 4,
                         borderRadius: "24px",
                         boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
-                        flex: 1,
+                        height: "62vh",
                         display: "flex",
                         flexDirection: "column",
                         overflow: "hidden",
@@ -120,10 +120,10 @@ const KartSelection = () => {
                     {/* Selected Car Preview - Larger display of currently selected car */}
                     <Box
                         sx={{
-                            height: "30vh",
+                            height: "70%",
                             width: "80%",
                             alignSelf: "center",
-                            mb: 1,
+                            mb: 2,
                             backgroundColor: "rgba(255, 255, 255, 0.2)",
                             borderRadius: "16px",
                             overflow: "hidden",
@@ -165,7 +165,7 @@ const KartSelection = () => {
                     <Box
                         sx={{
                             overflow: "auto",
-                            flex: 1,
+                            height: "calc(60% - 50px)",
                             padding: "16px",
                             zIndex: 30,
                             "&::-webkit-scrollbar": {
@@ -227,7 +227,7 @@ const KartSelection = () => {
                                     <div
                                         style={{
                                             width: "100%",
-                                            height: "100%",
+                                            height: "50%",
                                         }}
                                     >
                                         {car.unlocked ? (
