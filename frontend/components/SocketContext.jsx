@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 
 const SocketContext = createContext();
 
@@ -10,24 +11,36 @@ export const SocketProvider = ({ children }) => {
     const [players, setPlayers] = useState([]);
 
     useEffect(() => {
-        const newSocket = io(import.meta.env.VITE_BACKEND_URL);
+      // Retrieve or create a persistent user id from local storage
+      let userId = localStorage.getItem("userId");
+      if (!userId) {
+        userId = uuidv4();
+        localStorage.setItem("userId", userId);
+        // DEBUG
+        console.log("Generated new user id:", userId);
+      }
 
-        newSocket.on("connected", (playerList) => {
-            console.log("A player connected");
-            setPlayers(playerList);
-        });
+      // Pass the userId as a query parameter when connecting
+      const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
+        query: { id: userId },
+      });
 
-        newSocket.on("disconnected", (playerList) => {
-            setPlayers(playerList);
-        });
+      newSocket.on("connected", (playerList) => {
+          console.log("A player connected");
+          setPlayers(playerList);
+      });
 
-        newSocket.on("update players", (msg) => {});
+      newSocket.on("disconnected", (playerList) => {
+          setPlayers(playerList);
+      });
 
-        setSocket(newSocket);
+      newSocket.on("update players", (msg) => {});
 
-        return () => {
-            newSocket.disconnect();
-        };
+      setSocket(newSocket);
+
+      return () => {
+          newSocket.disconnect();
+      };
     }, []);
 
     return (

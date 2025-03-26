@@ -12,7 +12,7 @@ const KartSelection = () => {
     const [selectedKart, setSelectedKart] = useState('kia-soul');  // Default to Kia Soul
     const navigate = useNavigate();
     const { socket } = useSocket();
-    const me = socket.id;
+    const me = localStorage.getItem("userId");;
 
     function next() {
         socket.emit("player ready", me, selectedKart);

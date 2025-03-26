@@ -11,12 +11,16 @@ import { useSocket } from "./SocketContext.jsx";
 import MiniMap from "../components/MiniMap.jsx";
 
 function Game() {
-    const carRef = useRef();
     const { socket, players } = useSocket();
+    // Wait for socket to be initialized before using it.
+    if (!socket) return <div>Loading...</div>;
+    // Use the persistent UUID stored in local storage.
+    const me = localStorage.getItem("userId");
+
+    const carRef = useRef();
     const [currentPlayers, setPlayers] = useState([]);
     const [readyPlayers, setReadyPlayers] = useState([]);
     const playersRef = useRef([]);
-    const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
     const [showButton, setShowButton] = useState(false);
     const [allowMove, setAllowMove] = useState(false);
@@ -107,9 +111,9 @@ function Game() {
                     <City />
                     <Car
                         ref={carRef}
-                        key={socket?.id}
+                        key={me}
                         position={[0, -0.4, 0]}
-                        id={socket?.id}
+                        id={me}
                         socket={socket}
                         allowMove={allowMove}
                         carId={selectedCar}

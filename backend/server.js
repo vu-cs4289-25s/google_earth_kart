@@ -53,13 +53,17 @@ let playersReady = [];
 
 io.on("connection", (socket) => {
     // all websocket functions that occur while connected need to go in here
-    console.log("A user connected");
-    players.push({ id: socket.id, position: [0, -0.4, 0] });
+    // Use the persistent ID from the query, falling back to socket.id if not provided
+    const userId = socket.handshake.query.id || socket.id;
+    console.log(`User connected with id ${userId}`);
+
+    // Use userId for the player's identity
+    players.push({ id: userId, position: [0, -0.4, 0] });
     io.emit("connected", players);
 
     socket.on("disconnect", () => {
         console.log("A user disconnected");
-        players = players.filter((p) => p.id != socket.id);
+        players = players.filter((p) => p.id != userId);
         io.emit("disconnected", players);
     });
     socket.on("chat message", async (input, username) => {
