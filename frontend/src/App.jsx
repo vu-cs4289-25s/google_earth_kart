@@ -5,6 +5,7 @@ import Login from "../components/Login.jsx";
 import Register from "../components/Register.jsx";
 import KartSelection from "../components/KartSelection.jsx";
 import Settings from "../components/Settings.jsx";
+import Podium from "../components/Podium.jsx";
 import "./index.css";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -139,23 +140,20 @@ function App() {
                     style={{ animationDelay: "3.2s" }}
                 ></div>
             </div>
+        <SocketProvider>
+            <Router>
+                <Routes>
+                    <Route path="/game" element={<Game />} />
+                    <Route path="/" element={<Login />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/kart-select" element={<KartSelection />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/podium" element={<Podium leaderboard={[]}/>} />
 
-            <SocketProvider>
-                <Router>
-                    <Routes>
-                        <Route path="/game" element={<Game />} />
-                        <Route path="/" element={<Login />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route
-                            path="/kart-select"
-                            element={<KartSelection />}
-                        />
-                        <Route path="/settings" element={<Settings />} />
-                    </Routes>
-                </Router>
-            </SocketProvider>
-        </>
+                </Routes>
+            </Router>
+        </SocketProvider>
     );
 }
 
