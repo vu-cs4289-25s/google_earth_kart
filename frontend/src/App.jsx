@@ -140,20 +140,25 @@ function App() {
                     style={{ animationDelay: "3.2s" }}
                 ></div>
             </div>
-        <SocketProvider>
-            <Router>
-                <Routes>
-                    <Route path="/game" element={<Game />} />
-                    <Route path="/" element={<Login />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/kart-select" element={<KartSelection />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/podium" element={<Podium leaderboard={[]}/>} />
-
-                </Routes>
-            </Router>
-        </SocketProvider>
+            <SocketProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/game" element={<Game />} />
+                        <Route path="/" element={<Login />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route
+                            path="/kart-select"
+                            element={<KartSelection />}
+                        />
+                        <Route path="/settings" element={<Settings />} />
+                        <Route
+                            path="/podium"
+                            element={<Podium leaderboard={[]} />}
+                        />
+                    </Routes>
+                </Router>
+            </SocketProvider>
         </>
     );
 }
