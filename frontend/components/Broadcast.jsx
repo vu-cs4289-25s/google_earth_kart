@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "./SocketContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, getFirestore } from "firebase/firestore";
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    getFirestore,
+} from "firebase/firestore";
 
 export default function Broadcast() {
     const { socket } = useSocket();
@@ -9,7 +15,7 @@ export default function Broadcast() {
     const [username, setUsername] = useState("");
     const inputRef = useRef(null);
     const db = getFirestore();
-    
+
     // Fetch the user's username from Firestore
     useEffect(() => {
         const auth = getAuth();
@@ -19,7 +25,7 @@ export default function Broadcast() {
                     const userRef = collection(db, "users");
                     const q = query(userRef, where("uid", "==", user.uid));
                     const curUser = await getDocs(q);
-                    
+
                     if (!curUser.empty) {
                         const userData = curUser.docs[0].data();
                         setUsername(userData.username);
