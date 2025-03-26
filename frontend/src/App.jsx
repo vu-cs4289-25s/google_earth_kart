@@ -154,6 +154,7 @@ function App() {
                 </Routes>
             </Router>
         </SocketProvider>
+        </>
     );
 }
 
