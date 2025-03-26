@@ -252,8 +252,10 @@ const KartSelection = () => {
                                                     <span
                                                         style={{
                                                             fontSize: "42px",
-                                                            alignItems: "center",
-                                                            justifyContent: "center",
+                                                            alignItems:
+                                                                "center",
+                                                            justifyContent:
+                                                                "center",
                                                         }}
                                                     >
                                                         ? ? ?
