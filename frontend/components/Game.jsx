@@ -8,6 +8,20 @@ import Car from "../components/Car.jsx";
 import ExternalCar from "../components/ExternalCar.jsx";
 import Broadcast from "../components/Broadcast.jsx";
 import { useSocket } from "./SocketContext.jsx";
+import { AxesHelper } from 'three';
+
+function Axis() {
+    const axisRef = useRef();
+
+    useEffect(() => {
+        if (axisRef.current) {
+            axisRef.current.position.set(0, 0, 0); // Adjust position if needed
+        }
+    }, []);
+
+    return <primitive object={new AxesHelper(5)} ref={axisRef} />;
+}
+
 
 function Game() {
     const { socket, players } = useSocket();
@@ -82,6 +96,8 @@ function Game() {
                 </Physics>
 
                 <Stats />
+                <Axis />
+
             </Canvas>
         </>
     );

@@ -91,7 +91,7 @@
 
 import { useEffect, useState } from "react";
 import { useLoader } from "@react-three/fiber";
-import { useBox } from "@react-three/cannon";
+import { useBox, usePlane } from "@react-three/cannon";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
@@ -103,11 +103,22 @@ export default function City() {
     const [rotation, setRotation] = useState([0, 0, 0]);
     const [debugCollision, setDebugCollision] = useState(false); // State to toggle collision visibility
     const customBoxes = [
-        { size: [420.63 * 2, 13.68, 1], position: [-50 + 384, -30, -435 + 226], rotation: [0, 31, 0] },  // Rotate 45 degrees around Y-axis
-        { size: [380 * 2, 13.58, 1], position: [-35+ 364, -30, -412+ 240], rotation: [0, 31, 0] }, // Rotate 30 degrees around X-axis
-        { size: [187 * 2, 20, 1], position: [-265+ 364, -30, -42+ 226], rotation: [0, 121.1, 0] }, // Rotate 90 degrees around Y-axis
-        { size: [185 * 2, 20, 1], position: [-296+ 364, -30, -70+ 226], rotation: [0, 122.1, 0] },
-        { size: [50* 2, 20, 1], position: [-203+ 364, -30, 136+ 226], rotation: [0, -96.1, 0] },
+        { size: [420 * 2, 70, 1], position: [-30 + 364, -30, -435 + 226], rotation: [0, 31, 0] },  // Rotate 45 degrees around Y-axis
+        { size: [370 * 2, 70, 1], position: [-45+ 364, -30, -393+ 226], rotation: [0, 31.1, 0] }, // Rotate 30 degrees around X-axis
+        { size: [187 * 2, 70, 1], position: [-265+ 364, -30, -42+ 226], rotation: [0, 121.1, 0] }, // Rotate 90 degrees around Y-axis
+        { size: [185 * 2, 70, 1], position: [-296+ 364, -30, -70+ 226], rotation: [0, 122.1, 0] },
+        { size: [50* 2, 70, 1], position: [-203+ 364, -30, 136+ 226], rotation: [0, -96.1, 0] },
+        { size: [41* 2, 70, 1], position: [-188+ 364, -30, 132+ 226], rotation: [0, -96.1, 0] },
+        { size: [82* 2, 70, 1], position: [-111+ 364, -30, 182+ 226], rotation: [0, -6.7, 0] },
+        { size: [78* 2, 70, 1], position: [-130+ 364, -30, 195+ 226], rotation: [0, -6.7, 0] },
+        { size: [179* 2, 70, 1], position: [-55+ 364, -30, 367+ 226], rotation: [0, -96.1, 0] },
+        { size: [179* 2, 70, 1], position: [-72+ 364, -30, 382+ 226], rotation: [0, -96.3, 0] },
+        { size: [230* 2, 70, 1], position: [127+ 364, -30, 581+ 226], rotation: [0, -6.1, 0] },
+        { size: [202* 2, 70, 1], position: [126+ 364, -30, 565+ 226], rotation: [0, -6.1, 0] },
+        { size: [466* 2, 70, 1], position: [398+ 364, -30, 150+ 226], rotation: [0, 83.4, 0] },
+        { size: [459* 2, 70, 1], position: [380+ 364, -30, 128+ 226], rotation: [0, 83.4, 0] },
+        { size: [151* 2, 70, 1], position: [352+ 364, -30, -456+ 226], rotation: [0, 121.5, 0] },
+        { size: [200* 2, 70, 1], position: [363+ 364, -30, -456+ 226], rotation: [0, 121.5, 0] },
     ];
 
     // const customBoxes = [
@@ -175,10 +186,11 @@ export default function City() {
             ))}
 
             {/* Hide the terrain but use it for calculations */}
-            {terrainMesh && <primitive object={terrainMesh} />}
+            {/*{terrainMesh && <primitive object={terrainMesh} />}*/}
+            <CityFloor />
 
             {/* Add a rotated bounding box collider */}
-            <BoundingBoxCollider bbox={boundingBox} rotation={rotation} />
+            {/*<BoundingBoxCollider bbox={boundingBox} rotation={rotation} />*/}
         </group>
     );
 }
@@ -193,7 +205,7 @@ function BoundingBoxCollider({ bbox, rotation }) {
 
     const position = [
         (bbox.max.x + bbox.min.x+ 600) / 2 ,
-        (bbox.max.y + bbox.min.y) / 2 - 50,  // Adjust height lower
+        (bbox.max.y + bbox.min.y) / 2 - 30,  // Adjust height lower
         (bbox.max.z + bbox.min.z+ 226) / 2 ,
     ];
 
@@ -218,13 +230,35 @@ function InvisibleBox({ size, position, visible, rotation }) {
         type: "Static", // Ensures the box doesn't move
     }));
 
-    // if (!visible) return null; // Don't render anything if not visible
+    if (!visible) return null; // Don't render anything if not visible
 
     return (
         <mesh position={position} rotation={radians}>
             <boxGeometry args={size} />
             <meshStandardMaterial color="red" /> {/* Solid box for debugging */}
         </mesh>
+    );
+}
+
+// Adds a large static floor for the city
+function CityFloor() {
+    const boxMaterial = {
+        restitution: 0, // High bounciness
+    };
+
+    const [floorRef] = usePlane(() => ({
+        position: [0, -20, 0],
+        material: boxMaterial,
+        rotation:[  1.5127371+ Math.PI,  -2.3244867 + Math.PI, -0.0423494  + Math.PI],
+        // rotation: [-0.0423 - Math.PI, -2.324,  1.512], -04235/(Math.PI) -2.3244867 + (Math.PI * 2)
+        type: "Static",
+    }));
+
+    return (
+        <mesh ref={floorRef}>
+             <planeGeometry args={[10, 10]} />
+             {/*<meshStandardMaterial color="gray" />*/}
+         </mesh>
     );
 }
 
