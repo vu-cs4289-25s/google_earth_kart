@@ -25,7 +25,7 @@ export default function ExternalCar({ playerId, players, carId }) {
 
     return (
         <group ref={carRef}>
-            <Chassis carId={carId }/>
+            <Chassis carId={carId} />
         </group>
     );
 }

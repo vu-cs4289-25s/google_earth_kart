@@ -25,9 +25,8 @@ function Game() {
     const navigate = useNavigate();
 
     const [selectedCar, setSelectedCar] = useState(() => {
-        return localStorage.getItem('selectedCar') || 'kia-soul';
+        return localStorage.getItem("selectedCar") || "kia-soul";
     });
-
 
     useEffect(() => {
         // Player connects
@@ -48,7 +47,7 @@ function Game() {
             setPlayers(playerList);
             playersRef.current = playerList;
         });
-        
+
         // Race starts for all players
         socket.on("race start", () => {
             countdown();
@@ -81,7 +80,7 @@ function Game() {
         setTimeout(() => { setCountDown(""); }, 5000);
     }
 
-    function ready() { 
+    function ready() {
         socket.emit("race start");
         countdown();
     }

@@ -2,13 +2,317 @@ body {
     padding: 0;
     margin: 0;
 }
+
 #root {
-    background: linear-gradient(-45deg, #4990e2, #4a90e2, #6aa2e7, #4f7fc6);
+    background: radial-gradient(
+        circle at center,
+        #1a73e8 50%,
+        #0d47a1 90%,
+        #002171 100%
+    );
+    background-size: 100% 100%;
     padding: 0;
     margin: 0;
     width: 100vw;
     height: 100vh;
-    animation: gradientAnimation 8s ease infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+.earth-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.continent {
+    position: absolute;
+    background: linear-gradient(145deg, #2e7d32, #4caf50);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transform-origin: center;
+    z-index: 0;
+}
+
+/* North America */
+.continent-1 {
+    width: 15vw;
+    height: 18vw;
+    top: 10%;
+    left: 10%;
+    clip-path: polygon(
+        10% 10%,
+        30% 0%,
+        70% 10%,
+        90% 30%,
+        85% 50%,
+        95% 70%,
+        70% 90%,
+        40% 95%,
+        20% 85%,
+        5% 60%,
+        0% 40%
+    );
+    animation: float1 120s infinite linear;
+}
+
+/* South America */
+.continent-2 {
+    width: 10vw;
+    height: 15vw;
+    top: 60%;
+    left: 15%;
+    clip-path: polygon(
+        40% 0%,
+        80% 10%,
+        95% 40%,
+        90% 70%,
+        60% 95%,
+        30% 90%,
+        10% 60%,
+        0% 30%
+    );
+    animation: float2 100s infinite linear;
+}
+
+/* Europe/Africa */
+.continent-3 {
+    width: 12vw;
+    height: 20vw;
+    top: 20%;
+    left: 40%;
+    clip-path: polygon(
+        30% 0%,
+        60% 5%,
+        85% 20%,
+        95% 40%,
+        90% 60%,
+        70% 85%,
+        40% 95%,
+        20% 80%,
+        5% 60%,
+        0% 30%
+    );
+    animation: float3 110s infinite linear;
+}
+
+/* Asia */
+.continent-4 {
+    width: 20vw;
+    height: 20vw;
+    top: 15%;
+    right: 10%;
+    clip-path: polygon(
+        10% 10%,
+        40% 0%,
+        70% 5%,
+        90% 15%,
+        95% 40%,
+        85% 60%,
+        90% 80%,
+        70% 95%,
+        50% 90%,
+        30% 95%,
+        10% 80%,
+        5% 50%,
+        0% 30%
+    );
+    animation: float4 130s infinite linear;
+}
+
+/* Australia */
+.continent-5 {
+    width: 8vw;
+    height: 8vw;
+    bottom: 20%;
+    right: 20%;
+    clip-path: polygon(
+        30% 0%,
+        70% 10%,
+        90% 30%,
+        95% 60%,
+        80% 90%,
+        50% 95%,
+        20% 85%,
+        5% 60%,
+        10% 30%
+    );
+    animation: float5 90s infinite linear;
+}
+
+/* Antarctica */
+.continent-6 {
+    width: 15vw;
+    height: 7vw;
+    bottom: 15%;
+    left: 50%;
+    clip-path: polygon(
+        0% 40%,
+        20% 20%,
+        40% 10%,
+        60% 10%,
+        80% 20%,
+        100% 40%,
+        90% 70%,
+        70% 90%,
+        30% 90%,
+        10% 70%
+    );
+    animation: float6 150s infinite linear;
+}
+
+/* Water highlights */
+.water-highlight {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.highlight-1 {
+    width: 1vw;
+    height: 1vw;
+    top: 30%;
+    left: 30%;
+    animation: twinkle 4s ease-in-out infinite;
+}
+
+.highlight-2 {
+    width: 0.8vw;
+    height: 0.8vw;
+    top: 60%;
+    left: 70%;
+    animation: twinkle 6s ease-in-out infinite;
+}
+
+.highlight-3 {
+    width: 0.6vw;
+    height: 0.6vw;
+    top: 20%;
+    left: 70%;
+    animation: twinkle 5s ease-in-out infinite;
+}
+
+.highlight-4 {
+    width: 0.7vw;
+    height: 0.7vw;
+    top: 70%;
+    left: 40%;
+    animation: twinkle 7s ease-in-out infinite;
+}
+
+/* Float animations - slow, gentle rotations */
+@keyframes float1 {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(5vw, 3vh) rotate(90deg);
+    }
+    50% {
+        transform: translate(10vw, -2vh) rotate(180deg);
+    }
+    75% {
+        transform: translate(3vw, -5vh) rotate(270deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+@keyframes float2 {
+    0% {
+        transform: translate(0, 0) rotate(10deg);
+    }
+    33% {
+        transform: translate(-7vw, 4vh) rotate(130deg);
+    }
+    66% {
+        transform: translate(-3vw, 8vh) rotate(250deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(370deg);
+    }
+}
+
+@keyframes float3 {
+    0% {
+        transform: translate(0, 0) rotate(-5deg);
+    }
+    20% {
+        transform: translate(5vw, 5vh) rotate(67deg);
+    }
+    40% {
+        transform: translate(8vw, 0) rotate(139deg);
+    }
+    60% {
+        transform: translate(4vw, -6vh) rotate(211deg);
+    }
+    80% {
+        transform: translate(-3vw, -3vh) rotate(283deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(355deg);
+    }
+}
+
+@keyframes float4 {
+    0% {
+        transform: translate(0, 0) rotate(5deg);
+    }
+    25% {
+        transform: translate(-6vw, -4vh) rotate(95deg);
+    }
+    50% {
+        transform: translate(-9vw, 2vh) rotate(185deg);
+    }
+    75% {
+        transform: translate(-4vw, 7vh) rotate(275deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(365deg);
+    }
+}
+
+@keyframes float5 {
+    0% {
+        transform: translate(0, 0) rotate(-10deg);
+    }
+    20% {
+        transform: translate(-4vw, -6vh) rotate(62deg);
+    }
+    40% {
+        transform: translate(3vw, -8vh) rotate(134deg);
+    }
+    60% {
+        transform: translate(7vw, -3vh) rotate(206deg);
+    }
+    80% {
+        transform: translate(2vw, 5vh) rotate(278deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(350deg);
+    }
+}
+
+@keyframes float6 {
+    0% {
+        transform: translateX(-50%) rotate(0deg);
+    }
+    33% {
+        transform: translateX(-60%) translate(5vw, -4vh) rotate(120deg);
+    }
+    66% {
+        transform: translateX(-40%) translate(-5vw, -7vh) rotate(240deg);
+    }
+    100% {
+        transform: translateX(-50%) rotate(360deg);
+    }
 }
 
 #broadcast {
@@ -54,7 +358,321 @@ body {
 }
 
 @keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+button,
+input,
+a,
+.MuiTextField-root,
+.MuiFormControl-root,
+.MuiButton-root {
+    position: relative;
+    z-index: 25 !important;
+}
+
+/* Mini Racing Cars */
+.mini-car {
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.car-red {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'%3E%3Cpath d='M5,10 L8,5 H32 L35,10 L38,10 C39,10 40,11 40,12 V15 C40,16 39,17 38,17 H35 C35,18.7 33.7,20 32,20 C30.3,20 29,18.7 29,17 H11 C11,18.7 9.7,20 8,20 C6.3,20 5,18.7 5,17 H2 C1,17 0,16 0,15 V12 C0,11 1,10 2,10 H5 Z' fill='%23ff4500' stroke='black' stroke-width='0.5'/%3E%3Crect x='7' y='12' width='4' height='4' fill='%23333' /%3E%3Crect x='29' y='12' width='4' height='4' fill='%23333' /%3E%3C/svg%3E");
+}
+
+.car-blue {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'%3E%3Cpath d='M2,10 L7,3 H33 L38,10 L38,10 C39,10 40,11 40,12 V15 C40,16 39,17 38,17 H35 C35,18.7 33.7,20 32,20 C30.3,20 29,18.7 29,17 H11 C11,18.7 9.7,20 8,20 C6.3,20 5,18.7 5,17 H2 C1,17 0,16 0,15 V12 C0,11 1,10 2,10 Z' fill='%231e90ff' stroke='black' stroke-width='0.5'/%3E%3Crect x='7' y='12' width='4' height='4' fill='%23333' /%3E%3Crect x='29' y='12' width='4' height='4' fill='%23333' /%3E%3C/svg%3E");
+}
+
+.car-yellow {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'%3E%3Cpath d='M5,10 L10,2 H30 L35,10 L38,10 C39,10 40,11 40,12 V15 C40,16 39,17 38,17 H35 C35,18.7 33.7,20 32,20 C30.3,20 29,18.7 29,17 H11 C11,18.7 9.7,20 8,20 C6.3,20 5,18.7 5,17 H2 C1,17 0,16 0,15 V12 C0,11 1,10 2,10 H5 Z' fill='%23ffd700' stroke='black' stroke-width='0.5'/%3E%3Crect x='7' y='12' width='4' height='4' fill='%23333' /%3E%3Crect x='29' y='12' width='4' height='4' fill='%23333' /%3E%3C/svg%3E");
+}
+
+.car-green {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'%3E%3Cpath d='M5,10 L8,5 H32 L35,10 L38,10 C39,10 40,11 40,12 V15 C40,16 39,17 38,17 H35 C35,18.7 33.7,20 32,20 C30.3,20 29,18.7 29,17 H11 C11,18.7 9.7,20 8,20 C6.3,20 5,18.7 5,17 H2 C1,17 0,16 0,15 V12 C0,11 1,10 2,10 H5 Z' fill='%2300cc44' stroke='black' stroke-width='0.5'/%3E%3Crect x='7' y='12' width='4' height='4' fill='%23333' /%3E%3Crect x='29' y='12' width='4' height='4' fill='%23333' /%3E%3C/svg%3E");
+}
+
+.car-purple {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'%3E%3Cpath d='M2,10 L7,3 H33 L38,10 L38,10 C39,10 40,11 40,12 V15 C40,16 39,17 38,17 H35 C35,18.7 33.7,20 32,20 C30.3,20 29,18.7 29,17 H11 C11,18.7 9.7,20 8,20 C6.3,20 5,18.7 5,17 H2 C1,17 0,16 0,15 V12 C0,11 1,10 2,10 Z' fill='%239370db' stroke='black' stroke-width='0.5'/%3E%3Crect x='7' y='12' width='4' height='4' fill='%23333' /%3E%3Crect x='29' y='12' width='4' height='4' fill='%23333' /%3E%3C/svg%3E");
+}
+
+.car-tiny {
+    transform: scale(0.6);
+}
+
+.car-small {
+    transform: scale(0.8);
+}
+
+.car-large {
+    transform: scale(1.2);
+}
+
+.car-path-1 {
+    animation: car-race-1 12s linear infinite;
+}
+
+.car-path-2 {
+    animation: car-race-2 15s linear infinite;
+}
+
+.car-path-3 {
+    animation: car-race-3 18s linear infinite;
+}
+
+.car-path-4 {
+    animation: car-race-4 22s linear infinite;
+}
+
+.car-path-5 {
+    animation: car-race-5 17s linear infinite;
+}
+
+.car-path-6 {
+    animation: car-race-6 19s linear infinite;
+}
+
+.car-path-7 {
+    animation: car-race-7 21s linear infinite;
+}
+
+.car-path-8 {
+    animation: car-race-8 16s linear infinite;
+}
+
+.car-path-9 {
+    animation: car-race-9 23s linear infinite;
+}
+
+.car-path-10 {
+    animation: car-race-10 14s linear infinite;
+}
+
+.car-path-11 {
+    animation: car-race-11 20s linear infinite;
+}
+
+.car-path-12 {
+    animation: car-race-12 13s linear infinite;
+}
+
+.car-path-13 {
+    animation: car-race-13 24s linear infinite;
+}
+
+.car-path-14 {
+    animation: car-race-14 11s linear infinite;
+}
+
+.car-path-15 {
+    animation: car-race-15 26s linear infinite;
+}
+
+@keyframes car-race-1 {
+    0% {
+        transform: translate(-50px, 5vh) rotate(0deg);
+    }
+    100% {
+        transform: translate(calc(100vw + 50px), 5vh) rotate(0deg);
+    }
+}
+
+@keyframes car-race-2 {
+    0% {
+        transform: translate(calc(100vw + 50px), 15vh) rotate(180deg);
+    }
+    100% {
+        transform: translate(-50px, 15vh) rotate(180deg);
+    }
+}
+
+@keyframes car-race-3 {
+    0% {
+        transform: translate(-50px, 25vh) rotate(0deg);
+    }
+    25% {
+        transform: translate(25vw, 30vh) rotate(10deg);
+    }
+    50% {
+        transform: translate(50vw, 20vh) rotate(0deg);
+    }
+    75% {
+        transform: translate(75vw, 30vh) rotate(-10deg);
+    }
+    100% {
+        transform: translate(calc(100vw + 50px), 25vh) rotate(0deg);
+    }
+}
+
+@keyframes car-race-4 {
+    0% {
+        transform: translate(10vw, -50px) rotate(90deg);
+    }
+    30% {
+        transform: translate(8vw, 30vh) rotate(100deg);
+    }
+    60% {
+        transform: translate(12vw, 60vh) rotate(80deg);
+    }
+    100% {
+        transform: translate(10vw, calc(100vh + 50px)) rotate(90deg);
+    }
+}
+
+@keyframes car-race-5 {
+    0% {
+        transform: translate(0, 0) rotate(45deg);
+    }
+    25% {
+        transform: translate(25vw, 25vh) rotate(0deg);
+    }
+    50% {
+        transform: translate(50vw, 50vh) rotate(-45deg);
+    }
+    75% {
+        transform: translate(75vw, 75vh) rotate(-90deg);
+    }
+    100% {
+        transform: translate(100vw, 100vh) rotate(-135deg);
+    }
+}
+
+@keyframes car-race-6 {
+    0% {
+        transform: translate(-50px, 40vh) rotate(0deg);
+    }
+    100% {
+        transform: translate(calc(100vw + 50px), 40vh) rotate(0deg);
+    }
+}
+
+@keyframes car-race-7 {
+    0% {
+        transform: translate(30vw, -50px) rotate(90deg);
+    }
+    50% {
+        transform: translate(30vw, 50vh) rotate(90deg);
+    }
+    100% {
+        transform: translate(30vw, calc(100vh + 50px)) rotate(90deg);
+    }
+}
+
+@keyframes car-race-8 {
+    0% {
+        transform: translate(70vw, calc(100vh + 50px)) rotate(270deg);
+    }
+    50% {
+        transform: translate(70vw, 50vh) rotate(270deg);
+    }
+    100% {
+        transform: translate(70vw, -50px) rotate(270deg);
+    }
+}
+
+@keyframes car-race-9 {
+    0% {
+        transform: translate(-50px, 60vh) rotate(0deg);
+    }
+    20% {
+        transform: translate(20vw, 55vh) rotate(-15deg);
+    }
+    40% {
+        transform: translate(40vw, 65vh) rotate(15deg);
+    }
+    60% {
+        transform: translate(60vw, 55vh) rotate(-15deg);
+    }
+    80% {
+        transform: translate(80vw, 65vh) rotate(15deg);
+    }
+    100% {
+        transform: translate(calc(100vw + 50px), 60vh) rotate(0deg);
+    }
+}
+
+@keyframes car-race-10 {
+    0% {
+        transform: translate(calc(100vw + 50px), 75vh) rotate(180deg);
+    }
+    20% {
+        transform: translate(80vw, 80vh) rotate(165deg);
+    }
+    40% {
+        transform: translate(60vw, 70vh) rotate(195deg);
+    }
+    60% {
+        transform: translate(40vw, 80vh) rotate(165deg);
+    }
+    80% {
+        transform: translate(20vw, 70vh) rotate(195deg);
+    }
+    100% {
+        transform: translate(-50px, 75vh) rotate(180deg);
+    }
+}
+
+@keyframes car-race-11 {
+    0% {
+        transform: translate(50vw, -50px) rotate(90deg);
+    }
+    100% {
+        transform: translate(50vw, calc(100vh + 50px)) rotate(90deg);
+    }
+}
+
+@keyframes car-race-12 {
+    0% {
+        transform: translate(90vw, -50px) rotate(90deg);
+    }
+    100% {
+        transform: translate(90vw, calc(100vh + 50px)) rotate(90deg);
+    }
+}
+
+@keyframes car-race-13 {
+    0% {
+        transform: translate(-50px, 85vh) rotate(0deg);
+    }
+    100% {
+        transform: translate(calc(100vw + 50px), 85vh) rotate(0deg);
+    }
+}
+
+@keyframes car-race-14 {
+    0% {
+        transform: translate(0, 0) rotate(45deg);
+    }
+    50% {
+        transform: translate(100vw, 100vh) rotate(225deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(405deg);
+    }
+}
+
+@keyframes car-race-15 {
+    0% {
+        transform: translate(100vw, 0) rotate(-45deg);
+    }
+    50% {
+        transform: translate(0, 100vh) rotate(-225deg);
+    }
+    100% {
+        transform: translate(100vw, 0) rotate(-405deg);
+    }
 }

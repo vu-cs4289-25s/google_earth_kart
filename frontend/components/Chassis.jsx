@@ -6,40 +6,101 @@ import { getCarById } from "./CarRegistry";
 useGLTF.preload("/2020_kia_soul_ex.glb");
 useGLTF.preload("/Beetle.glb");
 useGLTF.preload("/vandy-van.glb");
+useGLTF.preload("/Model3.glb");
+useGLTF.preload("/McQueen.glb");
 
 export const Chassis = forwardRef((props, ref) => {
-    const carId = props.carId || 'kia-soul';
+    const carId = props.carId || "kia-soul";
     const car = getCarById(carId);
     let modelPath = car.modelPath || "/2020_kia_soul_ex.glb";
-    
-    if (carId === 'beetle') {
+
+    if (carId === "beetle") {
         try {
             const { nodes, materials } = useGLTF("/Beetle.glb");
-            
+
             return (
                 <mesh ref={ref}>
                     <group position={[0, -0.6, 0]}>
-                        <mesh castShadow material={materials["Black paint"]} geometry={nodes.chassis_1.geometry} />
-                        <mesh castShadow material={materials.Rubber} geometry={nodes.chassis_2.geometry} />
-                        <mesh castShadow material={materials.Paint} geometry={nodes.chassis_3.geometry} />
-                        <mesh castShadow material={materials.Underbody} geometry={nodes.chassis_4.geometry} />
-                        <mesh castShadow material={materials.Chrom} geometry={nodes.chassis_5.geometry} />
-                        <mesh castShadow material={materials["Interior (dark)"]} geometry={nodes.chassis_6.geometry} />
-                        <mesh castShadow material={materials["Interior (light)"]} geometry={nodes.chassis_7.geometry} />
-                        <mesh castShadow material={materials.Reflector} geometry={nodes.chassis_8.geometry} />
-                        <mesh 
-                            material={materials.Glass} 
-                            geometry={nodes.chassis_9.geometry} 
-                            material-transparent={false} 
-                            material-color="black" 
+                        <mesh
+                            castShadow
+                            material={materials["Black paint"]}
+                            geometry={nodes.chassis_1.geometry}
                         />
-                        <mesh castShadow material={materials.Steel} geometry={nodes.chassis_10.geometry} />
-                        <mesh castShadow material={materials["Black plastic"]} geometry={nodes.chassis_11.geometry} />
-                        <mesh material={materials.Headlight} geometry={nodes.chassis_12.geometry} />
-                        <mesh castShadow material={materials["Reverse lights"]} geometry={nodes.chassis_13.geometry} />
-                        <mesh castShadow material={materials["Orange plastic"]} geometry={nodes.chassis_14.geometry} />
-                        <mesh castShadow material={materials["Tail lights"]} geometry={nodes.chassis_15.geometry} />
-                        <mesh castShadow material={materials["License Plate"]} geometry={nodes.chassis_16.geometry} />
+                        <mesh
+                            castShadow
+                            material={materials.Rubber}
+                            geometry={nodes.chassis_2.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials.Paint}
+                            geometry={nodes.chassis_3.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials.Underbody}
+                            geometry={nodes.chassis_4.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials.Chrom}
+                            geometry={nodes.chassis_5.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials["Interior (dark)"]}
+                            geometry={nodes.chassis_6.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials["Interior (light)"]}
+                            geometry={nodes.chassis_7.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials.Reflector}
+                            geometry={nodes.chassis_8.geometry}
+                        />
+                        <mesh
+                            material={materials.Glass}
+                            geometry={nodes.chassis_9.geometry}
+                            material-transparent={false}
+                            material-color="black"
+                        />
+                        <mesh
+                            castShadow
+                            material={materials.Steel}
+                            geometry={nodes.chassis_10.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials["Black plastic"]}
+                            geometry={nodes.chassis_11.geometry}
+                        />
+                        <mesh
+                            material={materials.Headlight}
+                            geometry={nodes.chassis_12.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials["Reverse lights"]}
+                            geometry={nodes.chassis_13.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials["Orange plastic"]}
+                            geometry={nodes.chassis_14.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials["Tail lights"]}
+                            geometry={nodes.chassis_15.geometry}
+                        />
+                        <mesh
+                            castShadow
+                            material={materials["License Plate"]}
+                            geometry={nodes.chassis_16.geometry}
+                        />
                     </group>
                 </mesh>
             );
@@ -53,7 +114,7 @@ export const Chassis = forwardRef((props, ref) => {
                 </mesh>
             );
         }
-    } else if (carId === 'vandyVan') {
+    } else if (carId === "vandyVan") {
         try {
             const { nodes, materials } = useGLTF("/vandy-van.glb");
             return (
@@ -79,20 +140,519 @@ export const Chassis = forwardRef((props, ref) => {
                 </mesh>
             );
         }
+    } else if (carId === "model3") {
+        try {
+            const { nodes, materials } = useGLTF("/Model3.glb");
+            return (
+                <mesh ref={ref}>
+                    <group position={[0, 0, 0]}>
+                        <group rotation={[0, Math.PI, 0]}>
+                            <group
+                                rotation={[-Math.PI / 2, 0, 0]}
+                                scale={0.123}
+                            >
+                                <group scale={6.5}>
+                                    <group position={[0, 1.771, -0.362]}>
+                                        <group position={[0, -1.771, 0.362]}>
+                                            {/* Include all the car components */}
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_12.geometry
+                                                }
+                                                material={
+                                                    materials["movsteer_1.0.1"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_16.geometry
+                                                }
+                                                material={
+                                                    materials["dvorright.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_17.geometry
+                                                }
+                                                material={
+                                                    materials["movsteer_1.0.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_18.geometry
+                                                }
+                                                material={
+                                                    materials["JUST_BLACK.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_19.geometry
+                                                }
+                                                material={materials.primary}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_20.geometry
+                                                }
+                                                material={materials.primary}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_21.geometry
+                                                }
+                                                material={
+                                                    materials["primary.001"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_22.geometry
+                                                }
+                                                material={
+                                                    materials["black_lights.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_23.geometry
+                                                }
+                                                material={
+                                                    materials[
+                                                        "back_chrome_light.0"
+                                                    ]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_24.geometry
+                                                }
+                                                material={
+                                                    materials["pantulans.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_25.geometry
+                                                }
+                                                material={
+                                                    materials.right_rear_light
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_26.geometry
+                                                }
+                                                material={
+                                                    materials.breaklight_l
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_27.geometry
+                                                }
+                                                material={materials.foglight_r}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_28.geometry
+                                                }
+                                                material={materials.foglight_l}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_29.geometry
+                                                }
+                                                material={
+                                                    materials.right_front_light
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_30.geometry
+                                                }
+                                                material={
+                                                    materials.left_front_light
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_31.geometry
+                                                }
+                                                material={
+                                                    materials[
+                                                        "aluminium_light.0"
+                                                    ]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_32.geometry
+                                                }
+                                                material={
+                                                    materials["tembus_red.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_33.geometry
+                                                }
+                                                material={materials.light_night}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_34.geometry
+                                                }
+                                                material={
+                                                    materials.indicator_lf
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_35.geometry
+                                                }
+                                                material={
+                                                    materials.indicator_rf
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_36.geometry
+                                                }
+                                                material={materials["hitam.0"]}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_37.geometry
+                                                }
+                                                material={
+                                                    materials["Plastic.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_38.geometry
+                                                }
+                                                material={materials["belt.0"]}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_39.geometry
+                                                }
+                                                material={
+                                                    materials["satin_red.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_42.geometry
+                                                }
+                                                material={
+                                                    materials["aluminium2.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_43.geometry
+                                                }
+                                                material={materials["Putih.0"]}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_44.geometry
+                                                }
+                                                material={materials["Carpet.0"]}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_45.geometry
+                                                }
+                                                material={
+                                                    materials["Carpet_Light.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_46.geometry
+                                                }
+                                                material={
+                                                    materials[
+                                                        "texture_Buttons.0"
+                                                    ]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_47.geometry
+                                                }
+                                                material={materials["LCDs.0"]}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_48.geometry
+                                                }
+                                                material={
+                                                    materials[
+                                                        "Seat_Leather_white.0"
+                                                    ]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_49.geometry
+                                                }
+                                                material={
+                                                    materials["mirror_inside.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_50.geometry
+                                                }
+                                                material={materials["glass.0"]}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_51.geometry
+                                                }
+                                                material={materials["glass.1"]}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_52.geometry
+                                                }
+                                                material={
+                                                    materials["platnomor.1"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_53.geometry
+                                                }
+                                                material={
+                                                    materials["platnomor.2"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_54.geometry
+                                                }
+                                                material={
+                                                    materials.indicator_rr
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_55.geometry
+                                                }
+                                                material={
+                                                    materials.indicator_lr
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_56.geometry
+                                                }
+                                                material={
+                                                    materials.left_rear_light
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_57.geometry
+                                                }
+                                                material={materials.revlight_L}
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_58.geometry
+                                                }
+                                                material={
+                                                    materials["door_lf.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_59.geometry
+                                                }
+                                                material={
+                                                    materials["door_lf.5"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_60.geometry
+                                                }
+                                                material={
+                                                    materials["primary.002"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_61.geometry
+                                                }
+                                                material={
+                                                    materials["primary.004"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_62.geometry
+                                                }
+                                                material={
+                                                    materials["front_black.0"]
+                                                }
+                                            />
+                                            <mesh
+                                                castShadow
+                                                receiveShadow
+                                                geometry={
+                                                    nodes.Object_63.geometry
+                                                }
+                                                material={
+                                                    materials[
+                                                        "light_pantulan.0"
+                                                    ]
+                                                }
+                                            />
+                                        </group>
+                                        <mesh
+                                            castShadow
+                                            receiveShadow
+                                            geometry={nodes.Object_71.geometry}
+                                            material={materials["chassis.0"]}
+                                        />
+                                    </group>
+                                    <mesh
+                                        castShadow
+                                        receiveShadow
+                                        geometry={nodes.Object_76.geometry}
+                                        material={materials["primary.002"]}
+                                        position={[1.033, -0.131, -0.063]}
+                                    />
+                                </group>
+                            </group>
+                        </group>
+                    </group>
+                </mesh>
+            );
+        } catch (error) {
+            console.error("Error loading Untitled model:", error);
+            return (
+                <mesh ref={ref}>
+                    <boxGeometry args={[1.7, 1, 4]} />
+                    <meshStandardMaterial color="white" />
+                </mesh>
+            );
+        }
     }
 
     try {
         const { nodes, materials } = useGLTF(modelPath);
 
         if (materials.Paint) {
-            materials.Paint.color.set('#ff3333'); // Brighter red
+            materials.Paint.color.set("#ff3333"); // Brighter red
         }
 
         if (materials.Paint) {
-            materials.Paint.emissive.set('#500000');  // Subtle red glow
-            materials.Paint.emissiveIntensity = 1.0;  // Control intensity
-          }
-      
+            materials.Paint.emissive.set("#500000"); // Subtle red glow
+            materials.Paint.emissiveIntensity = 1.0; // Control intensity
+        }
+
         return (
             <mesh ref={ref}>
                 <group position={[0, -0.6, 0]}>
@@ -167,7 +727,7 @@ export const Chassis = forwardRef((props, ref) => {
         );
     } catch (error) {
         console.error("Error loading car model:", error);
-        
+
         return (
             <mesh ref={ref}>
                 <boxGeometry args={[1.7, 1, 4]} />
@@ -176,5 +736,5 @@ export const Chassis = forwardRef((props, ref) => {
         );
     }
 });
-  
+
 export default Chassis;

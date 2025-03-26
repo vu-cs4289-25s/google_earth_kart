@@ -5,13 +5,12 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { Server } from "socket.io";
 import cors from "cors";
-import {readFileSync} from "fs";
+import { readFileSync } from "fs";
 import admin from "firebase-admin";
 
-dotenv.config()
+dotenv.config();
 
-
-const serviceAccount = JSON.parse(process.env.FIREBASE_TOKEN)
+const serviceAccount = JSON.parse(process.env.FIREBASE_TOKEN);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -25,7 +24,10 @@ const server = createServer(app);
 
 app.use(
     cors({
-        origin: ["http://localhost:5173", "https://google-earth-kart.onrender.com"],
+        origin: [
+            "http://localhost:5173",
+            "https://google-earth-kart.onrender.com",
+        ],
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true,
@@ -102,7 +104,7 @@ io.on("connection", (socket) => {
     socket.on("race start", () => {
         gameStatus = "in progress";
         io.emit("race start");
-    })
+    });
 
     socket.on("player ready", (id, selectedKart) => {
         const playerIndex = playersInGame.findIndex((p) => p.id === id);
