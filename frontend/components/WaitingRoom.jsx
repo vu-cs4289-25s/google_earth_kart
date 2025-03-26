@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
 import { Box, IconButton, Typography, Container } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "./SocketContext.jsx";
-import CarPreview from "./CarPreview";
-import { getAllCars } from './CarRegistry';
+import Minimap from "./MiniMap.jsx";
+import { Canvas } from "@react-three/fiber";
 
 const WaitingRoom = () => {
     const navigate = useNavigate();
@@ -62,6 +61,9 @@ const WaitingRoom = () => {
                         <SettingsIcon />
                     </IconButton>
                 </Box>
+                {/* <Canvas>
+                    <Minimap/>
+                </Canvas> */} {/* To add later?? Would love to have an option for waiting players to watch race */}
             </Container>
         </div>
     );

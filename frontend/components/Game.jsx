@@ -15,7 +15,7 @@ function Game() {
     const carRef = useRef();
     const { socket, players } = useSocket();
     const [currentPlayers, setPlayers] = useState([]);
-    const [readyPlayers, setReadyPlayers] = useState([]);
+    const [playersInGame, setPlayersInGame] = useState([]);
     const playersRef = useRef([]);
     const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
@@ -40,7 +40,7 @@ function Game() {
         socket.on("disconnected", (playerList) => {
             playersRef.current = playerList;
             setPlayers([...playerList]);
-            setReadyPlayers([...playerList]);
+            setPlayersInGame([...playerList]);
         });
 
         // Update player locations
@@ -55,9 +55,9 @@ function Game() {
         });
 
         // A player selected kart and is ready
-        socket.on("player ready", (playersReady, id) => {
-            setReadyPlayers(playersReady);
-            if (playersReady.length === playersRef.current.length) {
+        socket.on("player ready", (readyPlayers, id) => {
+            setPlayersInGame(readyPlayers);
+            if (playersInGame.length === playersRef.current.length) {
                 setShowButton(true);
             }
         });
@@ -92,10 +92,12 @@ function Game() {
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white",
                 display: gameStatus === "waiting" ? "block" : "none"
             }}>
-                Players Ready: {readyPlayers.length} / {currentPlayers.length}
+                Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {currentPlayers.length}
             </h4>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
+                <h4 style={{zIndex: 256, position: "absolute", color: "white", top:"40px",
+                    display: playersInGame.length === 0 ? "" : "none"}}>At least 2 Players required to play.</h4>
                 <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
                     display: showButton ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
             </div>
@@ -120,13 +122,13 @@ function Game() {
                         allowMove={allowMove}
                         carId={selectedCar}
                     />
-                    {readyPlayers.map((player) => {
+                    {playersInGame.map((player) => {
                         if (player.id !== me) {
                             return (
                                 <ExternalCar
                                     key={player.id}
                                     playerId={player.id}
-                                    players={currentPlayers}
+                                    players={playersInGame}
                                     carId={player.kart} 
                                 />
                             );

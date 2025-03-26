@@ -81,7 +81,7 @@ export default function Broadcast({show}) {
 
     return (
         <>
-            <ul id="broadcast">
+            <ul id="broadcast" style={{display: show ? "" : "none"}}>
                 {messages.map((msg, index) => (
                     <li key={index}>{msg}</li>
                 ))}
