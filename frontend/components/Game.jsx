@@ -96,9 +96,9 @@ function Game() {
             <div style={{display: "flex", justifyContent: "center"}}>
                 <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
                 <h4 style={{zIndex: 256, position: "absolute", color: "white", top:"40px",
-                    display: playersInGame.length === 0 ? "" : "none"}}>At least 2 Players required to play.</h4>
+                    display: playersInGame.length === 1 ? "" : "none"}}>At least 2 Players required to play.</h4>
                 <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
-                    display: showButton ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
+                    display: showButton && gameStatus === "waiting" && playersInGame.length > 1 ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
             </div>
             <Canvas
                 camera={{ position: [0, 3, 15], fov: 45, near: 1, far: 1000 }}

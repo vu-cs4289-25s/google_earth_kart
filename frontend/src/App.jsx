@@ -162,7 +162,6 @@ function App() {
                 </Router>
             </SocketProvider>
         </>
->>>>>>> main
     );
 }
 
