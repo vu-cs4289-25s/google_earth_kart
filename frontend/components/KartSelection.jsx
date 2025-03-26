@@ -121,7 +121,7 @@ const KartSelection = () => {
                     <Box
                         sx={{
                             height: "70%",
-                            width: "80%",
+                            width: "60%",
                             alignSelf: "center",
                             mb: 2,
                             backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -185,7 +185,7 @@ const KartSelection = () => {
                             className="grid grid-cols-3 gap-6"
                             style={{
                                 display: "grid",
-                                gridTemplateColumns: "repeat(4, 1fr)",
+                                gridTemplateColumns: "repeat(5, 1fr)",
                                 gap: "24px",
                             }}
                         >
@@ -238,7 +238,7 @@ const KartSelection = () => {
                                                     display: "flex",
                                                     alignItems: "center",
                                                     justifyContent: "center",
-                                                    height: "100%",
+                                                    height: "10%",
                                                     color: "#b45309",
                                                     fontWeight: "bold",
                                                     padding: "16px",
@@ -252,18 +252,13 @@ const KartSelection = () => {
                                                     <span
                                                         style={{
                                                             fontSize: "42px",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
                                                         }}
                                                     >
-                                                        ?
+                                                        ? ? ?
                                                     </span>
                                                     <br />
-                                                    <span
-                                                        style={{
-                                                            fontSize: "14px",
-                                                        }}
-                                                    >
-                                                        Coming Soon
-                                                    </span>
                                                 </div>
                                             </div>
                                         )}
