@@ -34,11 +34,19 @@ const CAR_MODELS = [
     },
     {
         id: "model3",
-        name: "Hemingway Mobile Skrrt Skrrt",
-        description: "I bought this before Elon went crazy",
+        name: "Graham Car-d",
+        description: "Vroom Vroom",
         modelPath: "/Model3.glb",
         unlocked: true,
     },
+    // {
+    //     id: "mcqueen",
+    //     name: "Lightning McQueen",
+    //     description: "Ka-chow!",
+    //     modelPath: null,
+    //     thumbnail: "/McQueen.glb",
+    //     unlocked: true,
+    // },
     // Add here
     {
         id: "coming-soon-1",

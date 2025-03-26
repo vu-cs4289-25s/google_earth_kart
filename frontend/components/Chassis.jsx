@@ -7,6 +7,7 @@ useGLTF.preload("/2020_kia_soul_ex.glb");
 useGLTF.preload("/Beetle.glb");
 useGLTF.preload("/vandy-van.glb");
 useGLTF.preload("/Model3.glb");
+useGLTF.preload("/McQueen.glb");
 
 export const Chassis = forwardRef((props, ref) => {
     const carId = props.carId || "kia-soul";
