@@ -9,6 +9,7 @@ import ExternalCar from "../components/ExternalCar.jsx";
 import Broadcast from "../components/Broadcast.jsx";
 import { useSocket } from "./SocketContext.jsx";
 import MiniMap from "../components/MiniMap.jsx";
+import useConfirmExit from '../components/ConfirmExit.jsx';
 import { useNavigate } from "react-router-dom";
 
 function Game() {
@@ -27,6 +28,9 @@ function Game() {
     const [selectedCar, setSelectedCar] = useState(() => {
         return localStorage.getItem("selectedCar") || "kia-soul";
     });
+
+    // confirm with user before leaving
+    useConfirmExit();
 
     useEffect(() => {
         // Player connects
