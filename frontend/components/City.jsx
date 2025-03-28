@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useBox, usePlane } from "@react-three/cannon";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import * as THREE from "three";
 
 export default function City() {
     const [cityObj, setCityObj] = useState(null);
@@ -40,6 +41,8 @@ export default function City() {
 
             {/* Add a static floor */}
             <CityFloor />
+
+            <Checkpoints />
         </group>
     );
 }
@@ -82,6 +85,48 @@ function CityFloor() {
         <mesh ref={floorRef} receiveShadow>
             <planeGeometry args={[200, 200]} />
             <meshStandardMaterial color="gray" />
+        </mesh>
+    );
+}
+
+function Checkpoints() {
+    const checkpoints = [
+        { position: [0, 1, 10], rotation: [0, 3, 0] },
+        { position: [0, 1, 20], rotation: [0, 3, 0] },
+        { position: [0, 1, 30], rotation: [0, 3, 0] },
+    ];
+
+    return (
+        <>
+            {checkpoints.map((checkpoint, index) => (
+                <Checkpoint
+                    key={index}
+                    position={checkpoint.position}
+                    rotation={checkpoint.rotation}
+                    id={index + 1}
+                />
+            ))}
+        </>
+    );
+}
+
+function Checkpoint({ position, rotation, id }) {
+    const [ref] = usePlane(() => ({
+        position,
+        rotation,
+        isTrigger: true, 
+        //do something here when the player collides with the checkpoint (update leaderboard, etc)
+        onCollide: () => {
+            console.log(`Checkpoint ${id} reached!`);
+        },
+    }));
+
+    //once we're done developing, set visible={false} (or we could keep them visible to guide players idk)
+    //change the planeGeometry args to change the size of the planes
+    return (
+        <mesh ref={ref} visible={true}>
+            <planeGeometry args={[5, 5]} />
+            <meshBasicMaterial color="blue" transparent opacity={0.5} side={THREE.DoubleSide} />
         </mesh>
     );
 }
