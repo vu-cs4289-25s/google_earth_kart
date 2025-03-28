@@ -135,6 +135,11 @@ io.on("connection", (socket) => {
         playersWaiting = [];
         playersReady = [];
         io.emit("finish race");
+    });
+
+    socket.on("reset game", () => {
+        gameStatus = "waiting";
+        io.emit("reset game");
     })
 });
 
