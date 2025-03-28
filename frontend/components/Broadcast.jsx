@@ -9,7 +9,7 @@ import {
     getFirestore,
 } from "firebase/firestore";
 
-export default function Broadcast() {
+export default function Broadcast({show}) {
     const { socket } = useSocket();
     const [messages, setMessages] = useState([]);
     const [username, setUsername] = useState("");
@@ -87,14 +87,14 @@ export default function Broadcast() {
 
     return (
         <>
-            <ul id="broadcast">
+            <ul id="broadcast" style={{display: show ? "" : "none"}}>
                 {messages.map((msg, index) => (
                     <li key={index}>{msg}</li>
                 ))}
             </ul>
-            <form id="form" onSubmit={handleSubmit}>
+            <form id="form" onSubmit={handleSubmit} style={{display: show ? "" : "none"}}>
                 <input id="input" ref={inputRef} autoComplete="off" />
-                <button type="submit">Send</button>
+                <button type="submit" style={{display: show ? "" : "none"}}>Send</button>
             </form>
         </>
     );

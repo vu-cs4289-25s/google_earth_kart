@@ -12,6 +12,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { getAuth } from "firebase/auth";
+import WaitingRoom from "../components/WaitingRoom.jsx";
 
 function App() {
     const auth = getAuth();
@@ -156,6 +157,7 @@ function App() {
                             path="/podium"
                             element={<Podium leaderboard={[]} />}
                         />
+                        <Route path="/waitingroom" element={<WaitingRoom />} />
                     </Routes>
                 </Router>
             </SocketProvider>

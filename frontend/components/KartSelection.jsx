@@ -12,13 +12,21 @@ const KartSelection = () => {
     const [selectedKart, setSelectedKart] = useState("kia-soul"); // Default to Kia Soul
     const navigate = useNavigate();
     const { socket } = useSocket();
-    const me = socket.id;
 
     function next() {
-        socket.emit("player ready", me, selectedKart);
-        navigate("/game");
+        fetch("http://localhost:3001/game-status") // CHANGE LATER TO URL
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.status === "waiting") {
+                    navigate("/game");
+                    socket.emit("player ready", socket.id, selectedKart);
+                } else {
+                    navigate("/waitingroom");
+                    socket.emit("player waiting", socket.id, selectedKart);
+                }
+            })
+            .catch((error) => console.error("Error fetching game status:", error));
     }
-
     const cars = getAllCars();
 
     // Save in localStorage when changes
@@ -321,7 +329,6 @@ const KartSelection = () => {
                     sx={{
                         backgroundColor: "#4a90e2",
                         color: "white",
-                        "&:hover": { backgroundColor: "#357ABD" },
                         padding: "15px 30px",
                         borderRadius: "20px",
                         alignSelf: "center",

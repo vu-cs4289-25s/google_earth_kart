@@ -52,6 +52,13 @@ app.get("/", (req, res) => {
 
 let players = [];
 let playersReady = [];
+let playersInGame = [];
+let playersWaiting = [];
+let gameStatus = "waiting";
+
+app.get("/game-status", (req, res) => {
+    res.json({ status: gameStatus });
+});
 
 io.on("connection", (socket) => {
     // all websocket functions that occur while connected need to go in here
@@ -61,8 +68,15 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log("A user disconnected");
-        players = players.filter((p) => p.id != socket.id);
+    
+        players = players.filter((p) => p.id !== socket.id);
+        playersInGame = playersInGame.filter((p) => p.id !== socket.id);
+        playersWaiting = playersWaiting.filter((p) => p.id !== socket.id);
+
         io.emit("disconnected", players);
+        io.emit("player ready", playersInGame);
+
+        if (players.length === 0) gameStatus = "waiting";
     });
     socket.on("chat message", async (input, username) => {
         io.emit("chat message", input, username);
@@ -80,22 +94,40 @@ io.on("connection", (socket) => {
     });
 
     socket.on("player moves", ({ playerid, position, quaternion }) => {
-        let p = players.findIndex((p) => p.id === playerid);
+        let p = playersInGame.findIndex((p) => p.id === playerid);
         if (p !== -1) {
-            players[p].position = position;
-            players[p].quaternion = quaternion;
-            io.emit("update players", players);
+            playersInGame[p].position = position;
+            playersInGame[p].quaternion = quaternion;
+            io.emit("update players", playersInGame);
         }
     });
 
     socket.on("race start", () => {
+        gameStatus = "in progress";
         io.emit("race start");
     });
 
     socket.on("player ready", (id, selectedKart) => {
-        playersReady.push({ id: id, kart: selectedKart });
-        io.emit("player ready", playersReady);
+        const playerIndex = playersInGame.findIndex((p) => p.id === id);
+
+        if (playerIndex === -1) {
+            playersInGame.push({ id: id, kart: selectedKart, position: [0, -0.4, 0] });
+        } else {
+            playersInGame[playerIndex].kart = selectedKart; // Update kart selection
+        }
+
+        io.emit("player ready", playersInGame, id);
     });
+
+    socket.on("player waiting", (id, selectedKart) => {
+        const playerIndex = playersInGame.findIndex((p) => p.id === id);
+
+        if (playerIndex === -1) {
+            playersWaiting.push({ id: id, kart: selectedKart });
+        } else {
+            playersWaiting[playerIndex].kart = selectedKart; // Update kart selection
+        }
+    })
 });
 
 server.listen(3001, () => {
