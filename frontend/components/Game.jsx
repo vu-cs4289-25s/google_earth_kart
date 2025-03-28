@@ -66,6 +66,10 @@ function Game() {
             }
         });
 
+        socket.on("finish race", () => {
+            navigate("/podium");
+        })
+
         return () => {
             socket.off("connected");
             socket.off("disconnected");
@@ -90,6 +94,10 @@ function Game() {
         countdown();
     }
 
+    function finish() {
+        socket.emit("finish race");
+    }
+
     return (
         <>
             <Broadcast show={gameStatus === "waiting"}/>
@@ -104,6 +112,11 @@ function Game() {
                     display: playersInGame.length === 1 ? "" : "none"}}>At least 2 Players required to play.</h4>
                 <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
                     display: showButton && gameStatus === "waiting" && playersInGame.length > 1 ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
+
+                    {/* Dummy button to manually finish race for now. Delete this once finish line implemented */}
+                <button onClick={finish} style={{zIndex: 256, position: "absolute", top: "60px", 
+                display: gameStatus === "in progress" ? "block" : "none", background: "black", color:"white"}}>Finish Race</button>
+
             </div>
             <Canvas
                 camera={{ position: [0, 3, 15], fov: 45, near: 1, far: 1000 }}

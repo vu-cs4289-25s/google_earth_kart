@@ -128,6 +128,14 @@ io.on("connection", (socket) => {
             playersWaiting[playerIndex].kart = selectedKart; // Update kart selection
         }
     })
+
+    socket.on("finish race", () => {
+        gameStatus = "finished";
+        playersInGame = [];
+        playersWaiting = [];
+        playersReady = [];
+        io.emit("finish race");
+    })
 });
 
 server.listen(3001, () => {

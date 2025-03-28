@@ -1,16 +1,22 @@
 import { Box, IconButton, Typography, Container } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "./SocketContext.jsx";
 import Minimap from "./MiniMap.jsx";
 import { Canvas } from "@react-three/fiber";
+import { useEffect } from "react";
 
 const WaitingRoom = () => {
     const navigate = useNavigate();
     const { socket } = useSocket();
     const me = socket.id;
+
+    useEffect(() => {
+        socket.on("finish race", () => {
+            navigate("/podium");
+        });
+    },[socket]);
     
     return (
         <div className="h-screen w-screen bg-gradient-to-b from-blue-400 to-purple-300 overflow-hidden">
