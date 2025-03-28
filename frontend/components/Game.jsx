@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 function Game() {
     const carRef = useRef();
     const { socket, players } = useSocket();
-    const [totalPlayers, setTotalPlayers] = useState([]);
+    const [playerCount, setPlayerCount] = useState(0);
     const [readyPlayers, setReadyPlayers] = useState([]);
     const [playersInGame, setPlayersInGame] = useState([]);
     const playersRef = useRef([]);
@@ -36,14 +36,18 @@ function Game() {
     useEffect(() => {
         // Player connects
         socket.on("connected", (playerList) => {
+            console.log("playercount: ", playerCount);
+            console.log("playerList: ", playerList);
             playersRef.current = playerList;
-            setTotalPlayers([...playerList]);
+            console.log("playerList.length: ", playerList.length);
+            setPlayerCount(playerList.length);
+            console.log("playercount: ", playerCount);
         });
 
         // Player disconnects
         socket.on("disconnected", (playerList) => {
             playersRef.current = playerList;
-            setTotalPlayers([...playerList]);
+            setPlayerCount(playerList.length);
             setReadyPlayers([...playerList]);
             setPlayersInGame([...playerList]);
         });
@@ -59,7 +63,8 @@ function Game() {
         });
 
         // A player selected kart and is ready
-        socket.on("player ready", (readyPlayers, id) => {
+        socket.on("player ready", (readyPlayers, id, players) => {
+            setPlayerCount(players.length);
             setPlayersInGame(readyPlayers);
             if (playersInGame.length === playersRef.current.length) {
                 setShowButton(true);
@@ -77,7 +82,7 @@ function Game() {
             socket.off("race start");
             socket.off("player ready");
         };
-    }, [socket, gameStatus]);
+    });
 
     function countdown() {
         setShowButton(false);
@@ -104,7 +109,7 @@ function Game() {
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white",
                 display: gameStatus === "waiting" ? "block" : "none"
             }}>
-                Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {totalPlayers.length}
+                Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {playerCount}
             </h4>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>

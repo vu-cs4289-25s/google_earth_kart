@@ -116,7 +116,7 @@ io.on("connection", (socket) => {
             playersInGame[playerIndex].kart = selectedKart; // Update kart selection
         }
 
-        io.emit("player ready", playersInGame, id);
+        io.emit("player ready", playersInGame, id, players);
     });
 
     socket.on("player waiting", (id, selectedKart) => {
