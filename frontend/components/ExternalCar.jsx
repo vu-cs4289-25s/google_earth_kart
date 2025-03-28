@@ -20,7 +20,7 @@ export default function ExternalCar({ playerId, players, carId }) {
                 carRef.current.rotation.setFromQuaternion(carQuaternion);
             }
         }
-    }, [players]);
+    }, [players, playerId]);
     
 
     return (

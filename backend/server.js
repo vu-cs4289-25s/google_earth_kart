@@ -51,6 +51,7 @@ app.get("/", (req, res) => {
 });
 
 let players = [];
+let playersReady = [];
 let playersInGame = [];
 let playersWaiting = [];
 let gameStatus = "waiting";
@@ -93,11 +94,11 @@ io.on("connection", (socket) => {
     });
 
     socket.on("player moves", ({ playerid, position, quaternion }) => {
-        let p = players.findIndex((p) => p.id === playerid);
+        let p = playersInGame.findIndex((p) => p.id === playerid);
         if (p !== -1) {
-            players[p].position = position;
-            players[p].quaternion = quaternion;
-            io.emit("update players", players);
+            playersInGame[p].position = position;
+            playersInGame[p].quaternion = quaternion;
+            io.emit("update players", playersInGame);
         }
     });
 
@@ -108,7 +109,7 @@ io.on("connection", (socket) => {
 
     socket.on("player ready", (id, selectedKart) => {
         const playerIndex = playersInGame.findIndex((p) => p.id === id);
-    
+
         if (playerIndex === -1) {
             playersInGame.push({ id: id, kart: selectedKart, position: [0, -0.4, 0] });
         } else {
@@ -120,7 +121,7 @@ io.on("connection", (socket) => {
 
     socket.on("player waiting", (id, selectedKart) => {
         const playerIndex = playersInGame.findIndex((p) => p.id === id);
-    
+
         if (playerIndex === -1) {
             playersWaiting.push({ id: id, kart: selectedKart });
         } else {

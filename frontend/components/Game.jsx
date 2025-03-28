@@ -15,7 +15,8 @@ import { useNavigate } from "react-router-dom";
 function Game() {
     const carRef = useRef();
     const { socket, players } = useSocket();
-    const [currentPlayers, setPlayers] = useState([]);
+    const [totalPlayers, setTotalPlayers] = useState([]);
+    const [readyPlayers, setReadyPlayers] = useState([]);
     const [playersInGame, setPlayersInGame] = useState([]);
     const playersRef = useRef([]);
     const me = socket.id;
@@ -34,22 +35,22 @@ function Game() {
 
     useEffect(() => {
         // Player connects
-        socket.on("connected", (playerList, newPlayer) => {
+        socket.on("connected", (playerList) => {
             playersRef.current = playerList;
-            setPlayers([...playerList]);
+            setTotalPlayers([...playerList]);
         });
 
         // Player disconnects
         socket.on("disconnected", (playerList) => {
             playersRef.current = playerList;
-            setPlayers([...playerList]);
+            setTotalPlayers([...playerList]);
+            setReadyPlayers([...playerList]);
             setPlayersInGame([...playerList]);
         });
 
         // Update player locations
         socket.on("update players", (playerList) => {
-            setPlayers(playerList);
-            playersRef.current = playerList;
+            setPlayersInGame(playerList);
         });
 
         // Race starts for all players
@@ -95,7 +96,7 @@ function Game() {
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white",
                 display: gameStatus === "waiting" ? "block" : "none"
             }}>
-                Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {currentPlayers.length}
+                Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {totalPlayers.length}
             </h4>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
