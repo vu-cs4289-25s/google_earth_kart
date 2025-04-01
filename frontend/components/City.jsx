@@ -103,6 +103,7 @@ export default function City() {
     const [rotation, setRotation] = useState([0, 0, 0]);
     const [debugCollision, setDebugCollision] = useState(false); // State to toggle collision visibility
     const customBoxes = [
+        //walls
         { size: [420 * 2, 70, 1], position: [-30 + 364, -30, -435 + 226], rotation: [0, 31, 0] },  // Rotate 45 degrees around Y-axis
         { size: [370 * 2, 70, 1], position: [-45+ 364, -30, -393+ 226], rotation: [0, 31.1, 0] }, // Rotate 30 degrees around X-axis
         { size: [187 * 2, 70, 1], position: [-265+ 364, -30, -42+ 226], rotation: [0, 121.1, 0] }, // Rotate 90 degrees around Y-axis
@@ -119,6 +120,18 @@ export default function City() {
         { size: [459* 2, 70, 1], position: [380+ 364, -30, 128+ 226], rotation: [0, 83.4, 0] },
         { size: [151* 2, 70, 1], position: [352+ 364, -30, -456+ 226], rotation: [0, 121.5, 0] },
         { size: [200* 2, 70, 1], position: [363+ 364, -30, -456+ 226], rotation: [0, 121.5, 0] },
+
+        //floors
+        { size: [264,1,25], position: [-260+ 364, -33, -30+ 226], rotation: [-3, 121.1, 0] },
+        { size: [20,1,25], position: [-188+ 364, -27, 92+ 226], rotation: [0, 121.1, 0] },
+        { size: [90,1,25], position: [-195+ 364, -28.5, 145+ 226], rotation: [1.7, -96.1, 0] },
+        { size: [132,1,25], position: [-121+ 364, -28, 183+ 226], rotation: [0, -6.7, 1.5] },
+        { size: [23,1,25], position: [-45+ 364, -26, 192+ 226], rotation: [0, -6.7, 0] },
+        { size: [150,1,25], position: [-50.5+ 364, -26, 278+ 226], rotation: [0, -96.1, 0] },
+        { size: [80,1,25], position: [-61.5+ 364, -27.9, 390+ 226], rotation: [2.8, -96.1, 0] },
+        { size: [80,1,25], position: [-70.5+ 364, -29.4, 462+ 226], rotation: [0, -96.1, 0] },
+        { size: [60,1,25], position: [-80.5+ 364, -29.4, 531+ 226], rotation: [-1.91, -96.1, 0] },
+
     ];
 
     // const customBoxes = [
@@ -175,14 +188,15 @@ export default function City() {
 
     if (!cityObj || !boundingBox) return null;
 
+    let isVisible = true
     return (
         <group>
             {/* Render the city visually */}
-            <primitive object={cityObj} />
+            {/*<primitive object={cityObj} />*/}
 
             {/* Render custom collision boxes */}
             {customBoxes.map((box, index) => (
-                <InvisibleBox key={index} size={box.size} position={box.position} rotation={box.rotation} />
+                <InvisibleBox key={index} size={box.size} visible = {isVisible} position={box.position} rotation={box.rotation} />
             ))}
 
             {/* Hide the terrain but use it for calculations */}
@@ -247,9 +261,9 @@ function CityFloor() {
     };
 
     const [floorRef] = usePlane(() => ({
-        position: [0, -20, 0],
+        position: [0, -36, 0],
         material: boxMaterial,
-        rotation:[  1.5127371+ Math.PI,  -2.3244867 + Math.PI, -0.0423494  + Math.PI],
+        rotation:[-Math.PI/2, 0,0],
         // rotation: [-0.0423 - Math.PI, -2.324,  1.512], -04235/(Math.PI) -2.3244867 + (Math.PI * 2)
         type: "Static",
     }));
