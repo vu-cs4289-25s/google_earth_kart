@@ -40,7 +40,7 @@ const io = new Server(server, {
         origin: [
             "http://localhost:5173",
             "https://google-earth-kart.onrender.com",
-        ]
+        ],
         methods: ["GET", "POST"],
         allowedHeaders: ["Access-Control-Allow-Origin"],
         credentials: true,
