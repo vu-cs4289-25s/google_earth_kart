@@ -7,6 +7,8 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { readFileSync } from "fs";
 import admin from "firebase-admin";
+import path from "path";
+
 
 dotenv.config();
 
@@ -20,7 +22,6 @@ const db = admin.firestore();
 
 const app = express();
 const server = createServer(app);
-// app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use(
     cors({
@@ -52,6 +53,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 app.get("/", (req, res) => {
     res.sendFile(join(__dirname, "./index.html"));
 });
+
+app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 let players = [];
 let playersReady = [];
