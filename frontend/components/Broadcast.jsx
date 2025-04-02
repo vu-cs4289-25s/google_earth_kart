@@ -1,17 +1,52 @@
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "./SocketContext";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    getFirestore,
+} from "firebase/firestore";
 
-export default function Broadcast() {
+export default function Broadcast({show}) {
     const { socket } = useSocket();
     const [messages, setMessages] = useState([]);
+    const [username, setUsername] = useState("");
     const inputRef = useRef(null);
+    const db = getFirestore();
+
+    // Fetch the user's username from Firestore
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userRef = collection(db, "users");
+                    const q = query(userRef, where("uid", "==", user.uid));
+                    const curUser = await getDocs(q);
+
+                    if (!curUser.empty) {
+                        const userData = curUser.docs[0].data();
+                        setUsername(userData.username);
+                    } else {
+                        setUsername(user.displayName);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                    setUsername(user.displayName || "User");
+                }
+            }
+        });
+        return () => unsubscribe();
+    }, [db]);
 
     useEffect(() => {
         if (!socket) return;
 
-        const handleMessage = (msg) => {
-            setMessages((prev) => [...prev, msg]);
-            msgTimeout(msg);
+        const handleMessage = (msg, user) => {
+            setMessages((prev) => [...prev, `${user}: ${msg}`]);
+            msgTimeout(`${user}: ${msg}`);
         };
 
         const handleConnection = () => {
@@ -33,7 +68,7 @@ export default function Broadcast() {
             socket.off("connected", handleConnection);
             socket.off("disconnected", handleDisconnection);
         };
-    }, [socket]);
+    }, [socket, username]);
 
     function msgTimeout(msg) {
         setTimeout(() => {
@@ -44,7 +79,7 @@ export default function Broadcast() {
     function handleSubmit(e) {
         e.preventDefault();
         if (inputRef.current.value) {
-            socket.emit("chat message", inputRef.current.value);
+            socket.emit("chat message", inputRef.current.value, username);
             inputRef.current.value = "";
             inputRef.current.blur();
         }
@@ -52,14 +87,14 @@ export default function Broadcast() {
 
     return (
         <>
-            <ul id="broadcast">
+            <ul id="broadcast" style={{display: show ? "" : "none"}}>
                 {messages.map((msg, index) => (
                     <li key={index}>{msg}</li>
                 ))}
             </ul>
-            <form id="form" onSubmit={handleSubmit}>
+            <form id="form" onSubmit={handleSubmit} style={{display: show ? "" : "none"}}>
                 <input id="input" ref={inputRef} autoComplete="off" />
-                <button type="submit">Send</button>
+                <button type="submit" style={{display: show ? "" : "none"}}>Send</button>
             </form>
         </>
     );

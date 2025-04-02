@@ -13,6 +13,7 @@ export const SocketProvider = ({ children }) => {
         const newSocket = io(import.meta.env.VITE_BACKEND_URL);
 
         newSocket.on("connected", (playerList) => {
+            console.log("A player connected");
             setPlayers(playerList);
         });
 

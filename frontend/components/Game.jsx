@@ -9,6 +9,9 @@ import ExternalCar from "../components/ExternalCar.jsx";
 import Broadcast from "../components/Broadcast.jsx";
 import { useSocket } from "./SocketContext.jsx";
 import { AxesHelper } from 'three';
+import MiniMap from "../components/MiniMap.jsx";
+import useConfirmExit from '../components/ConfirmExit.jsx';
+import { useNavigate } from "react-router-dom";
 
 function Axis() {
     const axisRef = useRef();
@@ -24,43 +27,98 @@ function Axis() {
 
 
 function Game() {
+    const carRef = useRef();
     const { socket, players } = useSocket();
-    const [currentPlayers, setPlayers] = useState([]);
+    const [totalPlayers, setTotalPlayers] = useState([]);
+    const [readyPlayers, setReadyPlayers] = useState([]);
+    const [playersInGame, setPlayersInGame] = useState([]);
     const playersRef = useRef([]);
     const me = socket.id;
+    const [countDown, setCountDown] = useState("Waiting for Players...");
+    const [showButton, setShowButton] = useState(false);
+    const [allowMove, setAllowMove] = useState(false);
+    const [gameStatus, setGameStatus] = useState("waiting");
+    const navigate = useNavigate();
+
+    const [selectedCar, setSelectedCar] = useState(() => {
+        return localStorage.getItem("selectedCar") || "kia-soul";
+    });
+
+    // confirm with user before leaving
+    useConfirmExit();
 
     useEffect(() => {
-        /* Sync player list on connect */
+        // Player connects
         socket.on("connected", (playerList) => {
             playersRef.current = playerList;
-            setPlayers(playerList);
+            setTotalPlayers([...playerList]);
         });
 
-        /* Sync player list on disconnect */
+        // Player disconnects
         socket.on("disconnected", (playerList) => {
             playersRef.current = playerList;
-            setPlayers(playerList);
+            setTotalPlayers([...playerList]);
+            setReadyPlayers([...playerList]);
+            setPlayersInGame([...playerList]);
         });
 
-        /* Update player locations */
+        // Update player locations
         socket.on("update players", (playerList) => {
-            setPlayers(playerList);
-            playersRef.current = playerList;
+            setPlayersInGame(playerList);
+        });
+
+        // Race starts for all players
+        socket.on("race start", () => {
+            countdown();
+        });
+
+        // A player selected kart and is ready
+        socket.on("player ready", (readyPlayers, id) => {
+            setPlayersInGame(readyPlayers);
+            if (playersInGame.length === playersRef.current.length) {
+                setShowButton(true);
+            }
         });
 
         return () => {
             socket.off("connected");
             socket.off("disconnected");
             socket.off("update players");
+            socket.off("race start");
+            socket.off("player ready");
         };
-    }, [socket]);
+    }, [socket, gameStatus]);
+
+    function countdown() {
+        setShowButton(false);
+        setCountDown("Ready?");
+        setTimeout(() => { setCountDown("3"); }, 1000);
+        setTimeout(() => { setCountDown("2");  }, 2000);
+        setTimeout(() => { setCountDown("1"); }, 3000);
+        setTimeout(() => { setCountDown("Go!"); setAllowMove(true); setGameStatus("in progress"); }, 4000);
+        setTimeout(() => { setCountDown(""); }, 5000);
+    }
+
+    function ready() {
+        socket.emit("race start");
+        countdown();
+    }
 
     return (
         <>
-            <Broadcast />
-            <text style={{ right: "15px", zIndex: 256, position: "absolute" }}>
-                Players Connected: {currentPlayers.length}
-            </text>
+            <Broadcast show={gameStatus === "waiting"}/>
+            <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white",
+                display: gameStatus === "waiting" ? "block" : "none"
+            }}>
+                Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {totalPlayers.length}
+            </h4>
+            <div style={{display: "flex", justifyContent: "center"}}>
+                <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
+                <h4 style={{zIndex: 256, position: "absolute", color: "white", top:"40px",
+                    display: playersInGame.length === 1 ? "" : "none"}}>At least 2 Players required to play.</h4>
+                <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
+                    display: showButton && gameStatus === "waiting" && playersInGame.length > 1 ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
+            </div>
             <Canvas
                 camera={{ position: [0, 3, 15], fov: 45, near: 1, far: 1000 }}
             >
@@ -75,18 +133,22 @@ function Game() {
                     <Debug color={"green"} scale={1}>
                     <City />
                     <Car
+                        ref={carRef}
                         key={socket?.id}
                         position={[0,0,0]}
                         id={socket?.id}
                         socket={socket}
+                        allowMove={allowMove}
+                        carId={selectedCar}
                     />
-                    {currentPlayers.map((player) => {
+                    {playersInGame.map((player) => {
                         if (player.id !== me) {
                             return (
                                 <ExternalCar
                                     key={player.id}
                                     playerId={player.id}
-                                    players={currentPlayers}
+                                    players={playersInGame}
+                                    carId={player.kart} 
                                 />
                             );
                         }
@@ -94,7 +156,8 @@ function Game() {
                     })}
                     </Debug>
                 </Physics>
-
+                {/* Render the minimap overlay */}
+                <MiniMap target={carRef} />
                 <Stats />
                 <Axis />
 

@@ -44,6 +44,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
     padding: theme.spacing(4),
     gap: theme.spacing(2),
     margin: "auto",
+    position: "relative",
+    margin: "auto",
     [theme.breakpoints.up("sm")]: {
         maxWidth: "450px",
     },
@@ -59,6 +61,8 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
     height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
     minHeight: "100%",
     padding: theme.spacing(2),
+    position: "relative",
+    zIndex: 10,
     [theme.breakpoints.up("sm")]: {
         padding: theme.spacing(4),
     },
@@ -95,7 +99,7 @@ export default function SignIn(props) {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user);
-                console.log(user.uid);
+                navigate("/kart-select");
             } else {
                 setUser(null);
             }
