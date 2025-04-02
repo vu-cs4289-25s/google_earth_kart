@@ -1,16 +1,30 @@
 import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
-import { Physics } from "@react-three/cannon";
+import { Physics, Debug } from "@react-three/cannon";
 import "../src/index.css";
 import City from "../components/City.jsx";
 import Car from "../components/Car.jsx";
 import ExternalCar from "../components/ExternalCar.jsx";
 import Broadcast from "../components/Broadcast.jsx";
 import { useSocket } from "./SocketContext.jsx";
+import { AxesHelper } from 'three';
 import MiniMap from "../components/MiniMap.jsx";
 import useConfirmExit from '../components/ConfirmExit.jsx';
 import { useNavigate } from "react-router-dom";
+
+function Axis() {
+    const axisRef = useRef();
+
+    useEffect(() => {
+        if (axisRef.current) {
+            axisRef.current.position.set(0, 0, 0); // Adjust position if needed
+        }
+    }, []);
+
+    return <primitive object={new AxesHelper(5)} ref={axisRef} />;
+}
+
 
 function Game() {
     const carRef = useRef();
@@ -134,11 +148,12 @@ function Game() {
                     intensity={1}
                 />
                 <Physics>
+                    <Debug color={"green"} scale={1}>
                     <City />
                     <Car
                         ref={carRef}
                         key={socket?.id}
-                        position={[0, -0.4, 0]}
+                        position={[0,0,0]}
                         id={socket?.id}
                         socket={socket}
                         allowMove={allowMove}
@@ -157,10 +172,13 @@ function Game() {
                         }
                         return null;
                     })}
+                    </Debug>
                 </Physics>
                 {/* Render the minimap overlay */}
                 <MiniMap target={carRef} />
                 <Stats />
+                <Axis />
+
             </Canvas>
         </>
     );
