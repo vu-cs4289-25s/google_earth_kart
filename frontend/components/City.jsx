@@ -117,21 +117,33 @@ export default function City() {
         { size: [230* 2, 70, 1], position: [127+ 364, -30, 581+ 226], rotation: [0, -6.1, 0] },
         { size: [202* 2, 70, 1], position: [126+ 364, -30, 565+ 226], rotation: [0, -6.1, 0] },
         { size: [466* 2, 70, 1], position: [398+ 364, -30, 150+ 226], rotation: [0, 83.4, 0] },
-        { size: [459* 2, 70, 1], position: [380+ 364, -30, 128+ 226], rotation: [0, 83.4, 0] },
-        { size: [151* 2, 70, 1], position: [352+ 364, -30, -456+ 226], rotation: [0, 121.5, 0] },
-        { size: [200* 2, 70, 1], position: [363+ 364, -30, -456+ 226], rotation: [0, 121.5, 0] },
+        { size: [445* 2, 70, 1], position: [380+ 364, -30, 128+ 226], rotation: [0, 83.4, 0], highlight: true },
+        { size: [10* 2, 70, 1], position: [380+ 340, -30, 128+ -250], rotation: [0, 83.4, 0], highlight: true },
+        { size: [151* 2, 70, 1], position: [352+ 360, -30, -456+ 226], rotation: [0, 121.5, 0]},
+        { size: [200* 2, 70, 1], position: [363+ 368, -30, -456+ 226], rotation: [0, 121.5, 0]},
 
         //floors
-        { size: [264,1,25], position: [-260+ 364, -33, -30+ 226], rotation: [-3, 121.1, 0] },
-        { size: [20,1,25], position: [-188+ 364, -27, 92+ 226], rotation: [0, 121.1, 0] },
-        { size: [90,1,25], position: [-195+ 364, -28.5, 145+ 226], rotation: [1.7, -96.1, 0] },
-        { size: [132,1,25], position: [-121+ 364, -28, 183+ 226], rotation: [0, -6.7, 1.5] },
-        { size: [23,1,25], position: [-45+ 364, -26, 192+ 226], rotation: [0, -6.7, 0] },
-        { size: [150,1,25], position: [-50.5+ 364, -26, 278+ 226], rotation: [0, -96.1, 0] },
-        { size: [80,1,25], position: [-61.5+ 364, -27.9, 390+ 226], rotation: [2.8, -96.1, 0] },
-        { size: [80,1,25], position: [-70.5+ 364, -29.4, 462+ 226], rotation: [0, -96.1, 0] },
-        { size: [60,1,25], position: [-80.5+ 364, -29.4, 531+ 226], rotation: [-1.91, -96.1, 0] },
-
+        { size: [320,1,25], position: [-260+ 364, -32, -30+ 226], rotation: [-1.9, 121.1, 0]}, // DONE
+        { size: [20,1,15], position: [-188+ 359, -27.8, 92+ 226], rotation: [0, 100.1, -3.4]}, 
+        { size: [90,1,25], position: [-195+ 364, -29, 145+ 226], rotation: [1.5, -96.1, 0]}, // DONE
+        { size: [132,1,25], position: [-121+ 364, -28.5, 183+ 226], rotation: [0, -6.7, 1.2]},// DONE 
+        { size: [23,1,25], position: [-45+ 364, -27, 192+ 226], rotation: [0, -6.7, 0]}, //DONE
+        { size: [80,1,25], position: [-50.5+ 364, -26.3, 278+ 190], rotation: [-1.05, -96.1, 0]},  //DONE
+        { size: [80,1,25], position: [-50.5+ 355, -26, 278+ 265], rotation: [1, -96.1, 0]}, //DONE
+        { size: [80,1,25], position: [-61.5+ 364, -28.5, 390+ 226], rotation: [2.8, -96.1, 0]},//DONE
+        { size: [80,1,25], position: [-70.5+ 364, -29.7, 462+ 226], rotation: [-1.4, -96.1, 0]},//DONE
+        { size: [60,1,25], position: [-80.5+ 364, -28, 531+ 226], rotation: [-1.5, -96.1, 0]}, //DONE
+        { size: [175,1,25], position: [-80.5+ 458, -27.5, 531+ 262], rotation: [0, -6.5, 0]}, // DONE
+        { size: [175,1,25], position: [-80.5+ 545, -26.5, 531+ 265], rotation: [0, -6.5, 1.2]}, // DONE
+        { size: [150,1,25], position: [-80.5+ 695, -21.5, 531+ 280], rotation: [0, -6.5, 2.5]}, // DONE
+        { size: [240,1,25], position: [-80.5+ 798, -21.4, 531+ 125], rotation: [0, -96.1, 1.8]}, // DONE
+        { size: [50,1,25], position: [-80.5+ 780, -18.1, 531+ 275], rotation: [0, -96.1, -0.8]}, // DONE
+        { size: [50,1,25], position: [-80.5+ 787, -18.1, 531+ 226], rotation: [0, -96.1, 1]}, // DONE
+        { size: [250,1,25], position: [-80.5+ 830, -29.5, 531+ -115], rotation: [0, -96.5, 2]}, // DONE
+        { size: [150,1,25], position: [-80.5+ 850, -35, 531+ -310], rotation: [0, -96.5, 1]},// DONE
+        { size: [150,1,25], position: [-80.5+ 870, -37.9, 531+ -458], rotation: [0, -96.5, 1.25], highlight: true}, //DONE
+        { size: [100,1,25], position: [-80.5+ 878, -40.9, 531+ -580], rotation: [0, -96.5, 1.7], highlight: true}, 
+        { size: [100,1,25], position: [-80.5+ 878, -40.9, 531+ -580], rotation: [0, -96.5, 1.7], highlight: true}, 
     ];
 
     // const customBoxes = [
@@ -192,11 +204,11 @@ export default function City() {
     return (
         <group>
             {/* Render the city visually */}
-            {/*<primitive object={cityObj} />*/}
+            <primitive object={cityObj} />
 
             {/* Render custom collision boxes */}
             {customBoxes.map((box, index) => (
-                <InvisibleBox key={index} size={box.size} visible = {isVisible} position={box.position} rotation={box.rotation} />
+                <InvisibleBox key={index} size={box.size} visible = {isVisible} position={box.position} rotation={box.rotation} highlight={box.highlight} />
             ))}
 
             {/* Hide the terrain but use it for calculations */}
@@ -233,7 +245,7 @@ function BoundingBoxCollider({ bbox, rotation }) {
     return null;
 }
 
-function InvisibleBox({ size, position, visible, rotation }) {
+function InvisibleBox({ size, position, visible, rotation, highlight }) {
     // Convert degrees to radians
     const radians = rotation.map(degree => degree * (Math.PI / 180));
 
@@ -249,7 +261,7 @@ function InvisibleBox({ size, position, visible, rotation }) {
     return (
         <mesh position={position} rotation={radians}>
             <boxGeometry args={size} />
-            <meshStandardMaterial color="red" /> {/* Solid box for debugging */}
+            <meshStandardMaterial color={highlight ? "red" : "gray"} /> Solid box for debugging
         </mesh>
     );
 }
@@ -261,7 +273,7 @@ function CityFloor() {
     };
 
     const [floorRef] = usePlane(() => ({
-        position: [0, -36, 0],
+        position: [0, -50, 0],
         material: boxMaterial,
         rotation:[-Math.PI/2, 0,0],
         // rotation: [-0.0423 - Math.PI, -2.324,  1.512], -04235/(Math.PI) -2.3244867 + (Math.PI * 2)
