@@ -119,7 +119,7 @@ io.on("connection", (socket) => {
             playersInGame[playerIndex].kart = selectedKart; // Update kart selection
         }
 
-        io.emit("player ready", playersInGame, id);
+        io.emit("player ready", playersInGame, id, players);
     });
 
     socket.on("player waiting", (id, selectedKart) => {
@@ -130,6 +130,19 @@ io.on("connection", (socket) => {
         } else {
             playersWaiting[playerIndex].kart = selectedKart; // Update kart selection
         }
+    })
+
+    socket.on("finish race", () => {
+        gameStatus = "finished";
+        playersInGame = [];
+        playersWaiting = [];
+        playersReady = [];
+        io.emit("finish race");
+    });
+
+    socket.on("reset game", () => {
+        gameStatus = "waiting";
+        io.emit("reset game");
     })
 });
 

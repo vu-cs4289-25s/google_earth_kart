@@ -1,10 +1,14 @@
-import React from "react";
-import { Box, Button, Container, Typography, IconButton } from "@mui/material";
+import { React, useEffect } from "react";
+import { Box, IconButton, Container, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "./SocketContext.jsx";
+
 
 const Podium = ({ leaderboard }) => {
     const navigate = useNavigate();
+    const { socket } = useSocket();
+
     //this is just dummy data for testing, you would pass the actual leaderboard data as a prop
     leaderboard = [
         { place: 1, name: "Player 1" },
@@ -18,19 +22,31 @@ const Podium = ({ leaderboard }) => {
     //sort the leaderboard by place
     leaderboard.sort((a, b) => a.place - b.place);
 
+    function reset() {
+        socket.emit("reset game");
+    }
+
+    useEffect(() => {
+        socket.on("reset game", () => {
+            navigate("/kart-select");
+        });
+    },[socket]);
+
     return (
-        <div className="h-screen w-screen bg-gradient-to-br from-blue-400 to-purple-300 overflow-hidden">
+        <div className="min-h-screen w-screen bg-gradient-to-br from-blue-400 to-purple-300">
             <Container
                 maxWidth="sm"
                 sx={{
                     py: 5,
-                    height: "100%",
+                    minHeight: "100vh",
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
+                    justifyContent: "flex-start",
                     alignItems: "center",
+                    overflowY: "auto",
                 }}
             >
+
                 {/* Header */}
                 <Box
                     sx={{
@@ -64,6 +80,7 @@ const Podium = ({ leaderboard }) => {
                         width: "100%",
                         border: "8px solid #ff7000",
                         zIndex: 1,
+                        overflowY: "auto",
                     }}
                 >
                     {leaderboard.map((player, index) => (
@@ -73,9 +90,9 @@ const Podium = ({ leaderboard }) => {
                                 display: "flex",
                                 justifyContent: "space-between",
                                 alignItems: "center",
-                                padding: 2,
+                                padding: 1,
                                 borderRadius: "16px",
-                                mb: 2,
+                                mb: 1.5,
                                 backgroundColor:
                                     index === 0
                                         ? "#ffeb3b"
@@ -102,23 +119,35 @@ const Podium = ({ leaderboard }) => {
 
                 {/* Start New Race Button */}
                 {/* also do something here to reset the state of the race */}
-                <Button
-                    onClick={() => navigate("/kart-select")}
+                <IconButton
+                    onClick={reset}
                     sx={{
-                        mt: 4,
                         backgroundColor: "#4a90e2",
                         color: "white",
-                        "&:hover": { backgroundColor: "#357ABD" },
-                        padding: "10px 20px",
-                        borderRadius: "16px",
+                        padding: "15px 30px",
+                        borderRadius: "20px",
+                        alignSelf: "center",
+                        mt: 3,
                         boxShadow: "0 6px 12px rgba(0,0,0,0.2)",
-                        fontWeight: "bold",
-                        fontSize: 18,
-                        textTransform: "none",
+                        transition: "transform 0.2s",
+                        "&:hover": {
+                            backgroundColor: "#357ABD",
+                            transform: "scale(1.05)",
+                        },
+                        border: "4px solid white",
                     }}
                 >
-                    Start New Race
-                </Button>
+
+                    <Typography
+                        sx={{
+                            color: "white",
+                            fontWeight: "bold",
+                            fontSize: 20,
+                        }}
+                    >
+                        Start New Race
+                    </Typography>
+                </IconButton>
             </Container>
         </div>
     );
