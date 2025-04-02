@@ -49,24 +49,22 @@ export default function Broadcast({show}) {
             msgTimeout(`${user}: ${msg}`);
         };
 
-        const handleConnection = () => {
+        socket.on("connected", (players) => {
             setMessages((prev) => [...prev, "A user connected"]);
             msgTimeout("A user connected");
-        };
+        });
 
-        const handleDisconnection = () => {
+        socket.on("disconnected", (players) => {
             setMessages((prev) => [...prev, "A user disconnected"]);
             msgTimeout("A user disconnected");
-        };
+        });
 
         socket.on("chat message", handleMessage);
-        socket.on("connected", handleConnection);
-        socket.on("disconnected", handleDisconnection);
 
         return () => {
             socket.off("chat message", handleMessage);
-            socket.off("connected", handleConnection);
-            socket.off("disconnected", handleDisconnection);
+            socket.off("connected");
+            socket.off("disconnected");
         };
     }, [socket, username]);
 

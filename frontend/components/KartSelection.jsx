@@ -42,6 +42,10 @@ const KartSelection = () => {
         if (savedCar) {
             setSelectedKart(savedCar);
         }
+        
+        socket.on("finish race", () => {
+            navigate("/podium");
+        })
     }, []);
 
     return (
@@ -212,7 +216,6 @@ const KartSelection = () => {
                                             selectedKart === car.id
                                                 ? "9px solid #3b82f6"
                                                 : "4px solid white",
-                                        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
                                         opacity: car.unlocked ? 1 : 0.6,
                                         cursor: car.unlocked
                                             ? "pointer"
