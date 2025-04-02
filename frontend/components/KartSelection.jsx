@@ -14,7 +14,7 @@ const KartSelection = () => {
     const { socket } = useSocket();
 
     function next() {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/game-status`) // CHANGE LATER TO URL
+        fetch(`${import.meta.env.VITE_BACKEND_URL}game-status`) // CHANGE LATER TO URL
             .then((res) => res.json())
             .then((data) => {
                 if (data.status === "waiting") {

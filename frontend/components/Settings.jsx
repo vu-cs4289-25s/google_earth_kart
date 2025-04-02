@@ -99,7 +99,7 @@ export default function Settings() {
     const handleLogOut = () => {
         const auth = getAuth();
         auth.signOut();
-        navigate("/login");
+        navigate("/");
     };
 
     return (
