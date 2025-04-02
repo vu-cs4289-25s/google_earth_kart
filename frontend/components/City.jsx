@@ -273,7 +273,7 @@ function InvisibleBox({ size, position, visible, rotation, highlight }) {
     return (
         <mesh position={position} rotation={radians}>
             <boxGeometry args={size} />
-            <meshStandardMaterial color={highlight ? "red" : "gray"} /> Solid box for debugging
+            <meshStandardMaterial color={highlight ? "red" : "white"} transparent opacity={highlight ? 1 : 0} />
         </mesh>
     );
 }
