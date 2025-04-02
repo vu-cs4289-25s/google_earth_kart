@@ -22,16 +22,24 @@ const app = express();
 const server = createServer(app);
 // app.use(express.static(path.join(__dirname, 'dist')));
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://google-earth-kart.onrender.com",
+];
+
 app.use(
     cors({
-        origin: [
-            "http://localhost:5173",
-            "https://google-earth-kart.onrender.com",
-        ],
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, origin); // Allow the request
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true,
-    }),
+    })
 );
 
 const io = new Server(server, {
