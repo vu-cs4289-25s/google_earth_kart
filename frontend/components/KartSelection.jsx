@@ -37,16 +37,16 @@ const KartSelection = () => {
     }, [selectedKart]);
 
     // Initialize from localStorage if available
-    useEffect(() => {
-        const savedCar = localStorage.getItem("selectedCar");
-        if (savedCar) {
-            setSelectedKart(savedCar);
-        }
-        
-        socket.on("finish race", () => {
-            navigate("/podium");
-        })
-    }, []);
+    // useEffect(() => {
+    //     const savedCar = localStorage.getItem("selectedCar");
+    //     if (savedCar) {
+    //         setSelectedKart(savedCar);
+    //     }
+    //
+    //     socket.on("finish race", () => {
+    //         navigate("/podium");
+    //     })
+    // }, []);
 
     return (
         <div className="h-screen w-screen bg-gradient-to-b from-blue-400 to-purple-300 overflow-hidden">

@@ -38,6 +38,7 @@ function Game() {
     const [showButton, setShowButton] = useState(false);
     const [allowMove, setAllowMove] = useState(false);
     const [gameStatus, setGameStatus] = useState("waiting");
+    const [cityLoaded, setCityLoaded] = useState(false);
     const navigate = useNavigate();
 
     const [selectedCar, setSelectedCar] = useState(() => {
@@ -149,8 +150,8 @@ function Game() {
                 />
                 <Physics>
                     <Debug color={"green"} scale={1}>
-                    <City />
-                    <Car
+                    <City setLoaded={setCityLoaded} />
+                    {cityLoaded && <Car
                         ref={carRef}
                         key={socket?.id}
                         position={[0,0,0]}
@@ -158,7 +159,8 @@ function Game() {
                         socket={socket}
                         allowMove={allowMove}
                         carId={selectedCar}
-                    />
+                    />}
+
                     {playersInGame.map((player) => {
                         if (player.id !== me) {
                             return (

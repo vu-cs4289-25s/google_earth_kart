@@ -5,12 +5,8 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
 
-export default function City() {
+export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
-    const [terrainMesh, setTerrainMesh] = useState(null);
-    const [boundingBox, setBoundingBox] = useState(null);
-    const [rotation, setRotation] = useState([0, 0, 0]);
-    const [debugCollision, setDebugCollision] = useState(false); // State to toggle collision visibility
     const customBoxes = [
         //walls
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -67,59 +63,23 @@ export default function City() {
 
     ];
 
-    // const customBoxes = [
-    // { size: [395.63, 13.68, 1], position: [-380 / 2, 20, -210 / 2], rotation: [0, 31.5, 0] },    // Example: box with size [width, height, depth] at position
-    // { size: [20, 3, 10], position: [15, -2, -5] }, // Another custom box
-    // { size: [5, 0.5, 15], position: [-10, -1, 10] },
-    // ];
-
     useEffect(() => {
         const gltfLoader = new GLTFLoader();
-        const objLoader = new OBJLoader();
-
         // Load the city GLB model
         gltfLoader.load(
-            `${import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
+            `${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
             (gltf) => {
                 gltf.scene.position.set(384,-30,226)
                 setCityObj(gltf.scene);
+                setLoaded(true);
             },
             undefined,
             (error) => console.error("GLB Load Error:", error)
         );
 
-        // Load the terrain OBJ model
-        objLoader.load(
-            `${import.meta.env.VITE_BACKEND_URL}assets/localassets/terrain.obj`,
-            (object) => {
-                let terrainMesh = null;
-                object.traverse((child) => {
-                    if (child.isMesh) {
-                        terrainMesh = child;
-                    }
-                });
-
-                if (terrainMesh) {
-                    // Compute bounding box for physics
-                    const bbox = new THREE.Box3().setFromObject(terrainMesh);
-                    setBoundingBox(bbox);
-
-                    // Get terrain rotation (assuming it's already rotated)
-                    const euler = new THREE.Euler();
-                    terrainMesh.matrix.decompose(new THREE.Vector3(), euler, new THREE.Vector3());
-                    setRotation([euler.x, euler.y, euler.z]);
-
-                    // Hide the terrain visually
-                    terrainMesh.visible = false;
-                    setTerrainMesh(terrainMesh);
-                }
-            },
-            undefined,
-            (error) => console.error("OBJ Load Error:", error)
-        );
     }, []);
 
-    if (!cityObj || !boundingBox) return null;
+    if (!cityObj) return null;
 
     let isVisible = true
     return (
@@ -132,38 +92,10 @@ export default function City() {
                 <InvisibleBox key={index} size={box.size} visible = {isVisible} position={box.position} rotation={box.rotation} highlight={box.highlight} />
             ))}
 
-            {/* Hide the terrain but use it for calculations */}
-            {/*{terrainMesh && <primitive object={terrainMesh} />}*/}
             <CityFloor />
 
-            {/* Add a rotated bounding box collider */}
-            {/*<BoundingBoxCollider bbox={boundingBox} rotation={rotation} />*/}
         </group>
     );
-}
-
-// Creates a rotated bounding box for the terrain
-function BoundingBoxCollider({ bbox, rotation }) {
-    const size = [
-        bbox.max.x - bbox.min.x,  // Width
-        bbox.max.y - bbox.min.y,  // Height
-        bbox.max.z - bbox.min.z,  // Depth
-    ];
-
-    const position = [
-        (bbox.max.x + bbox.min.x+ 600) / 2 ,
-        (bbox.max.y + bbox.min.y) / 2 - 30,  // Adjust height lower
-        (bbox.max.z + bbox.min.z+ 226) / 2 ,
-    ];
-
-    useBox(() => ({
-        args: size,
-        position,
-        rotation,  // Apply rotation so it's not flat
-        type: "Static",
-    }));
-
-    return null;
 }
 
 function InvisibleBox({ size, position, visible, rotation, highlight }) {
