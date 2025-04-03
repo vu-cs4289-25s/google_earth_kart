@@ -6,7 +6,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
 import { useSocket } from "./SocketContext";
 
-export default function City() {
+export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
     const [terrainMesh, setTerrainMesh] = useState(null);
     const [boundingBox, setBoundingBox] = useState(null);
@@ -69,22 +69,15 @@ export default function City() {
 
     ];
 
-    // const customBoxes = [
-    // { size: [395.63, 13.68, 1], position: [-380 / 2, 20, -210 / 2], rotation: [0, 31.5, 0] },    // Example: box with size [width, height, depth] at position
-    // { size: [20, 3, 10], position: [15, -2, -5] }, // Another custom box
-    // { size: [5, 0.5, 15], position: [-10, -1, 10] },
-    // ];
-
     useEffect(() => {
         const gltfLoader = new GLTFLoader();
-        const objLoader = new OBJLoader();
-
         // Load the city GLB model
         gltfLoader.load(
-            `${import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
+            `${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
             (gltf) => {
                 gltf.scene.position.set(384,-30,226)
                 setCityObj(gltf.scene);
+                setLoaded(true);
             },
             undefined,
             (error) => console.error("GLB Load Error:", error)
@@ -163,7 +156,7 @@ export default function City() {
         );
     }
 
-    if (!cityObj || !boundingBox) return null;
+    if (!cityObj) return null;
 
     let isVisible = true
     return (
@@ -176,8 +169,6 @@ export default function City() {
                 <InvisibleBox key={index} size={box.size} visible = {isVisible} position={box.position} rotation={box.rotation} highlight={box.highlight} />
             ))}
 
-            {/* Hide the terrain but use it for calculations */}
-            {/*{terrainMesh && <primitive object={terrainMesh} />}*/}
             <CityFloor />
 
             <Checkpoints />
@@ -186,30 +177,6 @@ export default function City() {
             {/*<BoundingBoxCollider bbox={boundingBox} rotation={rotation} />*/}
         </group>
     );
-}
-
-// Creates a rotated bounding box for the terrain
-function BoundingBoxCollider({ bbox, rotation }) {
-    const size = [
-        bbox.max.x - bbox.min.x,  // Width
-        bbox.max.y - bbox.min.y,  // Height
-        bbox.max.z - bbox.min.z,  // Depth
-    ];
-
-    const position = [
-        (bbox.max.x + bbox.min.x+ 600) / 2 ,
-        (bbox.max.y + bbox.min.y) / 2 - 30,  // Adjust height lower
-        (bbox.max.z + bbox.min.z+ 226) / 2 ,
-    ];
-
-    useBox(() => ({
-        args: size,
-        position,
-        rotation,  // Apply rotation so it's not flat
-        type: "Static",
-    }));
-
-    return null;
 }
 
 function InvisibleBox({ size, position, visible, rotation, highlight }) {
