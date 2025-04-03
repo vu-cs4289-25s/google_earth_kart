@@ -48,13 +48,19 @@ const io = new Server(server, {
     },
 });
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve assets folder from frontend
+app.use(
+    "/assets",
+    express.static(path.join(__dirname, "../frontend/assets"))
+);
 
 app.get("/", (req, res) => {
-    res.sendFile(join(__dirname, "./index.html"));
+    res.send("Server is running...");
 });
 
-app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 let players = [];
 let playersReady = [];
