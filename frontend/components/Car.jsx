@@ -163,7 +163,6 @@ const Car = forwardRef(function Car(
                         carQuaternion.w,
                     ],
                 });
-                console.log(carPosition)
                 lastPosition.current.copy(carPosition);
             }
         }

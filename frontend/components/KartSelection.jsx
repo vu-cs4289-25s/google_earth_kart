@@ -14,7 +14,7 @@ const KartSelection = () => {
     const { socket } = useSocket();
 
     function next() {
-        fetch("http://localhost:3001/game-status") // CHANGE LATER TO URL
+        fetch(`${import.meta.env.VITE_BACKEND_URL}game-status`) // CHANGE LATER TO URL
             .then((res) => res.json())
             .then((data) => {
                 if (data.status === "waiting") {
@@ -42,10 +42,12 @@ const KartSelection = () => {
         if (savedCar) {
             setSelectedKart(savedCar);
         }
-        
-        socket.on("finish race", () => {
-            navigate("/podium");
-        })
+    
+        if (socket) {
+            socket.on("finish race", () => {
+                navigate("/podium");
+            });
+        }
     }, []);
 
     return (

@@ -7,6 +7,8 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { readFileSync } from "fs";
 import admin from "firebase-admin";
+import path from "path";
+
 
 dotenv.config();
 
@@ -20,7 +22,6 @@ const db = admin.firestore();
 
 const app = express();
 const server = createServer(app);
-// app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use(
     cors({
@@ -37,18 +38,29 @@ app.use(
 const io = new Server(server, {
     // Allow websockets to connect
     cors: {
-        origin: "http://localhost:5173",
+        origin: [
+            "http://localhost:5173",
+            "https://google-earth-kart.onrender.com",
+        ],
         methods: ["GET", "POST"],
         allowedHeaders: ["Access-Control-Allow-Origin"],
         credentials: true,
     },
 });
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve assets folder from frontend
+app.use(
+    "/assets",
+    express.static(path.join(__dirname, "../frontend/assets"))
+);
 
 app.get("/", (req, res) => {
-    res.sendFile(join(__dirname, "./index.html"));
+    res.send("Server is running...");
 });
+
 
 let players = [];
 let playersReady = [];
