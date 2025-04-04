@@ -95,6 +95,7 @@ import { useBox, usePlane } from "@react-three/cannon";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
+import { useSocket } from "./SocketContext";
 
 export default function City() {
     const [cityObj, setCityObj] = useState(null);
@@ -102,6 +103,7 @@ export default function City() {
     const [boundingBox, setBoundingBox] = useState(null);
     const [rotation, setRotation] = useState([0, 0, 0]);
     const [debugCollision, setDebugCollision] = useState(false); // State to toggle collision visibility
+    const { socket } = useSocket();
     const customBoxes = [
         //walls
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -210,6 +212,48 @@ export default function City() {
         );
     }, []);
 
+    function Checkpoints() {
+        const checkpoints = [
+            {position: [-2.269622325897217, -36.156700134277344, 25.91889762878418], rotation: [0, 3, 0] },
+            {position: [0.7524610757827759, -35.672157287597656, 38.231468200683594], rotation: [0, 3, 0] },
+   
+        ];
+    
+        return (
+            <>
+                {checkpoints.map((checkpoint, index) => (
+                    <Checkpoint
+                        key={index}
+                        position={checkpoint.position}
+                        rotation={checkpoint.rotation}
+                        id={index + 1}
+                    />
+                ))}
+            </>
+        );
+    }
+    
+    function Checkpoint({ position, rotation, id }) {
+        const [ref] = usePlane(() => ({
+            position,
+            rotation,
+            isTrigger: true, 
+            //do something here when the player collides with the checkpoint (update leaderboard, etc)
+            onCollide: () => {
+                socket.emit("checkpoint hit", id); // Emit event to server
+            },
+        }));
+    
+        //once we're done developing, set visible={false} (or we could keep them visible to guide players idk)
+        //change the planeGeometry args to change the size of the planes
+        return (
+            <mesh ref={ref} visible={true}>
+                <planeGeometry args={[5, 5]} />
+                <meshBasicMaterial color="blue" transparent opacity={0.5} side={THREE.DoubleSide} />
+            </mesh>
+        );
+    }
+
     if (!cityObj || !boundingBox) return null;
 
     let isVisible = true
@@ -226,6 +270,8 @@ export default function City() {
             {/* Hide the terrain but use it for calculations */}
             {/*{terrainMesh && <primitive object={terrainMesh} />}*/}
             <CityFloor />
+
+            <Checkpoints />
 
             {/* Add a rotated bounding box collider */}
             {/*<BoundingBoxCollider bbox={boundingBox} rotation={rotation} />*/}

@@ -10,6 +10,7 @@ import Broadcast from "../components/Broadcast.jsx";
 import { useSocket } from "./SocketContext.jsx";
 import { AxesHelper } from 'three';
 import MiniMap from "../components/MiniMap.jsx";
+import Leaderboard from "../components/Leaderboard.jsx";
 import useConfirmExit from '../components/ConfirmExit.jsx';
 import { useNavigate } from "react-router-dom";
 
@@ -180,6 +181,7 @@ function Game() {
                 <Axis />
 
             </Canvas>
+            <Leaderboard />
         </>
     );
 }
