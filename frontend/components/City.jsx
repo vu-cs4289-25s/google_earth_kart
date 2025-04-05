@@ -7,7 +7,6 @@ import * as THREE from "three";
 import { useSocket } from "./SocketContext";
 
 export default function City({ setLoaded }) {
-export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
     const [terrainMesh, setTerrainMesh] = useState(null);
     const [boundingBox, setBoundingBox] = useState(null);
@@ -75,7 +74,6 @@ export default function City({ setLoaded }) {
         const objLoader = new OBJLoader();
         // Load the city GLB model
         gltfLoader.load(
-            `${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
             `${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
             (gltf) => {
                 gltf.scene.position.set(384,-30,226)
