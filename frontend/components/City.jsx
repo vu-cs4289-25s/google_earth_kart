@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { useEffect, useState, useMemo } from "react";
-=======
-import { useEffect, useState } from "react";
->>>>>>> main
 import { useLoader } from "@react-three/fiber";
 import { useBox, usePlane } from "@react-three/cannon";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
@@ -11,15 +7,13 @@ import * as THREE from "three";
 import { useSocket } from "./SocketContext";
 
 export default function City({ setLoaded }) {
+export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
-<<<<<<< HEAD
     const [terrainMesh, setTerrainMesh] = useState(null);
     const [boundingBox, setBoundingBox] = useState(null);
     const [rotation, setRotation] = useState([0, 0, 0]);
     const [debugCollision, setDebugCollision] = useState(false); // State to toggle collision visibility
     const { socket } = useSocket();
-=======
->>>>>>> main
     const customBoxes = [
         //walls
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -78,23 +72,21 @@ export default function City({ setLoaded }) {
 
     useEffect(() => {
         const gltfLoader = new GLTFLoader();
-<<<<<<< HEAD
         const objLoader = new OBJLoader();
-=======
->>>>>>> main
         // Load the city GLB model
         gltfLoader.load(
+            `${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
             `${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
             (gltf) => {
                 gltf.scene.position.set(384,-30,226)
                 setCityObj(gltf.scene);
+                setLoaded(true);
                 setLoaded(true);
             },
             undefined,
             (error) => console.error("GLB Load Error:", error)
         );
 
-<<<<<<< HEAD
         // Load the terrain OBJ model
         objLoader.load(
             `${import.meta.env.VITE_BACKEND_URL}assets/localassets/terrain.obj`,
@@ -212,10 +204,6 @@ export default function City({ setLoaded }) {
         );
     }
 
-=======
-    }, []);
-
->>>>>>> main
     if (!cityObj) return null;
 
     let isVisible = true
@@ -231,13 +219,10 @@ export default function City({ setLoaded }) {
 
             <CityFloor />
 
-<<<<<<< HEAD
             <Checkpoints />
 
             {/* Add a rotated bounding box collider */}
             {/*<BoundingBoxCollider bbox={boundingBox} rotation={rotation} />*/}
-=======
->>>>>>> main
         </group>
     );
 }
