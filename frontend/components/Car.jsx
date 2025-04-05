@@ -76,7 +76,7 @@ const Car = forwardRef(function Car(
             angularVelocity,
             args: carId === "model3" ? [1.8, 1.1, 4.2] : [1.7, 1, 4],
             mass: 500,
-            onCollide: () => console.log("bonk"),
+            // onCollide: () => console.log("bonk"),
             position,
             rotation,
         }),
