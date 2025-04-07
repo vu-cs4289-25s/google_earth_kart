@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useBox, usePlane } from "@react-three/cannon";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
@@ -177,20 +177,19 @@ export default function City({ setLoaded }) {
         );
     }
     
-    function Checkpoint({ position, rotation, id}) {
-        const [hasCollided, setHasCollided] = useState(false);
+    function Checkpoint({ position, rotation, id }) {
+        const crossedRef = useRef(false);
 
         const [ref] = useBox(() => ({
             position,
             rotation: rotation,
-            crossed: false,
             args: [0.1, 15, 15], // width, height, depth
             isTrigger: true,
             onCollide: () => {
-                if (!hasCollided) {
-                    console.log("checkpoint!");
-                    socket.emit("checkpoint hit", id);
-                    setHasCollided(true);
+                if (!crossedRef.current) {
+                    crossedRef.current = true;     
+                    // console.log("checkpoint!");
+                    socket.emit("checkpoint hit", id);        
                 }
             },
         }));
@@ -199,7 +198,7 @@ export default function City({ setLoaded }) {
         //change the planeGeometry args to change the size of the planes
         return (
             <mesh ref={ref} visible={true}>
-                <boxGeometry args={[0.1, 15, 15]} />
+                <boxGeometry args={[0.01, 15, 15]} />
                 <meshBasicMaterial color="blue" transparent opacity={0.3} />
             </mesh>
         );
