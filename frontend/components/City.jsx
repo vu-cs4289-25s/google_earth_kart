@@ -64,7 +64,8 @@ export default function City({ setLoaded }) {
         { size: [200,1,40], position: [-80.5+ 625, -38.5, 531+ -845], rotation: [0, 30, -3.1]}, 
         { size: [205,1,40], position: [-80.5+ 450, -33.6, 531+ -745], rotation: [0, 30, 0.35]}, 
         { size: [200,1,40], position: [-80.5+ 275, -35.2, 531+ -645], rotation: [0.3, 31, 0.4]},
-        { size: [200,1,40], position: [-80.5+ 115, -37, 531+ -540], rotation: [1, 31, 0]}, 
+        { size: [40,1,40], position: [-80.5+ 190, -36.5, 531 + -580], rotation: [0.5, 32, 1.8], highlight: true}, 
+        { size: [200,1,40], position: [-80.5+ 115, -37, 531+ -540], rotation: [0, 30, 0], highlight: true}, 
         { size: [50,1,25], position: [-80.5+ 95, -36.9, 531+ -480], rotation: [-2.3, -60, 0]},
 
     ];
@@ -152,11 +153,11 @@ export default function City({ setLoaded }) {
             {position: [681.0520629882812, -40.0962028503418, -294.798828125], rotation: [0, 130 * Math.PI / 180, 0] },
             {position: [647.9467163085938, -41.76429748535156, -355.58013916015625], rotation: [0, 130 * Math.PI / 180, 0] },
             {position: [618.0789184570312, -41.92839050292969, -367.08551025390625], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [533.0257568359375, -36.571144104003906, -316.57012939453125], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [413.3964538574219, -31.82054328918457, -242.5343475341797], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [320.2214660644531, -32.47792434692383, -188.5987091064453], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [258.23919677734375, -33.02665710449219, -151.5540771484375], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [191.40911865234375, -33.775577545166016, -111.99581909179688], rotation: [0, 10 * Math.PI / 180, 0]}, 
+            {position: [533.0257568359375, -36.571144104003906, -316.57012939453125], rotation: [0, 30 * Math.PI / 180, 0] },
+            {position: [413.3964538574219, -31.82054328918457, -242.5343475341797], rotation: [0, 30 * Math.PI / 180, 0] },
+            {position: [320.2214660644531, -32.47792434692383, -188.5987091064453], rotation: [0, 30 * Math.PI / 180, 0] },
+            {position: [258.23919677734375, -33.02665710449219, -151.5540771484375], rotation: [0, 30 * Math.PI / 180, 0] },
+            {position: [200.40911865234375, -33.775577545166016, -111.99581909179688], rotation: [0, 30 * Math.PI / 180, 0]}, 
             {position: [28.604637145996094, -35.36733627319336, -10.3054838180542], rotation: [0, 10, 0]}, // finish line
         ];
     
@@ -208,7 +209,7 @@ export default function City({ setLoaded }) {
     return (
         <group>
             {/* Render the city visually */}
-            <primitive object={cityObj} />
+            {/* <primitive object={cityObj} /> */}
 
             {/* Render custom collision boxes */}
             {customBoxes.map((box, index) => (
