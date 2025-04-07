@@ -67,6 +67,19 @@ let playersReady = [];
 let playersInGame = [];
 let playersWaiting = [];
 let gameStatus = "waiting";
+let leaderboard = [];
+let checkpoints = {};
+let checkpointOrders = {};
+
+function calculatePlayerOrder(playerId) {
+    for (let checkpointId = Math.max(...Object.keys(checkpointOrders)); checkpointId >= 1; checkpointId--) {
+        const orderArray = checkpointOrders[checkpointId];
+        if (orderArray && orderArray.includes(playerId)) {
+            return orderArray.indexOf(playerId);
+        }
+    }
+    return Infinity; 
+}
 
 app.get("/game-status", (req, res) => {
     res.json({ status: gameStatus });
@@ -75,6 +88,7 @@ app.get("/game-status", (req, res) => {
 io.on("connection", (socket) => {
     // all websocket functions that occur while connected need to go in here
     console.log("A user connected");
+    checkpoints[socket.id] = 0;
     players.push({ id: socket.id, position: [0, -0.4, 0] });
     io.emit("connected", players);
 
@@ -84,6 +98,7 @@ io.on("connection", (socket) => {
         players = players.filter((p) => p.id !== socket.id);
         playersInGame = playersInGame.filter((p) => p.id !== socket.id);
         playersWaiting = playersWaiting.filter((p) => p.id !== socket.id);
+        delete checkpoints[socket.id];
 
         io.emit("disconnected", players);
         io.emit("player ready", playersInGame);
@@ -104,6 +119,37 @@ io.on("connection", (socket) => {
             console.error("Error saving message to Firestore:", error);
         }
     });
+    socket.on("checkpoint hit", (checkpointId) => {
+        if (checkpoints[socket.id] !== undefined) {
+            if (checkpoints[socket.id] < checkpointId) {
+                checkpoints[socket.id] = checkpointId; 
+    
+                if (!checkpointOrders[checkpointId]) {
+                    checkpointOrders[checkpointId] = [];
+                }
+    
+                if (!checkpointOrders[checkpointId].includes(socket.id)) {
+                    checkpointOrders[checkpointId].push(socket.id);
+                }
+    
+                leaderboard = playersInGame.map((player) => ({
+                    id: player.id,
+                    username: player.username || `Player ${player.id}`,
+                    checkpoints: checkpoints[player.id] || 0,
+                    order: calculatePlayerOrder(player.id), 
+                }));
+    
+                leaderboard.sort((a, b) => {
+                    if (b.checkpoints === a.checkpoints) {
+                        return calculatePlayerOrder(a.id) - calculatePlayerOrder(b.id); 
+                    }
+                    return b.checkpoints - a.checkpoints; 
+                });
+    
+                io.emit("leaderboard update", leaderboard);
+            }
+        }
+    });
 
     socket.on("player moves", ({ playerid, position, quaternion }) => {
         let p = playersInGame.findIndex((p) => p.id === playerid);
@@ -116,14 +162,20 @@ io.on("connection", (socket) => {
 
     socket.on("race start", () => {
         gameStatus = "in progress";
+        leaderboard = [];
+        checkpoints = {};
+        checkpointOrders = {};
+        players.forEach((player) => {
+            checkpoints[player.id] = 0; 
+        });
         io.emit("race start");
     });
 
-    socket.on("player ready", (id, selectedKart) => {
+    socket.on("player ready", (id, selectedKart, username) => {
         const playerIndex = playersInGame.findIndex((p) => p.id === id);
 
         if (playerIndex === -1) {
-            playersInGame.push({ id: id, kart: selectedKart, position: [0, -0.4, 0] });
+            playersInGame.push({ id: id, kart: selectedKart, position: [0, -0.4, 0], username: username });
         } else {
             playersInGame[playerIndex].kart = selectedKart; // Update kart selection
         }
@@ -152,6 +204,8 @@ io.on("connection", (socket) => {
     socket.on("reset game", () => {
         gameStatus = "waiting";
         io.emit("reset game");
+        leaderboard = [];
+        checkpoints = {};
     })
 });
 

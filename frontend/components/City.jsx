@@ -1,12 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useBox, usePlane } from "@react-three/cannon";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
+import { useSocket } from "./SocketContext";
 
 export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
+    const [terrainMesh, setTerrainMesh] = useState(null);
+    const [boundingBox, setBoundingBox] = useState(null);
+    const [rotation, setRotation] = useState([0, 0, 0]);
+    const [debugCollision, setDebugCollision] = useState(false); // State to toggle collision visibility
+    const { socket } = useSocket();
     const customBoxes = [
         //walls
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -65,6 +71,7 @@ export default function City({ setLoaded }) {
 
     useEffect(() => {
         const gltfLoader = new GLTFLoader();
+        const objLoader = new OBJLoader();
         // Load the city GLB model
         gltfLoader.load(
             `${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
@@ -72,12 +79,128 @@ export default function City({ setLoaded }) {
                 gltf.scene.position.set(384,-30,226)
                 setCityObj(gltf.scene);
                 setLoaded(true);
+                setLoaded(true);
             },
             undefined,
             (error) => console.error("GLB Load Error:", error)
         );
 
+        // Load the terrain OBJ model
+        objLoader.load(
+            `${import.meta.env.VITE_BACKEND_URL}assets/localassets/terrain.obj`,
+            (object) => {
+                let terrainMesh = null;
+                object.traverse((child) => {
+                    if (child.isMesh) {
+                        terrainMesh = child;
+                    }
+                });
+
+                if (terrainMesh) {
+                    // Compute bounding box for physics
+                    const bbox = new THREE.Box3().setFromObject(terrainMesh);
+                    setBoundingBox(bbox);
+
+                    // Get terrain rotation (assuming it's already rotated)
+                    const euler = new THREE.Euler();
+                    terrainMesh.matrix.decompose(new THREE.Vector3(), euler, new THREE.Vector3());
+                    setRotation([euler.x, euler.y, euler.z]);
+
+                    // Hide the terrain visually
+                    terrainMesh.visible = false;
+                    setTerrainMesh(terrainMesh);
+                }
+            },
+            undefined,
+            (error) => console.error("OBJ Load Error:", error)
+        );
     }, []);
+
+    function Checkpoints() {
+        const checkpoints = [
+            {position: [-2.269622325897217, -36.156700134277344, 25.91889762878418], rotation: [0, 120 * Math.PI / 180, 0] },
+            {position: [13.427854537963867, -35.436832427978516, 51.04945373535156], rotation: [0, 120 * Math.PI / 180, 0] },
+            {position: [45.147560119628906, -33.61881637573242, 103.22740936279297], rotation: [0, 120 * Math.PI / 180, 0] },
+            {position: [69.89505767822266, -32.12342834472656, 148.2618408203125], rotation: [0, 120 * Math.PI / 180, 0] },
+            {position: [103.48445129394531, -30.425745010375977, 199.42855834960938], rotation: [0, 120 * Math.PI / 180, 0] },
+            {position: [157.7025604248047, -27.42766761779785, 289.7845764160156], rotation: [0, 120 * Math.PI / 180, 0] },
+            {position: [171.6375274658203, -26.15873908996582, 320.9764709472656], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [165.81143188476562, -27.49252700805664, 369.21612548828125], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [163.0688934326172, -28.249792098999023, 397.97943115234375], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [174.59994506835938, -28.437171936035156, 404.9355163574219], rotation: [0, 0 * Math.PI / 180, 0] },
+            {position: [272.2798767089844, -26.408506393432617, 417.8084716796875], rotation: [0, 0 * Math.PI / 180, 0] },
+            {position: [318.4217834472656, -25.482484817504883, 433.43011474609375], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [309.0734558105469, -24.249561309814453, 526.3851928710938], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [291.973388671875, -28.89249038696289, 661.2779541015625], rotation: [0, 90 * Math.PI / 180, 0] },     
+            {position: [279.16998291015625, -26.286819458007812, 766.7279663085938], rotation: [0, 90 * Math.PI / 180, 0] }, 
+            {position: [294.0141906738281, -26.03759765625, 776.3765258789062], rotation: [0, 0 * Math.PI / 180, 0] },
+            {position: [421.3318176269531, -25.946300506591797, 792.48974609375], rotation: [0, 0 * Math.PI / 180, 0] },
+            {position: [542.4381713867188, -23.19383430480957, 808.0729370117188], rotation: [0, 0 * Math.PI / 180, 0] },
+            {position: [677.9442749023438, -17.218881607055664, 825.21923828125], rotation: [0, 0 * Math.PI / 180, 0] },
+            {position: [697.6286010742188, -16.747987747192383, 813.4385375976562], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [703.0405883789062, -16.560945510864258, 761.3602294921875], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [706.7909545898438, -17.6856746673584, 727.1535034179688], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [710.4937133789062, -18.738712310791016, 693.73681640625], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [720.23828125, -21.514339447021484, 605.953369140625], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [731.962890625, -25.045129776000977, 500.3515625], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [744.69580078125, -29.123056411743164, 384.27105712890625], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [766.7474365234375, -33.139163970947266, 243.9053955078125], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [781.31298828125, -35.173057556152344, 130.58529663085938], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [807.2791748046875, -40.362571716308594, -79.2123794555664], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [798.7846069335938, -40.4481086730957, -112.59747314453125], rotation: [0, 130 * Math.PI / 180, 0] },
+            {position: [756.8560791015625, -40.01597213745117, -171.89073181152344], rotation: [0, 130 * Math.PI / 180, 0] },
+            {position: [681.0520629882812, -40.0962028503418, -294.798828125], rotation: [0, 130 * Math.PI / 180, 0] },
+            {position: [647.9467163085938, -41.76429748535156, -355.58013916015625], rotation: [0, 130 * Math.PI / 180, 0] },
+            {position: [618.0789184570312, -41.92839050292969, -367.08551025390625], rotation: [0, 10 * Math.PI / 180, 0] },
+            {position: [533.0257568359375, -36.571144104003906, -316.57012939453125], rotation: [0, 10 * Math.PI / 180, 0] },
+            {position: [413.3964538574219, -31.82054328918457, -242.5343475341797], rotation: [0, 10 * Math.PI / 180, 0] },
+            {position: [320.2214660644531, -32.47792434692383, -188.5987091064453], rotation: [0, 10 * Math.PI / 180, 0] },
+            {position: [258.23919677734375, -33.02665710449219, -151.5540771484375], rotation: [0, 10 * Math.PI / 180, 0] },
+            {position: [191.40911865234375, -33.775577545166016, -111.99581909179688], rotation: [0, 10 * Math.PI / 180, 0]}, 
+            {position: [28.604637145996094, -35.36733627319336, -10.3054838180542], rotation: [0, 10, 0]}, // finish line
+        ];
+    
+        return (
+            <>
+                {checkpoints.map((checkpoint, index) => (
+                    <Checkpoint
+                        key={index}
+                        position={checkpoint.position}
+                        rotation={checkpoint.rotation}
+                        id={index + 1}
+                    />
+                ))}
+            </>
+        );
+    }
+    
+    function Checkpoint({ position, rotation, id}) {
+        const [hasCollided, setHasCollided] = useState(false);
+
+        const [ref] = useBox(() => ({
+            position,
+            rotation: rotation,
+            crossed: false,
+            args: [0.1, 15, 15], // width, height, depth
+            isTrigger: true,
+            onCollide: () => {
+                if (!hasCollided) {
+                    console.log("checkpoint!");
+                    socket.emit("checkpoint hit", id);
+                    setHasCollided(true);
+                }
+            },
+        }));
+    
+        //once we're done developing, set visible={false} (or we could keep them visible to guide players idk)
+        //change the planeGeometry args to change the size of the planes
+        return (
+            <mesh ref={ref} visible={true}>
+                <boxGeometry args={[0.1, 15, 15]} />
+                <meshBasicMaterial color="blue" transparent opacity={0.3} />
+            </mesh>
+        );
+    }
 
     if (!cityObj) return null;
 
@@ -94,6 +217,10 @@ export default function City({ setLoaded }) {
 
             <CityFloor />
 
+            <Checkpoints />
+
+            {/* Add a rotated bounding box collider */}
+            {/*<BoundingBoxCollider bbox={boundingBox} rotation={rotation} />*/}
         </group>
     );
 }

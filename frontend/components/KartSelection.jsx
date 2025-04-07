@@ -7,11 +7,46 @@ import { useNavigate } from "react-router-dom";
 import { useSocket } from "./SocketContext.jsx";
 import CarPreview from "./CarPreview";
 import { getAllCars } from "./CarRegistry";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    getFirestore,
+} from "firebase/firestore";
 
 const KartSelection = () => {
     const [selectedKart, setSelectedKart] = useState("kia-soul"); // Default to Kia Soul
     const navigate = useNavigate();
     const { socket } = useSocket();
+    const [username, setUsername] = useState("User");
+    const db = getFirestore();
+
+    // Fetch the user's username from Firestore
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userRef = collection(db, "users");
+                    const q = query(userRef, where("uid", "==", user.uid));
+                    const curUser = await getDocs(q);
+
+                    if (!curUser.empty) {
+                        const userData = curUser.docs[0].data();
+                        setUsername(userData.username);
+                    } else {
+                        setUsername(user.displayName);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                    setUsername(user.displayName || "User");
+                }
+            }
+        });
+        return () => unsubscribe();
+    }, [db]);
 
     function next() {
         fetch(`${import.meta.env.VITE_BACKEND_URL}game-status`) // CHANGE LATER TO URL
@@ -19,10 +54,11 @@ const KartSelection = () => {
             .then((data) => {
                 if (data.status === "waiting") {
                     navigate("/game");
-                    socket.emit("player ready", socket.id, selectedKart);
+                    socket.emit("player ready", socket.id, selectedKart, username);
+                    
                 } else {
                     navigate("/waitingroom");
-                    socket.emit("player waiting", socket.id, selectedKart);
+                    socket.emit("player waiting", socket.id, selectedKart, username);
                 }
             })
             .catch((error) => console.error("Error fetching game status:", error));
