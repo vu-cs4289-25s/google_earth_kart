@@ -33,6 +33,7 @@ export default function City({ setLoaded }) {
         { size: [7* 2, 70, 1], position: [380+ 413, -30, 128+ -222], rotation: [0, 105.4, 0]},
         { size: [151* 2, 70, 1], position: [352+ 360, -30, -456+ 226], rotation: [0, 121.5, 0]},
         { size: [200* 2, 70, 1], position: [363+ 368, -30, -456+ 226], rotation: [0, 121.5, 0]},
+        { size: [50, 10, 0.5], position: [15, -32.5, -1.4], rotation: [0, 121.5, 0], highlight: true}, // FINISH WALL
 
         //floors
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -64,9 +65,10 @@ export default function City({ setLoaded }) {
         { size: [200,1,40], position: [-80.5+ 625, -38.5, 531+ -845], rotation: [0, 30, -3.1]}, 
         { size: [205,1,40], position: [-80.5+ 450, -33.6, 531+ -745], rotation: [0, 30, 0.35]}, 
         { size: [200,1,40], position: [-80.5+ 275, -35.2, 531+ -645], rotation: [0.3, 31, 0.4]},
-        { size: [40,1,40], position: [-80.5+ 190, -36.5, 531 + -580], rotation: [0.5, 32, 1.8], highlight: true}, 
-        { size: [200,1,40], position: [-80.5+ 115, -37, 531+ -540], rotation: [0, 30, 0], highlight: true}, 
+        { size: [40,1,40], position: [-80.5+ 190, -36.5, 531 + -580], rotation: [0.5, 32, 1.8]}, 
+        { size: [200,1,40], position: [-80.5+ 115, -37, 531+ -540], rotation: [0, 30, 0]}, 
         { size: [50,1,25], position: [-80.5+ 95, -36.9, 531+ -480], rotation: [-2.3, -60, 0]},
+        { size: [50,1,5], position: [-80.5+ 110, -36.9, 531+ -540], rotation: [0, -60, 0], highlight: true}, // FINISH LINE
 
     ];
 
@@ -209,7 +211,7 @@ export default function City({ setLoaded }) {
     return (
         <group>
             {/* Render the city visually */}
-            {/* <primitive object={cityObj} /> */}
+            <primitive object={cityObj} />
 
             {/* Render custom collision boxes */}
             {customBoxes.map((box, index) => (
@@ -226,23 +228,37 @@ export default function City({ setLoaded }) {
     );
 }
 
-function InvisibleBox({ size, position, visible, rotation, highlight }) {
+function InvisibleBox({ size, position, visible, rotation, highlight, finish }) {
     // Convert degrees to radians
     const radians = rotation.map(degree => degree * (Math.PI / 180));
 
     useBox(() => ({
         args: size,
         position,
-        rotation: radians, // Apply rotation in radians
-        type: "Static", // Ensures the box doesn't move
+        rotation: radians,
+        type: "Static",
     }));
 
     if (!visible) return null; // Don't render anything if not visible
 
+    let materialProps = {
+        color: 'white',
+        transparent: true,
+        opacity: 0, // default invisible
+    };
+
+    if (highlight) {
+        materialProps = {
+            color: 'red',
+            transparent: true,
+            opacity: 0.5,
+        };
+    }
+
     return (
         <mesh position={position} rotation={radians}>
             <boxGeometry args={size} />
-            <meshStandardMaterial color={highlight ? "red" : "white"} transparent opacity={highlight ? 1 : 0} />
+            <meshStandardMaterial {...materialProps} />
         </mesh>
     );
 }

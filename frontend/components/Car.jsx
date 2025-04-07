@@ -153,6 +153,7 @@ const Car = forwardRef(function Car(
 
             // Emit movement if the car has moved more than 1 meter
             if (lastPosition.current.distanceTo(carPosition) > 0.1) {
+                // console.log("Position: ", carPosition.toArray()); // For dev purposes
                 socket.emit("player moves", {
                     playerid: id,
                     position: carPosition.toArray(),
