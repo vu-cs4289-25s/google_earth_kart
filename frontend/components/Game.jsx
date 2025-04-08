@@ -49,6 +49,18 @@ function Game() {
     // confirm with user before leaving
     useConfirmExit();
 
+    const MINIMAP_ORIGIN_X = 129;
+    const MINIMAP_ORIGIN_Y = 116;
+
+    const worldToMinimap = (x, z) => {
+        const SCALE = 0.13;
+
+        return {
+            left: MINIMAP_ORIGIN_X - x * SCALE,
+            top: MINIMAP_ORIGIN_Y - z * SCALE,
+        };
+      };
+
     useEffect(() => {
         // Player connects
         socket.on("connected", (playerList) => {
@@ -178,12 +190,49 @@ function Game() {
                     </Debug>
                 </Physics>
                 {/* Render the minimap overlay */}
-                <MiniMap target={carRef} />
+                {/* <MiniMap target={carRef} /> */}
                 <Stats />
                 <Axis />
 
             </Canvas>
             <Leaderboard />
+            <div
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          width: "160px",
+          height: "170px",
+          border: "2px solid white",
+          backgroundImage: "url('/assets/minimap.png')",
+          backgroundSize: "contain",
+          backgroundPosition: "center",
+          zIndex: 1000,
+        }}
+      >
+        {playersInGame.map((player) => {
+            if (player.position) {
+          const { left, top } = worldToMinimap(player.position[0], player.position[2]);
+          return (
+            <div
+                key={player.id}
+                style={{
+                position: "absolute",
+                left,
+                top,
+                transform: "translate(-50%, -50%)",
+                color: "white",
+                fontSize: "12px", // Adjust font size as needed
+                fontWeight: "bold", // Make the username bold
+                }}
+                title={`Car ${player.id}`}
+            >
+                {player.username} {/* Display username */}
+            </div>
+          );
+        }
+        })}
+      </div>
         </>
     );
 }
