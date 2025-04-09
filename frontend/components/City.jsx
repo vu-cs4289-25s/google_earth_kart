@@ -192,20 +192,20 @@ export default function City({ setLoaded }) {
             onCollide: () => {
                 if (!crossedRef.current) {
                     crossedRef.current = true;     
-                    // console.log("checkpoint!");
-                    socket.emit("checkpoint hit", id);        
+                    socket.emit("checkpoint hit", id);
                 }
             },
         }));
     
         //once we're done developing, set visible={false} (or we could keep them visible to guide players idk)
         //change the planeGeometry args to change the size of the planes
-        return (
-            <mesh ref={ref} visible={true}>
-                <boxGeometry args={[0.01, 15, 15]} />
-                <meshBasicMaterial color="blue" transparent opacity={0.3} />
-            </mesh>
-        );
+        // return (
+        //     <mesh ref={ref} visible={true}>
+        //         <boxGeometry args={[0.01, 15, 15]} />
+        //         <meshBasicMaterial color="blue" transparent opacity={0.3} />
+        //     </mesh>
+        // );
+        return null
     }
 
     if (!cityObj) return null;

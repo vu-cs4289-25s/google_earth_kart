@@ -150,7 +150,7 @@ function Game() {
                     intensity={1}
                 />
                 <Physics>
-                    <Debug color={"green"} scale={1}>
+                    {/*<Debug color={"green"} scale={1}>*/}
                     <City setLoaded={setCityLoaded} />
                     {cityLoaded && <Car
                         ref={carRef}
@@ -175,7 +175,7 @@ function Game() {
                         }
                         return null;
                     })}
-                    </Debug>
+                    {/*</Debug>*/}
                 </Physics>
                 {/* Render the minimap overlay */}
                 <MiniMap target={carRef} />
