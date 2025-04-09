@@ -1,23 +1,32 @@
-import { React, useEffect } from "react";
+import { React, useEffect, useState } from "react";
 import { Box, IconButton, Container, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "./SocketContext.jsx";
 
 
-const Podium = ({ leaderboard }) => {
+const Podium = () => {
     const navigate = useNavigate();
     const { socket } = useSocket();
+    const [leaderboard, setLeaderboard] = useState([]); 
 
-    //this is just dummy data for testing, you would pass the actual leaderboard data as a prop
-    leaderboard = [
-        { place: 1, name: "Player 1" },
-        { place: 2, name: "Player 2" },
-        { place: 3, name: "Player 3" },
-        { place: 4, name: "Player 4" },
-        { place: 425, name: "Player 6" },
-        { place: 6, name: "Player 5" },
-    ];
+    useEffect(() => {
+        // Fetch leaderboard data when component mounts
+        const fetchLeaderboard = async () => {
+            try {
+                const response = await fetch("/leaderboard");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setLeaderboard(data.leaderboard);
+            } catch (error) {
+                console.error("Failed to fetch leaderboard:", error);
+            }
+        };
+
+        fetchLeaderboard();
+    }, []);
 
     //sort the leaderboard by place
     leaderboard.sort((a, b) => a.place - b.place);
@@ -27,9 +36,11 @@ const Podium = ({ leaderboard }) => {
     }
 
     useEffect(() => {
-        socket.on("reset game", () => {
-            navigate("/kart-select");
-        });
+        if (socket) {
+            socket.on("reset game", () => {
+                navigate("/kart-select");
+            });
+        }
     },[socket]);
 
     return (
@@ -85,7 +96,7 @@ const Podium = ({ leaderboard }) => {
                 >
                     {leaderboard.map((player, index) => (
                         <Box
-                            key={player.place}
+                            key={index}
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -110,7 +121,7 @@ const Podium = ({ leaderboard }) => {
                             }}
                         >
                             <Typography variant="h6">{index + 1}.</Typography>
-                            <Typography>{player.name}</Typography>
+                            <Typography>{player.username}</Typography>
                             {/* maybe put something else here like time or something */}
                             <Typography>{}</Typography>
                         </Box>
