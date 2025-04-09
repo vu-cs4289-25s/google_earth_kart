@@ -49,11 +49,11 @@ function Game() {
     // confirm with user before leaving
     useConfirmExit();
 
-    const MINIMAP_ORIGIN_X = 129;
-    const MINIMAP_ORIGIN_Y = 116;
+    const MINIMAP_ORIGIN_X = 210;
+    const MINIMAP_ORIGIN_Y = 168;
 
     const worldToMinimap = (x, z) => {
-        const SCALE = 0.13;
+        const SCALE = 0.195;
 
         return {
             left: MINIMAP_ORIGIN_X - x * SCALE,
@@ -201,12 +201,12 @@ function Game() {
           position: "absolute",
           top: "10px",
           right: "10px",
-          width: "160px",
-          height: "170px",
-          border: "2px solid white",
+          width: "240px",
+          height: "255px",
           backgroundImage: "url('/assets/minimap.png')",
           backgroundSize: "contain",
           backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           zIndex: 1000,
         }}
       >
