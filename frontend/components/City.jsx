@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useBox, usePlane } from "@react-three/cannon";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
@@ -24,21 +24,25 @@ export default function City({ setLoaded }) {
         { size: [41* 2, 70, 1], position: [-188+ 364, -30, 132+ 226], rotation: [0, -96.1, 0] },
         { size: [82* 2, 70, 1], position: [-111+ 364, -30, 182+ 226], rotation: [0, -6.7, 0] },
         { size: [78* 2, 70, 1], position: [-130+ 364, -30, 195+ 226], rotation: [0, -6.7, 0] },
-        { size: [179* 2, 70, 1], position: [-55+ 364, -30, 367+ 226], rotation: [0, -96.1, 0] },
+        { size: [178* 2, 70, 1], position: [-55+ 364, -30, 367+ 226], rotation: [0, -96.1, 0] },
         { size: [179* 2, 70, 1], position: [-72+ 364, -30, 382+ 226], rotation: [0, -96.3, 0] },
-        { size: [230* 2, 70, 1], position: [127+ 364, -30, 581+ 226], rotation: [0, -6.1, 0] },
-        { size: [202* 2, 70, 1], position: [126+ 364, -30, 565+ 226], rotation: [0, -6.1, 0] },
+        { size: [230* 2, 70, 1], position: [127+ 364, -30, 581+ 228], rotation: [0, -7.1, 0] },
+        { size: [202* 2, 70, 1], position: [126+ 364, -30, 565+ 225], rotation: [0, -6.1, 0]},
         { size: [466* 2, 70, 1], position: [398+ 364, -30, 150+ 226], rotation: [0, 83.4, 0] },
+        { size: [466* 2, 70, 1], position: [398+ 367, -30, 150+ 200], rotation: [0, 83.4, 0] },
+        { size: [25* 2, 70, 1], position: [398+ 402, -30, 150+ -280], rotation: [0, 135.4, 0]},
         { size: [445* 2, 70, 1], position: [380+ 364, -30, 128+ 226], rotation: [0, 83.4, 0] },
         { size: [7* 2, 70, 1], position: [380+ 413, -30, 128+ -222], rotation: [0, 105.4, 0]},
         { size: [151* 2, 70, 1], position: [352+ 360, -30, -456+ 226], rotation: [0, 121.5, 0]},
-        { size: [200* 2, 70, 1], position: [363+ 368, -30, -456+ 226], rotation: [0, 121.5, 0]},
+        { size: [150* 2, 70, 1], position: [363+ 350, -30, -456+ 190], rotation: [0, 121.5, 0]},
+        { size: [50, 10, 0.5], position: [15, -32.5, -1.4], rotation: [0, 121.5, 0], highlight: true}, // FINISH WALL
 
         //floors
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
-        { size: [320,1,25], position: [-260+ 364, -32, -30+ 226], rotation: [-1.9, 121.1, 0]}, 
+        { size: [300,1,25], position: [-260+ 364, -32, -30+ 226], rotation: [-1.9, 121.1, 0]}, 
         { size: [20,1,15], position: [-188+ 359, -27.8, 92+ 226], rotation: [0, 100.1, -3.4]}, 
         { size: [90,1,25], position: [-195+ 364, -29, 145+ 226], rotation: [1.5, -96.1, 0]}, 
+        { size: [38,1,25], position: [-195+ 365, -27.95, 145+ 200], rotation: [2, -96.1, 0]}, 
         { size: [132,1,25], position: [-121+ 364, -28.5, 183+ 226], rotation: [0, -6.7, 1.2]},
         { size: [23,1,25], position: [-45+ 364, -27, 192+ 226], rotation: [0, -6.7, 0]}, 
         { size: [80,1,25], position: [-50.5+ 364, -26.3, 278+ 190], rotation: [-1.05, -96.1, 0]},  
@@ -46,7 +50,7 @@ export default function City({ setLoaded }) {
         { size: [80,1,25], position: [-61.5+ 364, -28.5, 390+ 226], rotation: [2.8, -96.1, 0]},
         { size: [80,1,25], position: [-70.5+ 364, -29.7, 462+ 226], rotation: [-1.4, -96.1, 0]},
         { size: [60,1,25], position: [-80.5+ 364, -28, 531+ 226], rotation: [-1.5, -96.1, 0]},
-        { size: [175,1,25], position: [-80.5+ 458, -27.5, 531+ 262], rotation: [0, -6.5, 0]}, 
+        { size: [175,1,28], position: [-80.5+ 458, -27.5, 531+ 262], rotation: [0, -6.5, 0]}, 
         { size: [175,1,25], position: [-80.5+ 545, -26.5, 531+ 265], rotation: [0, -6.5, 1.2]}, 
         { size: [150,1,25], position: [-80.5+ 695, -21.5, 531+ 280], rotation: [0, -6.5, 2.5]},
         { size: [240,1,25], position: [-80.5+ 798, -21.4, 531+ 125], rotation: [0, -96.1, 1.8]},
@@ -57,6 +61,7 @@ export default function City({ setLoaded }) {
         { size: [150,1,25], position: [-80.5+ 870, -37.9, 531+ -458], rotation: [0, -96.5, 1.25]}, 
         { size: [100,1,25], position: [-80.5+ 878, -40.9, 531+ -580], rotation: [0, -96.5, 1.7]}, 
         { size: [100,1,25], position: [-80.5+ 878, -40.9, 531+ -580], rotation: [0, -96.5, 1.7]},
+        { size: [50,1,15], position: [-80.5+ 885, -41.9, 531+ -650], rotation: [0, -58, 0]},
         { size: [100,1,25], position: [-80.5+ 870, -41.9, 531+ -650], rotation: [0, -58, 0]},
         { size: [100,1,25], position: [-80.5+ 820, -40.8, 531+ -730], rotation: [0, -58, -1.2]},
         { size: [100,1,25], position: [-80.5+ 768, -41.2, 531+ -816], rotation: [0, -58, 1.7]},
@@ -64,8 +69,10 @@ export default function City({ setLoaded }) {
         { size: [200,1,40], position: [-80.5+ 625, -38.5, 531+ -845], rotation: [0, 30, -3.1]}, 
         { size: [205,1,40], position: [-80.5+ 450, -33.6, 531+ -745], rotation: [0, 30, 0.35]}, 
         { size: [200,1,40], position: [-80.5+ 275, -35.2, 531+ -645], rotation: [0.3, 31, 0.4]},
-        { size: [200,1,40], position: [-80.5+ 115, -37, 531+ -540], rotation: [1, 31, 0]}, 
-        { size: [50,1,25], position: [-80.5+ 95, -36.9, 531+ -480], rotation: [-2.3, -60, 0]},
+        { size: [40,1,40], position: [-80.5+ 190, -36.5, 531 + -580], rotation: [0.5, 32, 1.8]}, 
+        { size: [200,1,40], position: [-80.5+ 115, -37, 531+ -540], rotation: [0, 30, 0]}, 
+        { size: [50,1,25], position: [-80.5+ 95, -36.9, 531+ -480], rotation: [-1, -60, 0]},
+        { size: [50,1,5], position: [-80.5+ 110, -36.9, 531+ -540], rotation: [0, -60, 0], highlight: true}, // FINISH LINE
 
     ];
 
@@ -137,7 +144,7 @@ export default function City({ setLoaded }) {
             {position: [421.3318176269531, -25.946300506591797, 792.48974609375], rotation: [0, 0 * Math.PI / 180, 0] },
             {position: [542.4381713867188, -23.19383430480957, 808.0729370117188], rotation: [0, 0 * Math.PI / 180, 0] },
             {position: [677.9442749023438, -17.218881607055664, 825.21923828125], rotation: [0, 0 * Math.PI / 180, 0] },
-            {position: [697.6286010742188, -16.747987747192383, 813.4385375976562], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [700.6286010742188, -16.747987747192383, 813.4385375976562], rotation: [0, 90 * Math.PI / 180, 0] },
             {position: [703.0405883789062, -16.560945510864258, 761.3602294921875], rotation: [0, 90 * Math.PI / 180, 0] },
             {position: [706.7909545898438, -17.6856746673584, 727.1535034179688], rotation: [0, 90 * Math.PI / 180, 0] },
             {position: [710.4937133789062, -18.738712310791016, 693.73681640625], rotation: [0, 90 * Math.PI / 180, 0] },
@@ -152,11 +159,11 @@ export default function City({ setLoaded }) {
             {position: [681.0520629882812, -40.0962028503418, -294.798828125], rotation: [0, 130 * Math.PI / 180, 0] },
             {position: [647.9467163085938, -41.76429748535156, -355.58013916015625], rotation: [0, 130 * Math.PI / 180, 0] },
             {position: [618.0789184570312, -41.92839050292969, -367.08551025390625], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [533.0257568359375, -36.571144104003906, -316.57012939453125], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [413.3964538574219, -31.82054328918457, -242.5343475341797], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [320.2214660644531, -32.47792434692383, -188.5987091064453], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [258.23919677734375, -33.02665710449219, -151.5540771484375], rotation: [0, 10 * Math.PI / 180, 0] },
-            {position: [191.40911865234375, -33.775577545166016, -111.99581909179688], rotation: [0, 10 * Math.PI / 180, 0]}, 
+            {position: [533.0257568359375, -36.571144104003906, -316.57012939453125], rotation: [0, 30 * Math.PI / 180, 0] },
+            {position: [413.3964538574219, -31.82054328918457, -242.5343475341797], rotation: [0, 30 * Math.PI / 180, 0] },
+            {position: [320.2214660644531, -32.47792434692383, -188.5987091064453], rotation: [0, 30 * Math.PI / 180, 0] },
+            {position: [258.23919677734375, -33.02665710449219, -151.5540771484375], rotation: [0, 30 * Math.PI / 180, 0] },
+            {position: [200.40911865234375, -33.775577545166016, -111.99581909179688], rotation: [0, 30 * Math.PI / 180, 0]}, 
             {position: [28.604637145996094, -35.36733627319336, -10.3054838180542], rotation: [0, 10, 0]}, // finish line
         ];
     
@@ -174,20 +181,19 @@ export default function City({ setLoaded }) {
         );
     }
     
-    function Checkpoint({ position, rotation, id}) {
-        const [hasCollided, setHasCollided] = useState(false);
+    function Checkpoint({ position, rotation, id }) {
+        const crossedRef = useRef(false);
 
         const [ref] = useBox(() => ({
             position,
             rotation: rotation,
-            crossed: false,
-            args: [0.1, 15, 15], // width, height, depth
+            args: [0.1, 15, 20], // width, height, depth
             isTrigger: true,
             onCollide: () => {
-                if (!hasCollided) {
-                    console.log("checkpoint!");
-                    socket.emit("checkpoint hit", id);
-                    setHasCollided(true);
+                if (!crossedRef.current) {
+                    crossedRef.current = true;     
+                    // console.log("checkpoint!");
+                    socket.emit("checkpoint hit", id);        
                 }
             },
         }));
@@ -196,7 +202,7 @@ export default function City({ setLoaded }) {
         //change the planeGeometry args to change the size of the planes
         return (
             <mesh ref={ref} visible={true}>
-                <boxGeometry args={[0.1, 15, 15]} />
+                <boxGeometry args={[0.01, 15, 15]} />
                 <meshBasicMaterial color="blue" transparent opacity={0.3} />
             </mesh>
         );
@@ -225,23 +231,37 @@ export default function City({ setLoaded }) {
     );
 }
 
-function InvisibleBox({ size, position, visible, rotation, highlight }) {
+function InvisibleBox({ size, position, visible, rotation, highlight, finish }) {
     // Convert degrees to radians
     const radians = rotation.map(degree => degree * (Math.PI / 180));
 
     useBox(() => ({
         args: size,
         position,
-        rotation: radians, // Apply rotation in radians
-        type: "Static", // Ensures the box doesn't move
+        rotation: radians,
+        type: "Static",
     }));
 
     if (!visible) return null; // Don't render anything if not visible
 
+    let materialProps = {
+        color: 'white',
+        transparent: true,
+        opacity: 0, // default invisible
+    };
+
+    if (highlight) {
+        materialProps = {
+            color: 'red',
+            transparent: true,
+            opacity: 0.5,
+        };
+    }
+
     return (
         <mesh position={position} rotation={radians}>
             <boxGeometry args={size} />
-            <meshStandardMaterial color={highlight ? "red" : "white"} transparent opacity={highlight ? 1 : 0} />
+            <meshStandardMaterial {...materialProps} />
         </mesh>
     );
 }

@@ -151,8 +151,9 @@ const Car = forwardRef(function Car(
             camera.quaternion.slerp(carQuaternion, 0.1);
             camera.lookAt(carPosition);
 
-            // Emit movement if the car has moved more than 1 meter
+            // Emit movement if the car has moved more than 0.1 meter
             if (lastPosition.current.distanceTo(carPosition) > 0.1) {
+                // console.log("Position: ", carPosition.toArray()); // For dev purposes
                 socket.emit("player moves", {
                     playerid: id,
                     position: carPosition.toArray(),
