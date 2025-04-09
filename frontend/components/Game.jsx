@@ -12,6 +12,7 @@ import { AxesHelper } from 'three';
 import MiniMap from "../components/MiniMap.jsx";
 import Leaderboard from "../components/Leaderboard.jsx";
 import useConfirmExit from '../components/ConfirmExit.jsx';
+import BackgroundMusic from "../components/BackgroundMusic";
 import { useNavigate } from "react-router-dom";
 
 function Axis() {
@@ -149,6 +150,8 @@ function Game() {
 
     return (
         <>
+            <BackgroundMusic src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" volume={0.5} playOnStart={true} />
+            
             <Broadcast show={gameStatus === "waiting"}/>
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white",
                 display: gameStatus === "waiting" ? "block" : "none"
