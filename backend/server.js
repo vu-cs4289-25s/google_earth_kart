@@ -83,7 +83,11 @@ function calculatePlayerOrder(playerId) {
 
 app.get("/game-status", (req, res) => {
     res.json({ status: gameStatus });
-});
+}); 
+
+app.get("/leaderboard", (req, res) => {
+    res.json({ leaderboard: leaderboard });
+}); 
 
 io.on("connection", (socket) => {
     // all websocket functions that occur while connected need to go in here
@@ -198,7 +202,7 @@ io.on("connection", (socket) => {
         playersInGame = [];
         playersWaiting = [];
         playersReady = [];
-        io.emit("finish race");
+        io.emit("finish race", leaderboard);
     });
 
     socket.on("reset game", () => {
