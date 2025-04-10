@@ -7,6 +7,8 @@ import { Chassis } from "./Chassis";
 import { useControls } from "../controls/keyboard-controls.js";
 import { Wheel } from "./Wheel";
 
+const bias = 0.003;
+
 const Car = forwardRef(function Car(
     {
         angularVelocity,
@@ -112,10 +114,11 @@ const Car = forwardRef(function Car(
             }
 
             for (let s = 0; s < 2; s++) {
-                vehicleApi.setSteeringValue(
-                    left || right ? steer * (left && !right ? 1 : -1) : 0,
-                    s,
-                );
+                const steerDirection =
+                    left || right ? steer * (left && !right ? 1 : -1) : 0;
+
+                // Add tiny rightward bias
+                vehicleApi.setSteeringValue(steerDirection - bias, s);
             }
 
             for (let b = 2; b < 4; b++) {
@@ -147,8 +150,8 @@ const Car = forwardRef(function Car(
             const targetPosition = carPosition.clone().add(offset);
 
             // Smooth movement and rotation
-            camera.position.lerp(targetPosition, 0.1);
-            camera.quaternion.slerp(carQuaternion, 0.1);
+            camera.position.lerp(targetPosition, 1);
+            camera.quaternion.slerp(carQuaternion, 1);
             camera.lookAt(carPosition);
 
             // Emit movement if the car has moved more than 0.1 meter
