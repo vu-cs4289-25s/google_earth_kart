@@ -99,7 +99,7 @@ function Game() {
             }
         });
 
-        socket.on("finish race", () => {
+        socket.on("finish race", (leaderboard) => {
             navigate("/podium");
         })
 

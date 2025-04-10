@@ -80,7 +80,7 @@ const KartSelection = () => {
         }
     
         if (socket) {
-            socket.on("finish race", () => {
+            socket.on("finish race", (leaderboard) => {
                 navigate("/podium");
             });
         }
