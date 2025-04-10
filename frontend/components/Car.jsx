@@ -140,7 +140,7 @@ const Car = forwardRef(function Car(
             );
 
             // Define the camera's offset relative to the car
-            // const offset = new THREE.Vector3(0, 200, -5);
+            // const offset = new THREE.Vector3(50, 1000, -5);
             const offset = new THREE.Vector3(0, 3, -12);
             offset.applyQuaternion(carQuaternion);
 
