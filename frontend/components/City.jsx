@@ -1,17 +1,11 @@
 import { useEffect, useState, useMemo, useRef } from "react";
-import { useLoader } from "@react-three/fiber";
 import { useBox, usePlane } from "@react-three/cannon";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import * as THREE from "three";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { useSocket } from "./SocketContext";
 
 export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
-    const [terrainMesh, setTerrainMesh] = useState(null);
-    const [boundingBox, setBoundingBox] = useState(null);
-    const [rotation, setRotation] = useState([0, 0, 0]);
-    const [debugCollision, setDebugCollision] = useState(false); // State to toggle collision visibility
     const { socket } = useSocket();
     const customBoxes = [
         //walls
@@ -78,7 +72,11 @@ export default function City({ setLoaded }) {
 
     useEffect(() => {
         const gltfLoader = new GLTFLoader();
-        const objLoader = new OBJLoader();
+        const dLoader = new DRACOLoader();
+        dLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.7/")
+        dLoader.setDecoderConfig({type: 'js'});
+        gltfLoader.setDRACOLoader(dLoader)
+
         // Load the city GLB model
         gltfLoader.load(
             `${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/localassets/vanderbilt.glb`,
@@ -92,35 +90,6 @@ export default function City({ setLoaded }) {
             (error) => console.error("GLB Load Error:", error)
         );
 
-        // Load the terrain OBJ model
-        objLoader.load(
-            `${import.meta.env.VITE_BACKEND_URL}assets/localassets/terrain.obj`,
-            (object) => {
-                let terrainMesh = null;
-                object.traverse((child) => {
-                    if (child.isMesh) {
-                        terrainMesh = child;
-                    }
-                });
-
-                if (terrainMesh) {
-                    // Compute bounding box for physics
-                    const bbox = new THREE.Box3().setFromObject(terrainMesh);
-                    setBoundingBox(bbox);
-
-                    // Get terrain rotation (assuming it's already rotated)
-                    const euler = new THREE.Euler();
-                    terrainMesh.matrix.decompose(new THREE.Vector3(), euler, new THREE.Vector3());
-                    setRotation([euler.x, euler.y, euler.z]);
-
-                    // Hide the terrain visually
-                    terrainMesh.visible = false;
-                    setTerrainMesh(terrainMesh);
-                }
-            },
-            undefined,
-            (error) => console.error("OBJ Load Error:", error)
-        );
     }, []);
 
     function Checkpoints() {
@@ -196,15 +165,6 @@ export default function City({ setLoaded }) {
                 }
             },
         }));
-    
-        //once we're done developing, set visible={false} (or we could keep them visible to guide players idk)
-        //change the planeGeometry args to change the size of the planes
-        // return (
-        //     <mesh ref={ref} visible={true}>
-        //         <boxGeometry args={[0.01, 15, 15]} />
-        //         <meshBasicMaterial color="blue" transparent opacity={0.3} />
-        //     </mesh>
-        // );
         return null
     }
 
@@ -224,9 +184,6 @@ export default function City({ setLoaded }) {
             <CityFloor />
 
             <Checkpoints />
-
-            {/* Add a rotated bounding box collider */}
-            {/*<BoundingBoxCollider bbox={boundingBox} rotation={rotation} />*/}
         </group>
     );
 }
