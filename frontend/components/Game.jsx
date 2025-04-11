@@ -41,6 +41,7 @@ function Game() {
     const [gameStatus, setGameStatus] = useState("waiting");
     const [cityLoaded, setCityLoaded] = useState(false);
     const navigate = useNavigate();
+    const [trafficLightState, setTrafficLightState] = useState("off");
 
     const [selectedCar, setSelectedCar] = useState(() => {
         return localStorage.getItem("selectedCar") || "kia-soul";
@@ -115,11 +116,26 @@ function Game() {
     function countdown() {
         setShowButton(false);
         setCountDown("Ready?");
-        setTimeout(() => { setCountDown("3"); }, 1000);
-        setTimeout(() => { setCountDown("2");  }, 2000);
-        setTimeout(() => { setCountDown("1"); }, 3000);
-        setTimeout(() => { setCountDown("Go!"); setAllowMove(true); setGameStatus("in progress"); }, 4000);
-        setTimeout(() => { setCountDown(""); }, 5000);
+        setTrafficLightState("off");
+        
+        setTimeout(() => { 
+            setCountDown(""); 
+            setTrafficLightState("red"); 
+        }, 1000);
+        
+        setTimeout(() => { 
+            setTrafficLightState("amber"); 
+        }, 2500);
+        
+        setTimeout(() => { 
+            setTrafficLightState("green"); 
+            setAllowMove(true); 
+            setGameStatus("in progress"); 
+        }, 4000);
+        
+        setTimeout(() => { 
+            setTrafficLightState("off"); 
+        }, 6000);
     }
 
     function ready() {
@@ -139,17 +155,119 @@ function Game() {
             }}>
                 Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {playerCount}
             </h4>
+
+            {/* Traffic Light Component */}
+            <div style={{
+                display: trafficLightState !== "off" ? "flex" : "none",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 1000,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                padding: "10px",
+                borderRadius: "10px",
+                width: "100px",
+            }}>
+                <div style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    backgroundColor: trafficLightState === "red" ? "#ff3333" : "rgba(255, 0, 0, 0.3)",
+                    margin: "5px",
+                    boxShadow: trafficLightState === "red" ? "0 0 20px #ff3333" : "none",
+                    border: "3px solid black",
+                }}></div>
+                <div style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    backgroundColor: trafficLightState === "amber" ? "#ffaa33" : "rgba(255, 170, 0, 0.3)",
+                    margin: "5px",
+                    boxShadow: trafficLightState === "amber" ? "0 0 20px #ffaa33" : "none",
+                    border: "3px solid black",
+                }}></div>
+                <div style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    backgroundColor: trafficLightState === "green" ? "#33ff33" : "rgba(0, 255, 0, 0.3)",
+                    margin: "5px",
+                    boxShadow: trafficLightState === "green" ? "0 0 20px #33ff33" : "none",
+                    border: "3px solid black",
+                }}></div>
+            </div>
+
             <div style={{display: "flex", justifyContent: "center"}}>
-                <h2 style={{zIndex: 256, position: "absolute", color: "white"}}>{countDown}</h2>
-                <h4 style={{zIndex: 256, position: "absolute", color: "white", top:"40px",
-                    display: playersInGame.length === 1 ? "" : "none"}}>At least 2 Players required to play.</h4>
-                <button onClick={ready} style={{zIndex: 256, position: "absolute", top: "60px", 
-                    display: showButton && gameStatus === "waiting" && playersInGame.length > 1 ? "block" : "none", background: "black", color:"white"}}>Ready!</button>
+            <h2 style={{
+                zIndex: 256, 
+                position: "absolute", 
+                color: "white",
+                textShadow: "0 0 4px #ff8c00, 0 0 4px #ff8c00",
+                fontWeight: "bold",
+            }}>{countDown}</h2>
+            <h4 style={{
+                zIndex: 256, 
+                position: "absolute", 
+                color: "white", 
+                top:"40px",
+                display: playersInGame.length === 1 ? "" : "none",
+                textShadow: "0 0 2px #ff8c00, 0 0 2px #ff8c00",
+                fontWeight: "bold",
+            }}>At least 2 Players required to play.</h4>
+                
+                {/* Ready Button with Updated Styling */}
+                <button 
+                    onClick={ready} 
+                    style={{
+                        zIndex: 256, 
+                        position: "absolute", 
+                        top: "60px", 
+                        display: showButton && gameStatus === "waiting" && playersInGame.length > 1 ? "block" : "none",
+                        backgroundColor: "#4a90e2",
+                        color: "white", 
+                        padding: "10px 20px",
+                        borderRadius: "16px",
+                        border: "4px solid white",
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        fontSize: "16px",
+                        transition: "transform 0.2s",
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+                    onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                >
+                    START RACE!
+                </button>
 
-                    {/* Dummy button to manually finish race for now. Delete this once finish line implemented */}
-                <button onClick={finish} style={{zIndex: 256, position: "absolute", top: "60px", 
-                display: gameStatus === "in progress" ? "block" : "none", background: "black", color:"white"}}>Finish Race</button>
-
+                {/* Finish Race Button with Updated Styling */}
+                <button 
+                    onClick={finish} 
+                    style={{
+                        zIndex: 256, 
+                        position: "absolute", 
+                        top: "60px", 
+                        display: gameStatus === "in progress" ? "block" : "none",
+                        backgroundColor: "#ff8c00",
+                        color: "white", 
+                        padding: "10px 20px",
+                        borderRadius: "16px",
+                        border: "4px solid white",
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        fontSize: "16px",
+                        transition: "transform 0.2s",
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+                    onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                >
+                    FINISH RACE
+                </button>
             </div>
             <Canvas
                 camera={{ position: [0, 3, 15], fov: 45, near: 1, far: 1000 }}
