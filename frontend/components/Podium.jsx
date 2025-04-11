@@ -49,12 +49,11 @@ const Podium = () => {
                 maxWidth="sm"
                 sx={{
                     py: 5,
-                    minHeight: "100vh",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-start",
                     alignItems: "center",
-                    overflowY: "auto",
+                    margin: "0 auto",
                 }}
             >
 
