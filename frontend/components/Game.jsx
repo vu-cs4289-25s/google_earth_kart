@@ -121,21 +121,21 @@ function Game() {
         setTimeout(() => { 
             setCountDown(""); 
             setTrafficLightState("red"); 
-        }, 1000);
+        }, 0);
         
         setTimeout(() => { 
             setTrafficLightState("amber"); 
-        }, 2500);
+        }, 1000);
         
         setTimeout(() => { 
             setTrafficLightState("green"); 
             setAllowMove(true); 
-            setGameStatus("in progress"); 
-        }, 4000);
+        }, 2000);
         
         setTimeout(() => { 
-            setTrafficLightState("off"); 
-        }, 6000);
+            setTrafficLightState("off");
+            setGameStatus("in progress");
+        }, 3000);
     }
 
     function ready() {
