@@ -159,7 +159,7 @@ export default function SignUp(props) {
 
             await addDoc(collection(db, "users"), userData);
             console.log("User added to Firestore:", userData);
-            navigate("/kart-select");
+            navigate("/landing");
         } catch (error) {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -199,8 +199,8 @@ export default function SignUp(props) {
             } else {
                 console.log("User already exists in Firestore, logging in");
             }
-            // Navigate to the game page
-            navigate("/kart-select"); //navigate to kart select
+            // Navigate to the landing page
+            navigate("/landing"); 
         } catch (error) {
             console.error("Error during Google sign-in:", error);
         }
