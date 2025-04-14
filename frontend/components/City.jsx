@@ -19,7 +19,7 @@ export default function City({ setLoaded }) {
         { size: [82* 2, 70, 1], position: [-111+ 364, -30, 182+ 226], rotation: [0, -6.7, 0] },
         { size: [78* 2, 70, 1], position: [-130+ 364, -30, 195+ 226], rotation: [0, -6.7, 0] },
         { size: [178* 2, 70, 1], position: [-55+ 364, -30, 367+ 226], rotation: [0, -96.1, 0] },
-        { size: [179* 2, 70, 1], position: [-72+ 364, -30, 382+ 226], rotation: [0, -96.3, 0] },
+        { size: [179* 2, 70, 1], position: [-72+ 364, -30, 382+ 226], rotation: [0, -96.3, 0]},
         { size: [230* 2, 70, 1], position: [127+ 364, -30, 581+ 228], rotation: [0, -7.1, 0] },
         { size: [202* 2, 70, 1], position: [126+ 364, -30, 565+ 225], rotation: [0, -6.1, 0]},
         { size: [466* 2, 70, 1], position: [398+ 364, -30, 150+ 226], rotation: [0, 83.4, 0] },
@@ -33,7 +33,7 @@ export default function City({ setLoaded }) {
 
         //floors
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
-        { size: [300,1,25], position: [-260+ 364, -32, -30+ 226], rotation: [-1.9, 121.1, 0]}, 
+        { size: [300,1,25], position: [-260+ 364, -32, -30+ 226], rotation: [-2.1, 121.1, 0]}, 
         { size: [20,1,15], position: [-188+ 359, -27.8, 92+ 226], rotation: [0, 100.1, -3.4]}, 
         { size: [90,1,25], position: [-195+ 364, -29, 145+ 226], rotation: [1.5, -96.1, 0]}, 
         { size: [38,1,25], position: [-195+ 365, -27.95, 145+ 200], rotation: [2, -96.1, 0]}, 
@@ -46,9 +46,9 @@ export default function City({ setLoaded }) {
         { size: [60,1,25], position: [-80.5+ 364, -28, 531+ 226], rotation: [-1.5, -96.1, 0]},
         { size: [175,1,28], position: [-80.5+ 458, -27.5, 531+ 262], rotation: [0, -6.5, 0]}, 
         { size: [175,1,25], position: [-80.5+ 545, -26.5, 531+ 265], rotation: [0, -6.5, 1.2]}, 
-        { size: [150,1,25], position: [-80.5+ 695, -21.5, 531+ 280], rotation: [0, -6.5, 2.5]},
+        { size: [150,1,27], position: [-80.5+ 695, -21.5, 531+ 280], rotation: [0, -6.5, 2.5]},
         { size: [240,1,25], position: [-80.5+ 798, -21.4, 531+ 125], rotation: [0, -96.1, 1.8]},
-        { size: [50,1,25], position: [-80.5+ 780, -18.1, 531+ 275], rotation: [0, -96.1, -0.8]},
+        { size: [56,1,25], position: [-80.5+ 780, -18.1, 531+ 275], rotation: [0, -96.1, -0.8]},
         { size: [50,1,25], position: [-80.5+ 787, -18.1, 531+ 226], rotation: [0, -96.1, 1]},
         { size: [250,1,25], position: [-80.5+ 830, -29.5, 531+ -115], rotation: [0, -96.5, 2]}, 
         { size: [150,1,25], position: [-80.5+ 850, -35, 531+ -310], rotation: [0, -96.5, 1]},
