@@ -7,6 +7,9 @@ import { Chassis } from "./Chassis";
 import { useControls } from "../controls/keyboard-controls.js";
 import { Wheel } from "./Wheel";
 
+import accelMP3 from "../assets/acceleration.mp3"; 
+import brakeMP3 from "../assets/brake.mp3";
+
 const bias = 0.003;
 
 const Car = forwardRef(function Car(
@@ -99,6 +102,18 @@ const Car = forwardRef(function Car(
 
     const { camera } = useThree();
 
+    // Create audio elements for acceleration and braking sounds.
+    const accelSound = useRef(new Audio(accelMP3));
+    const brakeSound = useRef(new Audio(brakeMP3));
+
+    // Configure the audio elements on mount.
+    useEffect(() => {
+        accelSound.current.loop = true;
+        accelSound.current.volume = 0.5;
+        brakeSound.current.loop = true;
+        brakeSound.current.volume = 0.5;
+    }, []);
+
     useFrame(() => {
         if (allowMove) {
             const { backward, brake, forward, left, reset, right } =
@@ -130,6 +145,43 @@ const Car = forwardRef(function Car(
                 chassisApi.velocity.set(0, 0, 0);
                 chassisApi.angularVelocity.set(...angularVelocity);
                 chassisApi.rotation.set(...rotation);
+            }
+
+            // Sound logic
+            if (forward || backward) {
+                // If accelerating or decelerating, play acceleration sound.
+                if (accelSound.current.paused) {
+                    accelSound.current.play().catch((err) =>
+                        console.warn("Acceleration sound play error:", err)
+                    );
+                }
+                // Ensure brake sound is stopped.
+                if (!brakeSound.current.paused) {
+                    brakeSound.current.pause();
+                    brakeSound.current.currentTime = 0;
+                }
+            } else if (brake) {
+                // When braking, play braking sound.
+                if (brakeSound.current.paused) {
+                    brakeSound.current.play().catch((err) =>
+                        console.warn("Brake sound play error:", err)
+                    );
+                }
+                // Stop acceleration sound.
+                if (!accelSound.current.paused) {
+                    accelSound.current.pause();
+                    accelSound.current.currentTime = 0;
+                }
+            } else {
+                // No input – stop both sounds.
+                if (!accelSound.current.paused) {
+                    accelSound.current.pause();
+                    accelSound.current.currentTime = 0;
+                }
+                if (!brakeSound.current.paused) {
+                    brakeSound.current.pause();
+                    brakeSound.current.currentTime = 0;
+                }
             }
         }
 
