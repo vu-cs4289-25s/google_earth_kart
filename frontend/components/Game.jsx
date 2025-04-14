@@ -255,7 +255,7 @@ function Game() {
                     START RACE!
                 </button>
 
-                {/* Finish Race Button with Updated Styling */}
+                {/*  // Finish Race Button with Updated Styling
                 <button 
                     onClick={finish} 
                     style={{
@@ -278,7 +278,7 @@ function Game() {
                     onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
                 >
                     FINISH RACE
-                </button>
+                </button> */}
             </div>
             <Canvas
                 camera={{ position: [0, 3, 15], fov: 45, near: 1, far: 1000 }}
