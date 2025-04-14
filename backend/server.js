@@ -9,7 +9,6 @@ import { readFileSync } from "fs";
 import admin from "firebase-admin";
 import path from "path";
 
-
 dotenv.config();
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_TOKEN);
@@ -64,6 +63,7 @@ app.get("/", (req, res) => {
 
 let players = [];
 let playersReady = [];
+let playersFinished = [];
 let playersInGame = [];
 let playersWaiting = [];
 let gameStatus = "waiting";
@@ -204,6 +204,15 @@ io.on("connection", (socket) => {
         playersReady = [];
         io.emit("finish race", leaderboard);
     });
+
+    socket.on("player finished", (playerData) => {
+        playersInGame = playersInGame.filter((p) => p.id !== playerData.playerId);
+        playersFinished.push({ id: playerData.playerId });
+        io.emit("player finished", playerData.id);
+        if (playersInGame.length === 0) {
+            io.emit("finish race");
+        }
+    })
 
     socket.on("reset game", () => {
         gameStatus = "waiting";

@@ -29,7 +29,8 @@ export default function City({ setLoaded }) {
         { size: [7* 2, 70, 1], position: [380+ 413, -30, 128+ -222], rotation: [0, 105.4, 0]},
         { size: [151* 2, 70, 1], position: [352+ 360, -30, -456+ 226], rotation: [0, 121.5, 0]},
         { size: [150* 2, 70, 1], position: [363+ 350, -30, -456+ 190], rotation: [0, 121.5, 0]},
-        { size: [50, 10, 0.5], position: [15, -32.5, -1.4], rotation: [0, 121.5, 0], highlight: true}, // FINISH WALL
+        { size: [50, 10, 0.5], position: [15, -32.5, -1.4], rotation: [0, 121.5, 0], highlight: true}, // wall to prevent cheaters
+        { size: [50, 10, 0.5], position: [25, -32.5, -1.4], rotation: [0, 121.5, 0], finish: true}, // FINISH WALL
 
         //floors
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -83,7 +84,6 @@ export default function City({ setLoaded }) {
             (gltf) => {
                 gltf.scene.position.set(384,-30,226)
                 setCityObj(gltf.scene);
-                setLoaded(true);
                 setLoaded(true);
             },
             undefined,
@@ -178,7 +178,7 @@ export default function City({ setLoaded }) {
 
             {/* Render custom collision boxes */}
             {customBoxes.map((box, index) => (
-                <InvisibleBox key={index} size={box.size} visible = {isVisible} position={box.position} rotation={box.rotation} highlight={box.highlight} />
+                <InvisibleBox key={index} size={box.size} visible = {isVisible} position={box.position} rotation={box.rotation} highlight={box.highlight} finish={box.finish} socket={socket} />
             ))}
 
             <CityFloor />
@@ -188,15 +188,23 @@ export default function City({ setLoaded }) {
     );
 }
 
-function InvisibleBox({ size, position, visible, rotation, highlight, finish }) {
+function InvisibleBox({ size, position, visible, rotation, highlight, finish, socket }) {
     // Convert degrees to radians
     const radians = rotation.map(degree => degree * (Math.PI / 180));
 
-    useBox(() => ({
+    const [ref] = useBox(() => ({
         args: size,
         position,
         rotation: radians,
         type: "Static",
+        onCollide: (e) => {
+            if (finish) {
+                const playerData = e.body.userData;
+                if (playerData?.playerId) {
+                    socket.emit("player finished", playerData);
+                }
+            }
+        }
     }));
 
     if (!visible) return null; // Don't render anything if not visible
@@ -216,7 +224,7 @@ function InvisibleBox({ size, position, visible, rotation, highlight, finish }) 
     }
 
     return (
-        <mesh position={position} rotation={radians}>
+        <mesh ref={ref} position={position} rotation={radians}>
             <boxGeometry args={size} />
             <meshStandardMaterial {...materialProps} />
         </mesh>
