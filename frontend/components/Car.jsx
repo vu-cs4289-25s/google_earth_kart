@@ -114,6 +114,16 @@ const Car = forwardRef(function Car(
         brakeSound.current.volume = 0.5;
     }, []);
 
+    useEffect(() => {
+        if (chassisBody.current) {
+          chassisBody.current.userData = {
+            playerId: id,
+            username: socket?.username,
+          };
+        }
+      }, [chassisBody, id, socket]);
+      
+
     useFrame(() => {
         if (allowMove) {
             const { backward, brake, forward, left, reset, right } =

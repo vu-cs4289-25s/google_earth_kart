@@ -94,6 +94,7 @@ function Game() {
 
         // A player selected kart and is ready
         socket.on("player ready", (readyPlayers, id, players) => {
+            setGameStatus("waiting");
             setPlayerCount(players.length);
             setPlayersInGame(readyPlayers);
             if (playersInGame.length === playersRef.current.length) {
@@ -103,7 +104,14 @@ function Game() {
 
         socket.on("finish race", (leaderboard) => {
             navigate("/podium");
-        })
+        });
+
+        socket.on("player finished", (playerId) => {
+            if (playerId === me) {
+                setAllowMove(false);
+                setGameStatus("finished");
+            }
+        });
 
         return () => {
             socket.off("connected");
@@ -217,7 +225,7 @@ function Game() {
                 position: "absolute", 
                 color: "white", 
                 top:"40px",
-                display: playersInGame.length === 1 ? "" : "none",
+                display: playersInGame.length === 1 && gameStatus === "waiting" ? "" : "none",
                 textShadow: "0 0 2px #ff8c00, 0 0 2px #ff8c00",
                 fontWeight: "bold",
             }}>At least 2 Players required to play.</h4>
