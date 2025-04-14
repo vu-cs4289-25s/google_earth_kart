@@ -64,12 +64,14 @@ app.get("/", (req, res) => {
 
 let players = [];
 let playersReady = [];
+let playersFinished = [];
 let playersInGame = [];
 let playersWaiting = [];
 let gameStatus = "waiting";
 let leaderboard = [];
 let checkpoints = {};
 let checkpointOrders = {};
+let nextPlace = 0; // to keep track of which place is yet to be taken on podium
 
 function calculatePlayerOrder(playerId) {
     for (let checkpointId = Math.max(...Object.keys(checkpointOrders)); checkpointId >= 1; checkpointId--) {
@@ -197,12 +199,30 @@ io.on("connection", (socket) => {
         }
     })
 
-    socket.on("finish race", () => {
-        gameStatus = "finished";
-        playersInGame = [];
-        playersWaiting = [];
-        playersReady = [];
-        io.emit("finish race", leaderboard);
+    // socket.on("finish race", () => {
+    //     gameStatus = "finished";
+    //     playersInGame = [];
+    //     playersWaiting = [];
+    //     playersReady = [];
+    //     io.emit("finish race", leaderboard);
+    // });
+
+    socket.on("player finished", () => {
+        let player = leaderboard[nextPlace];
+        playersInGame = playersInGame.filter((p) => p.id !== player.id);
+        playersFinished.push(player);
+        // switch player to finished status
+
+        io.emit("player finished", player);
+
+        // If all players finished, end race
+        if (playersInGame.length === 0) {
+            gameStatus = "finished";
+            playersInGame = [];
+            playersWaiting = [];
+            playersReady = [];
+            io.emit("finish race", leaderboard);
+        }
     });
 
     socket.on("reset game", () => {

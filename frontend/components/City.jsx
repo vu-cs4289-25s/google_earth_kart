@@ -3,6 +3,7 @@ import { useBox, usePlane } from "@react-three/cannon";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { useSocket } from "./SocketContext";
+import { useFrame } from "@react-three/fiber";
 
 export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
@@ -29,7 +30,7 @@ export default function City({ setLoaded }) {
         { size: [7* 2, 70, 1], position: [380+ 413, -30, 128+ -222], rotation: [0, 105.4, 0]},
         { size: [151* 2, 70, 1], position: [352+ 360, -30, -456+ 226], rotation: [0, 121.5, 0]},
         { size: [150* 2, 70, 1], position: [363+ 350, -30, -456+ 190], rotation: [0, 121.5, 0]},
-        { size: [50, 10, 0.5], position: [15, -32.5, -1.4], rotation: [0, 121.5, 0], highlight: true}, // FINISH WALL
+        // { size: [50, 10, 0.5], position: [15, -32.5, -1.4], rotation: [0, 121.5, 0], highlight: true}, // FINISH WALL
 
         //floors
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -133,7 +134,7 @@ export default function City({ setLoaded }) {
             {position: [320.2214660644531, -32.47792434692383, -188.5987091064453], rotation: [0, 30 * Math.PI / 180, 0] },
             {position: [258.23919677734375, -33.02665710449219, -151.5540771484375], rotation: [0, 30 * Math.PI / 180, 0] },
             {position: [200.40911865234375, -33.775577545166016, -111.99581909179688], rotation: [0, 30 * Math.PI / 180, 0]}, 
-            {position: [28.604637145996094, -35.36733627319336, -10.3054838180542], rotation: [0, 10, 0]}, // finish line
+            {position: [28.604637145996094, -35.36733627319336, -10.3054838180542], rotation: [0, 10, 0], finish: true}, // finish line
         ];
     
         return (
@@ -144,14 +145,17 @@ export default function City({ setLoaded }) {
                         position={checkpoint.position}
                         rotation={checkpoint.rotation}
                         id={index + 1}
+                        finish={checkpoint.finish}
                     />
                 ))}
             </>
         );
     }
     
-    function Checkpoint({ position, rotation, id }) {
+    function Checkpoint({ position, rotation, id, finish }) {
         const crossedRef = useRef(false);
+        const justCollidedRef = useRef(false);
+        const finishedRef = useRef(finish);
 
         const [ref] = useBox(() => ({
             position,
@@ -160,13 +164,33 @@ export default function City({ setLoaded }) {
             isTrigger: true,
             onCollide: () => {
                 if (!crossedRef.current) {
-                    crossedRef.current = true;     
+                    justCollidedRef.current = true; 
                     socket.emit("checkpoint hit", id);
+                }
+                if (finishedRef.current) {
+                    console.log("finish line crossed!");
+                    socket.emit("player finished");
                 }
             },
         }));
+
+        useFrame(() => {
+            if (justCollidedRef.current && !crossedRef.current) {
+                crossedRef.current = true;
+                justCollidedRef.current = false;
+                socket.emit("checkpoint hit", id);
+    
+                if (finish) {
+                    console.log("finish line crossed!");
+                    socket.emit("player finished");
+                }
+            }
+        });
+
         return null
     }
+
+
 
     if (!cityObj) return null;
 
@@ -188,11 +212,11 @@ export default function City({ setLoaded }) {
     );
 }
 
-function InvisibleBox({ size, position, visible, rotation, highlight, finish }) {
+function InvisibleBox({ size, position, visible, rotation, highlight }) {
     // Convert degrees to radians
     const radians = rotation.map(degree => degree * (Math.PI / 180));
 
-    useBox(() => ({
+    const [ref] = useBox(() => ({
         args: size,
         position,
         rotation: radians,
