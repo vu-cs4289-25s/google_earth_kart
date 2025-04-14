@@ -29,7 +29,7 @@ export default function City({ setLoaded }) {
         { size: [7* 2, 70, 1], position: [380+ 413, -30, 128+ -222], rotation: [0, 105.4, 0]},
         { size: [151* 2, 70, 1], position: [352+ 360, -30, -456+ 226], rotation: [0, 121.5, 0]},
         { size: [150* 2, 70, 1], position: [363+ 350, -30, -456+ 190], rotation: [0, 121.5, 0]},
-        // { size: [50, 10, 0.5], position: [15, -32.5, -1.4], rotation: [0, 121.5, 0], highlight: true}, // wall to prevent cheaters
+        { size: [50, 10, 0.5], position: [15, -32.5, -1.4], rotation: [0, 121.5, 0], highlight: true}, // wall to prevent cheaters
         { size: [50, 10, 0.5], position: [25, -32.5, -1.4], rotation: [0, 121.5, 0], finish: true}, // FINISH WALL
 
         //floors
