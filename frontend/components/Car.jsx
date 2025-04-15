@@ -109,9 +109,9 @@ const Car = forwardRef(function Car(
     // Configure the audio elements on mount.
     useEffect(() => {
         accelSound.current.loop = true;
-        accelSound.current.volume = 0.5;
+        accelSound.current.volume = 1;
         brakeSound.current.loop = true;
-        brakeSound.current.volume = 0.5;
+        brakeSound.current.volume = 1;
     }, []);
 
     useEffect(() => {
