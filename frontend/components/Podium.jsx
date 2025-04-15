@@ -8,7 +8,7 @@ import { useSocket } from "./SocketContext.jsx";
 const Podium = () => {
     const navigate = useNavigate();
     const { socket } = useSocket();
-    const [leaderboard, setLeaderboard] = useState([]); 
+    const [leaderboard, setLeaderboard] = useState(null);
 
     useEffect(() => {
         // Fetch leaderboard data when component mounts
@@ -29,7 +29,10 @@ const Podium = () => {
     }, []);
 
     //sort the leaderboard by place
-    leaderboard.sort((a, b) => a.place - b.place);
+    if(leaderboard){
+        leaderboard.sort((a, b) => a.place - b.place);
+
+    }
 
     function reset() {
         socket.emit("reset game");
@@ -93,38 +96,40 @@ const Podium = () => {
                         overflowY: "auto",
                     }}
                 >
-                    {leaderboard.map((player, index) => (
-                        <Box
-                            key={index}
-                            sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                padding: 1,
-                                borderRadius: "16px",
-                                mb: 1.5,
-                                backgroundColor:
-                                    index === 0
-                                        ? "#ffeb3b"
-                                        : index === 1
-                                          ? "#c0c0c0"
-                                          : index === 2
-                                            ? "#CD7F32"
-                                            : "#f0f0f0",
-                                color: index < 3 ? "#000" : "#333",
-                                fontWeight: "bold",
-                                boxShadow:
-                                    index < 3
-                                        ? "0 4px 8px rgba(0,0,0,0.2)"
-                                        : "none",
-                            }}
-                        >
-                            <Typography variant="h6">{index + 1}.</Typography>
-                            <Typography>{player.username}</Typography>
-                            {/* maybe put something else here like time or something */}
-                            <Typography>{}</Typography>
-                        </Box>
-                    ))}
+                    {leaderboard === null ? <p>Loading...</p> : leaderboard === [] ? <p>No players finished :(</p> :
+                        leaderboard.map((player, index) => (
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: 1,
+                                        borderRadius: "16px",
+                                        mb: 1.5,
+                                        backgroundColor:
+                                            index === 0
+                                                ? "#ffeb3b"
+                                                : index === 1
+                                                    ? "#c0c0c0"
+                                                    : index === 2
+                                                        ? "#CD7F32"
+                                                        : "#f0f0f0",
+                                        color: index < 3 ? "#000" : "#333",
+                                        fontWeight: "bold",
+                                        boxShadow:
+                                            index < 3
+                                                ? "0 4px 8px rgba(0,0,0,0.2)"
+                                                : "none",
+                                    }}
+                                >
+                                    <Typography variant="h6">{index + 1}.</Typography>
+                                    <Typography>{player.username}</Typography>
+                                    {/* maybe put something else here like time or something */}
+                                    <Typography>{}</Typography>
+                                </Box>
+                            ))}
+
                 </Box>
 
                 {/* Start New Race Button */}
