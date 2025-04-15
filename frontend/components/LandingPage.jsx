@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, CircularProgress } from '@mui/material';
 import { usePreloadCity } from '../utils/preloadAssets';
+import BackgroundMusic from './BackgroundMusic';
 
 const HideGlobalBackground = () => (
     <style>
@@ -24,6 +25,8 @@ const LandingPage = () => {
 
     return (
         <>
+            <BackgroundMusic src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" volume={0.5} playOnStart={true} />
+
             <HideGlobalBackground />
 
             <Box
