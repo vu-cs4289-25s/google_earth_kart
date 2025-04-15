@@ -38,7 +38,7 @@ function Game() {
     const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
     const [showButton, setShowButton] = useState(false);
-    const [allowMove, setAllowMove] = useState(true);
+    const [allowMove, setAllowMove] = useState(false);
     const [gameStatus, setGameStatus] = useState("waiting");
     const [cityLoaded, setCityLoaded] = useState(false);
     const navigate = useNavigate();
