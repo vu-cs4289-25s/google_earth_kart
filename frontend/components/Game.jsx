@@ -67,12 +67,8 @@ function Game() {
     useEffect(() => {
         // Player connects
         socket.on("connected", (playerList) => {
-            console.log("playercount: ", playerCount);
-            console.log("playerList: ", playerList);
             playersRef.current = playerList;
-            console.log("playerList.length: ", playerList.length);
             setPlayerCount(playerList.length);
-            console.log("playercount: ", playerCount);
         });
 
         // Player disconnects
@@ -123,7 +119,6 @@ function Game() {
         });
 
         socket.on("player finished", (playerId) => {
-            console.log("Player finished!");
             if (playerId === me) {
                 setAllowMove(false);
                 setShowFinish(true);
