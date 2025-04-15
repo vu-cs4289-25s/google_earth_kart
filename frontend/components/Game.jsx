@@ -107,6 +107,7 @@ function Game() {
         // A player selected kart and is ready
         socket.on("player ready", (readyPlayers, id, players) => {
             setGameStatus("waiting");
+            setShowFinish(false);
             setPlayerCount(players.length);
             setPlayersInGame(readyPlayers);
             if (playersInGame.length === playersRef.current.length) {
