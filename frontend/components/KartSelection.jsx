@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, IconButton, Typography, Container } from "@mui/material";
+import { Box, IconButton, Typography, Container, CircularProgress } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -15,6 +15,7 @@ import {
     getDocs,
     getFirestore,
 } from "firebase/firestore";
+import { useLoading } from '../contexts/LoadingContext'; 
 
 const KartSelection = () => {
     const [selectedKart, setSelectedKart] = useState("kia-soul"); // Default to Kia Soul
@@ -22,6 +23,7 @@ const KartSelection = () => {
     const { socket } = useSocket();
     const [username, setUsername] = useState("User");
     const db = getFirestore();
+    const { isCityDownloaded } = useLoading();
 
     // Fetch the user's username from Firestore
     useEffect(() => {
@@ -49,6 +51,8 @@ const KartSelection = () => {
     }, [db]);
 
     function next() {
+        if (!isCityDownloaded || !socket) return;
+
         fetch(`${import.meta.env.VITE_BACKEND_URL}game-status`) // CHANGE LATER TO URL
             .then((res) => res.json())
             .then((data) => {
@@ -80,11 +84,11 @@ const KartSelection = () => {
         }
     
         if (socket) {
-            socket.on("finish race", (leaderboard) => {
-                navigate("/podium");
-            });
+            const handleFinish = () => navigate("/podium");
+            socket.on("finish race", handleFinish);
+            return () => socket.off("finish race", handleFinish);
         }
-    }, []);
+    }, [socket, navigate]);
 
     return (
         <div className="h-screen w-screen bg-gradient-to-b from-blue-400 to-purple-300 overflow-hidden">
@@ -365,37 +369,47 @@ const KartSelection = () => {
                 </Box>
 
                 {/* Start Race Button */}
-                <IconButton
-                    onClick={next}
-                    sx={{
-                        backgroundColor: "#4a90e2",
-                        color: "white",
-                        padding: "15px 30px",
-                        borderRadius: "20px",
-                        alignSelf: "center",
-                        mt: 3,
-                        boxShadow: "0 6px 12px rgba(0,0,0,0.2)",
-                        transition: "transform 0.2s",
-                        "&:hover": {
-                            backgroundColor: "#357ABD",
-                            transform: "scale(1.05)",
-                        },
-                        border: "4px solid white",
-                    }}
-                >
-                    <SportsEsportsIcon sx={{ mr: 1, fontSize: 28 }} />
-                    <Typography
-                        sx={{
-                            color: "white",
-                            fontWeight: "bold",
-                            fontSize: 20,
-                        }}
-                    >
-                        START RACE!
-                    </Typography>
-                </IconButton>
-            </Container>
-        </div>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3, position: 'relative', alignItems: 'center' }}>
+                     <IconButton
+                         onClick={next}
+                         disabled={!isCityDownloaded} // *** DISABLE WHEN NOT LOADED ***
+                         sx={{
+                             backgroundColor: isCityDownloaded ? "#4a90e2" : "grey", // Visual feedback
+                             color: "white",
+                             padding: "15px 30px",
+                             borderRadius: "20px",
+                             boxShadow: "0 6px 12px rgba(0,0,0,0.2)",
+                             transition: "transform 0.2s, background-color 0.3s",
+                             cursor: isCityDownloaded ? "pointer" : "not-allowed",
+                             "&:hover": {
+                                 backgroundColor: isCityDownloaded? "#357ABD" : "grey",
+                                 transform: isCityDownloaded ? "scale(1.05)" : "none",
+                             },
+                             border: "4px solid white",
+                             // Ensure button maintains size even when spinner is shown
+                             minWidth: '200px', // Adjust as needed
+                             minHeight: '60px', // Adjust as needed
+                         }}
+                     >
+                         {!isCityDownloaded ? (
+                             <CircularProgress size={28} sx={{ color: 'white' }} />
+                         ) : (
+                             <>
+                                 <SportsEsportsIcon sx={{ mr: 1, fontSize: 28 }} />
+                                 <Typography sx={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
+                                     START RACE!
+                                 </Typography>
+                             </>
+                         )}
+                     </IconButton>
+                     {!isCityDownloaded && ( // Optional text next to spinner
+                        <Typography sx={{ ml: 2, color: 'white', fontStyle: 'italic' }}>
+                            Loading map...
+                        </Typography>
+                     )}
+                 </Box>
+             </Container>
+         </div>
     );
 };
 

@@ -4,7 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { useSocket } from "./SocketContext";
 
-export default function City({ setLoaded }) {
+export default function City({ setLoaded, preloadedScene }) {
     const [cityObj, setCityObj] = useState(null);
     const { socket } = useSocket();
     const customBoxes = [
@@ -71,11 +71,20 @@ export default function City({ setLoaded }) {
     ];
 
     useEffect(() => {
+        if (preloadedScene) {
+            console.log("City component using preloaded scene.");
+            setCityObj(preloadedScene);
+            setLoaded(true);
+            return;
+        }
+
+        console.log("City component loading scene manually (fallback).");
         const gltfLoader = new GLTFLoader();
         const dLoader = new DRACOLoader();
         dLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.7/")
         dLoader.setDecoderConfig({type: 'js'});
         gltfLoader.setDRACOLoader(dLoader)
+        
 
         // Load the city GLB model
         gltfLoader.load(
@@ -84,13 +93,12 @@ export default function City({ setLoaded }) {
                 gltf.scene.position.set(384,-30,226)
                 setCityObj(gltf.scene);
                 setLoaded(true);
-                setLoaded(true);
             },
             undefined,
             (error) => console.error("GLB Load Error:", error)
         );
 
-    }, []);
+    }, [setLoaded, preloadedScene]);
 
     function Checkpoints() {
         const checkpoints = [

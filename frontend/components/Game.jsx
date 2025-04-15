@@ -13,6 +13,7 @@ import MiniMap from "../components/MiniMap.jsx";
 import Leaderboard from "../components/Leaderboard.jsx";
 import useConfirmExit from '../components/ConfirmExit.jsx';
 import { useNavigate } from "react-router-dom";
+import { useLoading } from '../contexts/LoadingContext';
 
 function Axis() {
     const axisRef = useRef();
@@ -28,6 +29,7 @@ function Axis() {
 
 
 function Game() {
+    const { parsedCityScene } = useLoading();
     const carRef = useRef();
     const { socket, players } = useSocket();
     const [playerCount, setPlayerCount] = useState(0);
@@ -39,9 +41,10 @@ function Game() {
     const [showButton, setShowButton] = useState(false);
     const [allowMove, setAllowMove] = useState(false);
     const [gameStatus, setGameStatus] = useState("waiting");
-    const [cityLoaded, setCityLoaded] = useState(false);
+    const [cityLoaded, setCityLoaded] = useState(!!parsedCityScene);
     const navigate = useNavigate();
     const [trafficLightState, setTrafficLightState] = useState("off");
+    
 
     const [selectedCar, setSelectedCar] = useState(() => {
         return localStorage.getItem("selectedCar") || "kia-soul";
@@ -146,6 +149,13 @@ function Game() {
     function finish() {
         socket.emit("finish race");
     }
+
+    useEffect(() => {
+        if (parsedCityScene && !cityLoaded) {
+            setCityLoaded(true);
+        }
+    }, [parsedCityScene, cityLoaded]);
+
 
     return (
         <>
