@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 const BackgroundMusic = ({
   // Using an online sample track from SoundHelix
   src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-  volume = 0.5,
+  volume = 0.1,
   playOnStart = true,
 }) => {
   const audioRef = useRef(null);

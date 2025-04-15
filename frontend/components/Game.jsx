@@ -38,7 +38,7 @@ function Game() {
     const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
     const [showButton, setShowButton] = useState(false);
-    const [allowMove, setAllowMove] = useState(false);
+    const [allowMove, setAllowMove] = useState(true);
     const [gameStatus, setGameStatus] = useState("waiting");
     const [cityLoaded, setCityLoaded] = useState(false);
     const navigate = useNavigate();
@@ -83,8 +83,23 @@ function Game() {
         });
 
         // Update player locations
-        socket.on("update players", (playerList) => {
-            setPlayersInGame(playerList);
+        // socket.on("update players", (playerList) => {
+        //     setPlayersInGame(playerList);
+        // });
+        socket.on("player moved", (update) => {
+            setPlayersInGame(prevPlayers => {
+                const playerIndex = prevPlayers.findIndex(p => p.id === update.id);
+                if (playerIndex !== -1) {
+                    const newPlayers = [...prevPlayers];
+                    newPlayers[playerIndex] = {
+                        ...newPlayers[playerIndex],
+                        position: update.position,
+                        quaternion: update.quaternion,
+                    };
+                    return newPlayers;
+                }
+                return prevPlayers;
+            });
         });
 
         // Race starts for all players
@@ -116,7 +131,8 @@ function Game() {
         return () => {
             socket.off("connected");
             socket.off("disconnected");
-            socket.off("update players");
+            // socket.off("update players");
+            socket.off("player moved");
             socket.off("race start");
             socket.off("player ready");
         };
