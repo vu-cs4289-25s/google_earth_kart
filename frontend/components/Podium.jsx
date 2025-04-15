@@ -13,7 +13,7 @@ const Podium = () => {
     useEffect(() => {
         // Fetch podium data when component mounts
         const fetchPodium = async () => {
-            fetch('http://localhost:3001/podium', {
+            fetch('https://google-earth-kart.onrender.com:3001/podium', {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
