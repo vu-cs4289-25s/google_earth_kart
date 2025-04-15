@@ -7,6 +7,7 @@ import { useSocket } from "./SocketContext";
 export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
     const { socket } = useSocket();
+    let lastCheckPoint = null
     const customBoxes = [
         //walls
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -107,8 +108,8 @@ export default function City({ setLoaded }) {
             {position: [272.2798767089844, -26.408506393432617, 417.8084716796875], rotation: [0, 0 * Math.PI / 180, 0] },
             {position: [318.4217834472656, -25.482484817504883, 433.43011474609375], rotation: [0, 90 * Math.PI / 180, 0] },
             {position: [309.0734558105469, -24.249561309814453, 526.3851928710938], rotation: [0, 90 * Math.PI / 180, 0] },
-            {position: [291.973388671875, -28.89249038696289, 661.2779541015625], rotation: [0, 90 * Math.PI / 180, 0] },     
-            {position: [279.16998291015625, -26.286819458007812, 766.7279663085938], rotation: [0, 90 * Math.PI / 180, 0] }, 
+            {position: [291.973388671875, -28.89249038696289, 661.2779541015625], rotation: [0, 90 * Math.PI / 180, 0] },
+            {position: [279.16998291015625, -26.286819458007812, 766.7279663085938], rotation: [0, 90 * Math.PI / 180, 0] },
             {position: [294.0141906738281, -26.03759765625, 776.3765258789062], rotation: [0, 0 * Math.PI / 180, 0] },
             {position: [421.3318176269531, -25.946300506591797, 792.48974609375], rotation: [0, 0 * Math.PI / 180, 0] },
             {position: [542.4381713867188, -23.19383430480957, 808.0729370117188], rotation: [0, 0 * Math.PI / 180, 0] },
@@ -132,10 +133,10 @@ export default function City({ setLoaded }) {
             {position: [413.3964538574219, -31.82054328918457, -242.5343475341797], rotation: [0, 30 * Math.PI / 180, 0] },
             {position: [320.2214660644531, -32.47792434692383, -188.5987091064453], rotation: [0, 30 * Math.PI / 180, 0] },
             {position: [258.23919677734375, -33.02665710449219, -151.5540771484375], rotation: [0, 30 * Math.PI / 180, 0] },
-            {position: [200.40911865234375, -33.775577545166016, -111.99581909179688], rotation: [0, 30 * Math.PI / 180, 0]}, 
+            {position: [200.40911865234375, -33.775577545166016, -111.99581909179688], rotation: [0, 30 * Math.PI / 180, 0]},
             {position: [28.604637145996094, -35.36733627319336, -10.3054838180542], rotation: [0, 10, 0]}, // finish line
         ];
-    
+
         return (
             <>
                 {checkpoints.map((checkpoint, index) => (
@@ -149,19 +150,16 @@ export default function City({ setLoaded }) {
             </>
         );
     }
-    
     function Checkpoint({ position, rotation, id }) {
-        const crossedRef = useRef(false);
-
         const [ref] = useBox(() => ({
             position,
             rotation: rotation,
             args: [0.1, 15, 20], // width, height, depth
             isTrigger: true,
-            onCollide: () => {
-                if (!crossedRef.current) {
-                    crossedRef.current = true;     
+            onCollide:()=>{
+                if(lastCheckPoint !== id){
                     socket.emit("checkpoint hit", id);
+                    lastCheckPoint = id;
                 }
             },
         }));
