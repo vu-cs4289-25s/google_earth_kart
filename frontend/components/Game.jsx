@@ -321,8 +321,6 @@ function Game() {
                 {/* Render the minimap overlay */}
                 {/* <MiniMap target={carRef} /> */}
                 <Stats />
-                <Axis />
-
             </Canvas>
             <Leaderboard />
             <div
