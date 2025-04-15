@@ -8,31 +8,35 @@ import { useSocket } from "./SocketContext.jsx";
 const Podium = () => {
     const navigate = useNavigate();
     const { socket } = useSocket();
-    const [leaderboard, setLeaderboard] = useState(null);
+    const [podium, setPodium] = useState(null);
 
     useEffect(() => {
-        // Fetch leaderboard data when component mounts
-        const fetchLeaderboard = async () => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_ENVIRONMENT === "development" ? "/" :import.meta.env.VITE_BACKEND_URL}leaderboard`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setLeaderboard(data.leaderboard);
-            } catch (error) {
-                console.error("Failed to fetch leaderboard:", error);
-            }
+        // Fetch podium data when component mounts
+        const fetchPodium = async () => {
+            fetch('http://localhost:3001/podium', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  
+                },
+              })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  setPodium(data.podium);
+                })
+                .catch(error => {
+                  console.error('Error fetching podium:', error);
+                });
+              
         };
 
-        fetchLeaderboard();
+        fetchPodium();
     }, []);
-
-    //sort the leaderboard by place
-    if(leaderboard){
-        leaderboard.sort((a, b) => a.place - b.place);
-
-    }
 
     function reset() {
         socket.emit("reset game");
@@ -96,8 +100,8 @@ const Podium = () => {
                         overflowY: "auto",
                     }}
                 >
-                    {leaderboard === null ? <p>Loading...</p> : leaderboard === [] ? <p>No players finished :(</p> :
-                        leaderboard.map((player, index) => (
+                    {podium === null ? <p>Loading...</p> : podium.length === 0 ? <p>No players finished :(</p> :
+                        podium.map((player, index) => (
                                 <Box
                                     key={index}
                                     sx={{

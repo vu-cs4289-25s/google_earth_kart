@@ -89,6 +89,14 @@ app.get("/leaderboard", (req, res) => {
     res.json({ leaderboard: leaderboard });
 }); 
 
+app.get("/podium", (req, res) => {
+    res.json({ podium: playersFinished });
+}); 
+
+app.get("/playersingame", (req, res) => {
+    res.json({ playersInGame: playersInGame });
+}); 
+
 io.on("connection", (socket) => {
     // all websocket functions that occur while connected need to go in here
     console.log("A user connected");
@@ -206,8 +214,17 @@ io.on("connection", (socket) => {
     });
 
     socket.on("player finished", (playerData) => {
+        const inGameIndex = playersInGame.findIndex((p) => p.id === playerData.playerId);
+        const username = playersInGame[inGameIndex]?.username;
+
         playersInGame = playersInGame.filter((p) => p.id !== playerData.playerId);
-        playersFinished.push({ id: playerData.playerId });
+        
+        const playerIndex = playersFinished.findIndex((p) => p.id === playerData.playerId);
+
+        if (playerIndex === -1 && username) {
+            playersFinished.push({ id: playerData.playerId, username: username });
+        }
+        
         io.emit("player finished", playerData.id);
         if (playersInGame.length === 0) {
             io.emit("finish race");
@@ -218,6 +235,7 @@ io.on("connection", (socket) => {
         gameStatus = "waiting";
         io.emit("reset game");
         leaderboard = [];
+        playersFinished = [];
         checkpoints = {};
     })
 });
