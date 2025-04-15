@@ -117,11 +117,6 @@ function Game() {
             }
         });
 
-        socket.emit("player finished", {
-            playerId: me,
-            time: elapsedTime,
-        });
-
         return () => {
             socket.off("connected");
             socket.off("disconnected");
@@ -135,6 +130,8 @@ function Game() {
         setShowButton(false);
         setCountDown("Ready?");
         setTrafficLightState("off");
+        //start the game timer
+        let time = 0;
         
         setTimeout(() => { 
             setCountDown(""); 
@@ -153,22 +150,16 @@ function Game() {
         setTimeout(() => { 
             setTrafficLightState("off");
             setGameStatus("in progress");
+            const interval = setInterval(() => {
+                time++;
+                setElapsedTime(time);
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                setCountDown(`Time: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
+                socket.emit("time update", time);
+            }, 1000);
+            return () => clearInterval(interval);
         }, 3000);
-
-        //start the game timer 
-        let time = 0;
-        const interval = setInterval(() => {
-            time++;
-            setElapsedTime(time);
-            const minutes = Math.floor(time / 60);
-            const seconds = time % 60;
-            setCountDown(`Time: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
-            socket.emit("time update", time);
-        }, 1000);
-    
-        return () => clearInterval(interval);
-
-
     }
 
     function ready() {
