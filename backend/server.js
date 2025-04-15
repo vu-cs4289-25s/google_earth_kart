@@ -214,6 +214,32 @@ io.on("connection", (socket) => {
         }
     })
 
+    // socket.on("player finished", (playerData) => {
+    //     // Save time in leaderboard
+    //     const playerIndex = leaderboard.findIndex(p => p.id === playerData.playerId);
+    //     if (playerIndex !== -1) {
+    //         leaderboard[playerIndex].time = playerData.time;
+    //     } else {
+    //         leaderboard.push({
+    //             id: playerData.playerId,
+    //             username: players.find(p => p.id === playerData.playerId)?.username || "Unknown",
+    //             time: playerData.time,
+    //             checkpoints: checkpoints[playerData.playerId] || 0,
+    //             order: calculatePlayerOrder(playerData.playerId),
+    //         });
+    //     }
+    
+    //     playersInGame = playersInGame.filter((p) => p.id !== playerData.playerId);
+    //     playersFinished.push({ id: playerData.playerId });
+    
+    //     io.emit("player finished", playerData.playerId);
+    
+    //     if (playersInGame.length === 0) {
+    //         io.emit("finish race", leaderboard); // send full leaderboard with times
+    //     }
+    // });
+    
+
     socket.on("reset game", () => {
         gameStatus = "waiting";
         io.emit("reset game");

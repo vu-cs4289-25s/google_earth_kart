@@ -34,9 +34,11 @@ function Game() {
     const [playerCount, setPlayerCount] = useState(0);
     const [readyPlayers, setReadyPlayers] = useState([]);
     const [playersInGame, setPlayersInGame] = useState([]);
+    const [playerTimes, setPlayerTimes] = useState([]);
     const playersRef = useRef([]);
     const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
+    const [elapsedTime, setElapsedTime] = useState(0);
     const [showButton, setShowButton] = useState(false);
     const [allowMove, setAllowMove] = useState(false);
     const [gameStatus, setGameStatus] = useState("waiting");
@@ -104,13 +106,20 @@ function Game() {
 
         socket.on("finish race", (leaderboard) => {
             navigate("/podium");
+
         });
 
         socket.on("player finished", (playerId) => {
             if (playerId === me) {
+                setPlayerTimes((prevTimes) => [...prevTimes, { id: playerId, time: elapsedTime }]);
                 setAllowMove(false);
                 setGameStatus("finished");
             }
+        });
+
+        socket.emit("player finished", {
+            playerId: me,
+            time: elapsedTime,
         });
 
         return () => {
@@ -145,6 +154,21 @@ function Game() {
             setTrafficLightState("off");
             setGameStatus("in progress");
         }, 3000);
+
+        //start the game timer 
+        let time = 0;
+        const interval = setInterval(() => {
+            time++;
+            setElapsedTime(time);
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            setCountDown(`Time: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
+            socket.emit("time update", time);
+        }, 1000);
+    
+        return () => clearInterval(interval);
+
+
     }
 
     function ready() {

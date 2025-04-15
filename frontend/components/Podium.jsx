@@ -4,11 +4,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "./SocketContext.jsx";
 
-
 const Podium = () => {
     const navigate = useNavigate();
     const { socket } = useSocket();
-    const [leaderboard, setLeaderboard] = useState([]); 
+    const [leaderboard, setLeaderboard] = useState([]);
 
     useEffect(() => {
         // Fetch leaderboard data when component mounts
@@ -41,7 +40,7 @@ const Podium = () => {
                 navigate("/kart-select");
             });
         }
-    },[socket]);
+    }, [socket]);
 
     return (
         <div className="min-h-screen w-screen bg-gradient-to-br from-blue-400 to-purple-300">
@@ -56,7 +55,6 @@ const Podium = () => {
                     margin: "0 auto",
                 }}
             >
-
                 {/* Header */}
                 <Box
                     sx={{
@@ -122,7 +120,11 @@ const Podium = () => {
                             <Typography variant="h6">{index + 1}.</Typography>
                             <Typography>{player.username}</Typography>
                             {/* maybe put something else here like time or something */}
-                            <Typography>{}</Typography>
+                            <Typography>
+                                {player.time
+                                    ? `${Math.floor(player.time / 60)}:${(player.time % 60).toString().padStart(2, "0")}`
+                                    : ""}
+                            </Typography>
                         </Box>
                     ))}
                 </Box>
@@ -147,7 +149,6 @@ const Podium = () => {
                         border: "4px solid white",
                     }}
                 >
-
                     <Typography
                         sx={{
                             color: "white",
