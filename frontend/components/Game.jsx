@@ -83,24 +83,24 @@ function Game() {
         });
 
         // Update player locations
-        // socket.on("update players", (playerList) => {
-        //     setPlayersInGame(playerList);
-        // });
-        socket.on("player moved", (update) => {
-            setPlayersInGame(prevPlayers => {
-                const playerIndex = prevPlayers.findIndex(p => p.id === update.id);
-                if (playerIndex !== -1) {
-                    const newPlayers = [...prevPlayers];
-                    newPlayers[playerIndex] = {
-                        ...newPlayers[playerIndex],
-                        position: update.position,
-                        quaternion: update.quaternion,
-                    };
-                    return newPlayers;
-                }
-                return prevPlayers;
-            });
+        socket.on("update players", (playerList) => {
+            setPlayersInGame(playerList);
         });
+        // socket.on("player moved", (update) => {
+        //     setPlayersInGame(prevPlayers => {
+        //         const playerIndex = prevPlayers.findIndex(p => p.id === update.id);
+        //         if (playerIndex !== -1) {
+        //             const newPlayers = [...prevPlayers];
+        //             newPlayers[playerIndex] = {
+        //                 ...newPlayers[playerIndex],
+        //                 position: update.position,
+        //                 quaternion: update.quaternion,
+        //             };
+        //             return newPlayers;
+        //         }
+        //         return prevPlayers;
+        //     });
+        // });
 
         // Race starts for all players
         socket.on("race start", () => {
@@ -131,8 +131,8 @@ function Game() {
         return () => {
             socket.off("connected");
             socket.off("disconnected");
-            // socket.off("update players");
-            socket.off("player moved");
+            socket.off("update players");
+            // socket.off("player moved");
             socket.off("race start");
             socket.off("player ready");
         };

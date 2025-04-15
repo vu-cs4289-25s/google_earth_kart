@@ -155,25 +155,12 @@ io.on("connection", (socket) => {
         }
     });
 
-    // socket.on("player moves", ({ playerid, position, quaternion }) => {
-    //     let p = playersInGame.findIndex((p) => p.id === playerid);
-    //     if (p !== -1) {
-    //         playersInGame[p].position = position;
-    //         playersInGame[p].quaternion = quaternion;
-    //         io.emit("update players", playersInGame);
-    //     }
-    // });
-    // Inside io.on('connection', ...)
     socket.on("player moves", ({ playerid, position, quaternion }) => {
-        let pIndex = playersInGame.findIndex((p) => p.id === playerid);
-        if (pIndex !== -1) {
-            playersInGame[pIndex].position = position;
-            playersInGame[pIndex].quaternion = quaternion;
-            socket.broadcast.emit("player moved", {
-                id: playerid,
-                position: position,
-                quaternion: quaternion,
-            });
+        let p = playersInGame.findIndex((p) => p.id === playerid);
+        if (p !== -1) {
+            playersInGame[p].position = position;
+            playersInGame[p].quaternion = quaternion;
+            io.emit("update players", playersInGame);
         }
     });
 
