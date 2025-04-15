@@ -77,7 +77,7 @@ export default function Leaderboard() {
                         <span>
                             {index + 1}. {player.username}
                         </span>
-                        <span style={{ 
+                        {/* <span style={{ 
                             backgroundColor: "#3b82f6",
                             padding: "2px 8px",
                             borderRadius: "10px",
@@ -87,7 +87,7 @@ export default function Leaderboard() {
                             border: "1px solid white",
                         }}>
                             {player.score}
-                        </span>
+                        </span> */}
                     </li>
                 ))}
             </ul>
