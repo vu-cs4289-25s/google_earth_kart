@@ -122,7 +122,6 @@ function Game() {
             if (playerId === me) {
                 setAllowMove(false);
                 setShowFinish(true);
-                console.log("showFinish: ", showFinish);
                 setGameStatus("finished");
             }
         });
