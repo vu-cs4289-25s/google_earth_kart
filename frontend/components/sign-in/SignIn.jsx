@@ -45,7 +45,6 @@ const Card = styled(MuiCard)(({ theme }) => ({
     gap: theme.spacing(2),
     margin: "auto",
     position: "relative",
-    margin: "auto",
     [theme.breakpoints.up("sm")]: {
         maxWidth: "450px",
     },
@@ -99,7 +98,7 @@ export default function SignIn(props) {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user);
-                navigate("/kart-select");
+                navigate("/landing");
             } else {
                 setUser(null);
             }
@@ -127,7 +126,7 @@ export default function SignIn(props) {
             })
             .then((userCredential) => {
                 const user = userCredential.user;
-                navigate("/kart-select");
+                navigate("/landing");
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -203,7 +202,7 @@ export default function SignIn(props) {
                 console.log("User already exists in Firestore, logging in");
             }
             // Navigate to the game page
-            navigate("/kart-select");
+            navigate("/landing");
         } catch (error) {
             console.error("Error during Google sign-in:", error);
         }

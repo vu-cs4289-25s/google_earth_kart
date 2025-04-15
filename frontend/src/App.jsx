@@ -13,6 +13,9 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { getAuth } from "firebase/auth";
 import WaitingRoom from "../components/WaitingRoom.jsx";
+import LandingPage from '../components/LandingPage.jsx'; 
+import { LoadingProvider } from '../contexts/LoadingContext';
+import React from "react";
 
 function App() {
     const auth = getAuth();
@@ -142,8 +145,10 @@ function App() {
                 ></div>
             </div>
             <SocketProvider>
+            <LoadingProvider>
                 <Router>
                     <Routes>
+                        <Route path="/landing" element={<LandingPage />} />
                         <Route path="/game" element={<Game />} />
                         <Route path="/" element={<Login />} />
                         <Route path="/login" element={<Login />} />
@@ -160,6 +165,7 @@ function App() {
                         <Route path="/waitingroom" element={<WaitingRoom />} />
                     </Routes>
                 </Router>
+                </LoadingProvider>
             </SocketProvider>
         </>
     );
