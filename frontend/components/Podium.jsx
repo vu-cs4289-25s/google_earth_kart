@@ -13,7 +13,7 @@ const Podium = () => {
     useEffect(() => {
         // Fetch podium data when component mounts
         const fetchPodium = async () => {
-            fetch('http://localhost:3001/podium', {
+            fetch(`${import.meta.env.VITE_ENVIRONMENT === "development" ? "/" :import.meta.env.VITE_BACKEND_URL}podium`, {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
