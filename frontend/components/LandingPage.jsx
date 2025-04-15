@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, CircularProgress } from '@mui/material';
+import { usePreloadCity } from '../utils/preloadAssets';
 
 const HideGlobalBackground = () => (
     <style>
@@ -14,6 +15,7 @@ const HideGlobalBackground = () => (
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    usePreloadCity();
 
     const handleStartClick = () => {
         navigate('/kart-select');
@@ -42,17 +44,26 @@ const LandingPage = () => {
 
                     '@keyframes carZoomAndPath': {
                         '0%': {
-                            transform: 'translateX(-40%) translateY(-50%) scale(0.02) rotate(-10deg)',
+                            transform: 'translateX(-60%) translateY(-40%) scale(0.02) rotate(-10deg)',
                         },
                         '7%': {
-                            transform: 'translateX(-40%) translateY(-45%) scale(0.05) rotate(-7deg)',
-                            opacity: 0.4, 
+                            transform: 'translateX(-60%) translateY(-30%) scale(0.05) rotate(-7deg)',
+                            opacity: 0.05, 
                         },
-                         '50%': {
-                            opacity: 0.8,
+                        '30%': {
+                            transform: 'translateX(-57%) translateY(-25%) scale(0.09) rotate(-5deg)',
+                            opacity: 0.3,
+                        },
+                         '45%': {
+                            transform: 'translateX(-40%)  translateY(5%) scale(0.2)',
+                            opacity: 0.7,
+                        },
+                        '65%': {
+                            transform: 'translateX(-35%)  translateY(10%) scale(0.4)',
+                            opacity: 0.9,
                         },
                         '100%': {
-                            transform: 'translateX(-10%) translateY(15%) scale(0.8) rotate(0deg)',
+                            transform: 'translateX(-25%) translateY(20%) scale(0.8) rotate(0deg)',
                             opacity: 1,
                         },
                     },
@@ -87,7 +98,7 @@ const LandingPage = () => {
                     alt="Google Earth Kart Logo"
                     sx={{
                         position: 'absolute',
-                        top: { xs: '8%', sm: '10%', md: '17%' },
+                        top: { xs: '8%', sm: '10%', md: '12%' },
                         left: { xs: '5%', sm: '10%', md: '8%' },
                         transform: 'rotate(-7deg)',
                         maxWidth: { xs: '35%', sm: '35%', md: '40%', lg: '42%' },
@@ -105,37 +116,40 @@ const LandingPage = () => {
                     alt="Google Earth Kart Characters"
                     sx={{
                         position: 'absolute',
-                        bottom: { xs: '8%', sm: '5%' },
+                        bottom: { xs: '8%', sm: '5%', md: '3%', lg: '10%' },
                         left: '50%',
+                        left: { xs: '45%', sm: '45%', md: '50%', lg: '60%' },
 
                         opacity: 0,
-                        transform: 'translateX(-70%) translateY(150%) scale(0.15) rotate(-10deg)',
+                        transform: 'translateX(-60%) translateY(40%) scale(0.15) rotate(-10deg)',
 
-                        maxWidth: { xs: '85%', sm: '70%', md: '60%', lg: '45%' },
+                        maxWidth: { xs: '65%', sm: '70%', md: '60%', lg: '45%' },
                         height: 'auto',
                         zIndex: 1,
                         pointerEvents: 'none',
 
-                        animation: `carZoomAndPath 1.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
+                        animation: `carZoomAndPath 0.9s cubic-bezier(0, 0.2, 0.7, 1) forwards`,
                     }}
                 />
 
                 <Button
                     onClick={handleStartClick}
                     variant="contained"
-                     sx={{
-                        height: '15vh',
-                        width: '22vw',
+                    sx={{
                         position: 'absolute',
                         bottom: '5vh',
                         right: '3vw',
                         backgroundColor: '#4a90e2',
                         color: 'white',
-                        padding: '10px 25px',
+                        padding: { xs: '10px 15px', sm: '12px 20px', md: '15px 25px', lg: '18px 30px' },
                         borderRadius: '45px',
-                        fontSize: { xs: '0.8rem', sm: '1.2rem', md: '2.0rem', lg: '2.3rem' },
+                        fontSize: { xs: '1rem', sm: '1.2rem', md: '1.6rem', lg: '1.8rem' }, 
                         fontWeight: 'bold',
-                        border: '12px solid white',
+                        borderWidth: { xs: '6px', sm: '8px', md: '10px', lg: '10px' }, 
+                        borderStyle: 'solid',
+                        borderColor: 'white',
+                        minWidth: { xs: '150px', sm: '180px', md: '220px', lg: '240px' }, 
+                        minHeight: { xs: '65px', sm: '75px', md: '85px', lg: '95px' }, 
                         boxShadow: '0 4px 10px rgba(0,0,0,0.25)',
                         transition: 'transform 0.2s ease-in-out, background-color 0.2s',
                         zIndex: 3,
@@ -145,9 +159,13 @@ const LandingPage = () => {
                             transform: 'scale(1.05)',
                         },
                         animation: 'pulse 2s infinite',
+                        display: 'flex',
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        textAlign: 'center',
                     }}
                 >
-                    Click to Start
+                    <span>Click to Start</span>
                 </Button>
             </Box>
         </>
