@@ -19,6 +19,7 @@ function debounce(func, wait) {
 export default function City({ setLoaded }) {
     const [cityObj, setCityObj] = useState(null);
     const { socket } = useSocket();
+    let lastCheckPoint = null
     const customBoxes = [
         //walls
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
@@ -289,6 +290,7 @@ export default function City({ setLoaded }) {
                return null;
         }
 
+
     if (!cityObj) return null;
 
     let isVisible = false
@@ -366,11 +368,13 @@ function CityFloor() {
         type: "Static",
     }));
 
-    return (
-        <mesh ref={floorRef}>
-             <planeGeometry args={[10, 10]} />
-             {/*<meshStandardMaterial color="gray" />*/}
-         </mesh>
-    );
+    return null;
+
+    // return (
+    //     <mesh ref={floorRef}>
+    //          <planeGeometry args={[10, 10]} />
+    //          {/*<meshStandardMaterial color="gray" />*/}
+    //      </mesh>
+    // );
 }
 
