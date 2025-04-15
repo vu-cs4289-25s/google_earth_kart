@@ -245,11 +245,13 @@ function CityFloor() {
         type: "Static",
     }));
 
-    return (
-        <mesh ref={floorRef}>
-             <planeGeometry args={[10, 10]} />
-             {/*<meshStandardMaterial color="gray" />*/}
-         </mesh>
-    );
+    return null;
+
+    // return (
+    //     <mesh ref={floorRef}>
+    //          <planeGeometry args={[10, 10]} />
+    //          {/*<meshStandardMaterial color="gray" />*/}
+    //      </mesh>
+    // );
 }
 
