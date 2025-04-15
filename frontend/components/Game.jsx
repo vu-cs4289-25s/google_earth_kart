@@ -332,7 +332,7 @@ function Game() {
           right: "10px",
           width: "240px",
           height: "255px",
-          backgroundImage: "url('/assets/minimap.png')",
+          backgroundImage: `url('${import.meta.env.VITE_ENVIRONMENT === "development" ? "../" :import.meta.env.VITE_BACKEND_URL}assets/minimap.png')`,
           backgroundSize: "contain",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
