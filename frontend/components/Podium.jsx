@@ -14,7 +14,7 @@ const Podium = () => {
         // Fetch leaderboard data when component mounts
         const fetchLeaderboard = async () => {
             try {
-                const response = await fetch("/leaderboard");
+                const response = await fetch(`${import.meta.env.VITE_ENVIRONMENT === "development" ? "/" :import.meta.env.VITE_BACKEND_URL}leaderboard`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
