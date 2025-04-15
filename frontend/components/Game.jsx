@@ -120,9 +120,9 @@ function Game() {
         });
 
         socket.on("player finished", (playerId) => {
+            setShowFinish(true);
             if (playerId === me) {
                 setAllowMove(false);
-                setShowFinish(true);
                 setGameStatus("finished");
             }
         });
