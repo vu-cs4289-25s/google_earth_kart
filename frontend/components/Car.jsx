@@ -36,8 +36,41 @@ const Car = forwardRef(function Car(
     const controls = useControls();
     const lastPosition = useRef(new THREE.Vector3());
 
-    const carWidth = carId === "model3" ? 1.5 : width;
-    const carHeight = carId === "model3" ? -0.2 : height;
+    const carWidth = carId === "model3" ? 1.5
+                    : carId === "cybertruck" ? 0.9
+                    : carId === "mcqueen" ? 1.1
+                    : carId === "sienna" ? 1.2 
+                    : width;
+    const carHeight = carId === "model3" ? -0.2
+                    : carId === "cybertruck" ? 0.1 
+                    : height;
+
+    let wheelOffsetX = carWidth / 2;
+    if (["mario-kart", "cybertruck", "sienna", "mcqueen"].includes(carId)) {
+        wheelOffsetX += 0.1;
+    }
+
+    const wheelsHidden = {
+        frontLeft: false,
+        frontRight: false,
+        rearLeft: false,
+        rearRight: false,
+    };
+
+    if (carId === "mario-kart") {
+        wheelsHidden.frontLeft = true;
+        wheelsHidden.frontRight = true;
+        wheelsHidden.rearLeft = true;
+        wheelsHidden.rearRight = true;
+    } else if (carId === "mcqueen") {
+        wheelsHidden.rearLeft = true;
+        wheelsHidden.rearRight = true;
+    } 
+    // else if (carId === "cybertruck") {
+    //     wheelsHidden.frontRight = true;
+    //     wheelsHidden.rearLeft = true;
+    //     wheelsHidden.rearRight = true;
+    // }
 
     const wheelInfo = {
         axleLocal: [-1, 0, 0],
@@ -56,30 +89,36 @@ const Car = forwardRef(function Car(
 
     const wheelInfo1 = {
         ...wheelInfo,
-        chassisConnectionPointLocal: [-carWidth / 2, carHeight, front],
+        chassisConnectionPointLocal: [-wheelOffsetX, carHeight, front],
         isFrontWheel: true,
     };
     const wheelInfo2 = {
         ...wheelInfo,
-        chassisConnectionPointLocal: [carWidth / 2, carHeight, front],
+        chassisConnectionPointLocal: [wheelOffsetX, carHeight, front],
         isFrontWheel: true,
     };
     const wheelInfo3 = {
         ...wheelInfo,
-        chassisConnectionPointLocal: [-carWidth / 2, carHeight, back],
+        chassisConnectionPointLocal: [-wheelOffsetX, carHeight, back],
         isFrontWheel: false,
     };
     const wheelInfo4 = {
         ...wheelInfo,
-        chassisConnectionPointLocal: [carWidth / 2, carHeight, back],
+        chassisConnectionPointLocal: [wheelOffsetX, carHeight, back],
         isFrontWheel: false,
     };
+
+    const chassisArgs = carId === "model3" ? [1.8, 1.1, 4.2]
+                      : carId === "cybertruck" ? [2.0, 1.0, 5.0]
+                      : carId === "mcqueen" ? [1.8, 0.9, 4.5]
+                      : carId === "sienna" ? [1.9, 1.2, 4.8]
+                      : [1.7, 1, 4];
 
     const [chassisBody, chassisApi] = useBox(
         () => ({
             allowSleep: false,
             angularVelocity,
-            args: carId === "model3" ? [1.8, 1.1, 4.2] : [1.7, 1, 4],
+            args: chassisArgs,
             mass: 500,
             // onCollide: () => console.log("bonk"),
             position,
@@ -237,10 +276,10 @@ const Car = forwardRef(function Car(
     return (
         <group ref={vehicle} position={position}>
             <Chassis ref={chassisBody} carId={carId} />
-            <Wheel ref={wheels[0]} radius={radius} leftSide />
-            <Wheel ref={wheels[1]} radius={radius} />
-            <Wheel ref={wheels[2]} radius={radius} leftSide />
-            <Wheel ref={wheels[3]} radius={radius} />
+            <Wheel ref={wheels[0]} radius={radius} leftSide hidden={wheelsHidden.frontLeft} />
+            <Wheel ref={wheels[1]} radius={radius} hidden={wheelsHidden.frontRight} />
+            <Wheel ref={wheels[2]} radius={radius} leftSide hidden={wheelsHidden.rearLeft} />
+            <Wheel ref={wheels[3]} radius={radius} hidden={wheelsHidden.rearRight} />
         </group>
     );
 });
