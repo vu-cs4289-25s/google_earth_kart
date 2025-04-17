@@ -39,13 +39,13 @@ const Podium = () => {
     }, []);
 
     function reset() {
-        socket.emit("reset game");
+        socket.emit("finish race");
     }
 
     useEffect(() => {
         if (socket) {
-            socket.on("reset game", () => {
-                navigate("/kart-select");
+            socket.on("finish race", () => {
+                navigate("/podium");
             });
         }
     },[socket]);

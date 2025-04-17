@@ -43,6 +43,7 @@ function Game() {
     const [cityLoaded, setCityLoaded] = useState(false);
     const navigate = useNavigate();
     const [trafficLightState, setTrafficLightState] = useState("off");
+    const [showFinish, setShowFinish] = useState(false);
 
     const [selectedCar, setSelectedCar] = useState(() => {
         return localStorage.getItem("selectedCar") || "kia-soul";
@@ -66,12 +67,8 @@ function Game() {
     useEffect(() => {
         // Player connects
         socket.on("connected", (playerList) => {
-            console.log("playercount: ", playerCount);
-            console.log("playerList: ", playerList);
             playersRef.current = playerList;
-            console.log("playerList.length: ", playerList.length);
             setPlayerCount(playerList.length);
-            console.log("playercount: ", playerCount);
         });
 
         // Player disconnects
@@ -110,6 +107,7 @@ function Game() {
         // A player selected kart and is ready
         socket.on("player ready", (readyPlayers, id, players) => {
             setGameStatus("waiting");
+            setShowFinish(false);
             setPlayerCount(players.length);
             setPlayersInGame(readyPlayers);
             if (playersInGame.length === playersRef.current.length) {
@@ -122,6 +120,7 @@ function Game() {
         });
 
         socket.on("player finished", (playerId) => {
+            setShowFinish(true);
             if (playerId === me) {
                 setAllowMove(false);
                 setGameStatus("finished");
@@ -271,14 +270,13 @@ function Game() {
                     START RACE!
                 </button>
 
-                {/*  // Finish Race Button with Updated Styling
                 <button 
                     onClick={finish} 
                     style={{
                         zIndex: 256, 
                         position: "absolute", 
                         top: "60px", 
-                        display: gameStatus === "in progress" ? "block" : "none",
+                        display: showFinish ? "block" : "none",
                         backgroundColor: "#ff8c00",
                         color: "white", 
                         padding: "10px 20px",
@@ -294,7 +292,7 @@ function Game() {
                     onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
                 >
                     FINISH RACE
-                </button> */}
+                </button>
             </div>
             <Canvas
                 camera={{ position: [0, 3, 15], fov: 45, near: 1, far: 1000 }}
