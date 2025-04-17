@@ -193,6 +193,7 @@ const Car = forwardRef(function Car(
 
             if (flip) {
                 chassisApi.quaternion.set(0, 0, 0,1);
+                chassisApi.rotation.set(0, 0, 0);
             }
 
             if (reset) {
