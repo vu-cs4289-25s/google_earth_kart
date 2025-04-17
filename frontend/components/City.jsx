@@ -247,10 +247,10 @@ function InvisibleBox({ size, position, visible, rotation, highlight, finish, so
         type: "Static",
         onCollide: (e) => {
             if (finish) {
+                console.log("finished")
                 const playerData = e.body.userData;
-                if (playerData?.playerId) {
-                    socket.emit("player finished", playerData);
-                }
+                console.log(playerData)
+                socket.emit("player finished", playerData);
             }
         }
     }));

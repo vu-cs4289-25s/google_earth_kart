@@ -1,40 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
-import { Physics, Debug } from "@react-three/cannon";
+import { Physics } from "@react-three/cannon";
 import "../src/index.css";
 import City from "../components/City.jsx";
 import Car from "../components/Car.jsx";
 import ExternalCar from "../components/ExternalCar.jsx";
 import Broadcast from "../components/Broadcast.jsx";
 import { useSocket } from "./SocketContext.jsx";
-import { AxesHelper } from 'three';
-import MiniMap from "../components/MiniMap.jsx";
 import Leaderboard from "../components/Leaderboard.jsx";
 import useConfirmExit from '../components/ConfirmExit.jsx';
 import BackgroundMusic from "../components/BackgroundMusic";
 import { useNavigate } from "react-router-dom";
 import raceStartSoundMP3 from '/mario_kart_start.mp3'
 
-function Axis() {
-    const axisRef = useRef();
-
-    useEffect(() => {
-        if (axisRef.current) {
-            axisRef.current.position.set(0, 0, 0); // Adjust position if needed
-        }
-    }, []);
-
-    return <primitive object={new AxesHelper(5)} ref={axisRef} />;
-}
-
-
 function Game() {
-    const carRef = useRef();
-    const { socket, players } = useSocket();
-    const [playerCount, setPlayerCount] = useState(0);
+    const carRef = useRef(null);
+    const { socket } = useSocket();
     const [readyPlayers, setReadyPlayers] = useState([]);
-    const [playersInGame, setPlayersInGame] = useState([]);
+    const [allPlayers, setAllPlayers] = useState([]);
+
     const playersRef = useRef([]);
     const me = socket.id;
     const [countDown, setCountDown] = useState("Waiting for Players...");
@@ -46,9 +31,7 @@ function Game() {
     const [trafficLightState, setTrafficLightState] = useState("off");
     const [showFinish, setShowFinish] = useState(false);
 
-    const [selectedCar, setSelectedCar] = useState(() => {
-        return localStorage.getItem("selectedCar") || "kia-soul";
-    });
+    const selectedCar = localStorage.getItem("selectedCar") || "kia-soul";
 
     const raceStartAudio = useRef(null);
 
@@ -76,41 +59,21 @@ function Game() {
     useEffect(() => {
         // Player connects
         socket.on("connected", (playerList) => {
-            playersRef.current = playerList;
-            setPlayerCount(playerList.length);
+            setReadyPlayers(playerList);
+            setAllPlayers(playerList)
         });
 
         // Player disconnects
         socket.on("disconnected", (playerList) => {
-            playersRef.current = playerList;
-            setPlayerCount(playerList.length);
-            setReadyPlayers([...playerList]);
-            setPlayersInGame([...playerList]);
-            if (playerList === 1) {
-                setGameStatus("waiting");
-                setAllowMove(false);
-            }
+            setReadyPlayers(playerList);
+            setAllPlayers(playerList)
+
         });
 
         // Update player locations
         socket.on("update players", (playerList) => {
-            setPlayersInGame(playerList);
+            playersRef.current = playerList;
         });
-        // socket.on("player moved", (update) => {
-        //     setPlayersInGame(prevPlayers => {
-        //         const playerIndex = prevPlayers.findIndex(p => p.id === update.id);
-        //         if (playerIndex !== -1) {
-        //             const newPlayers = [...prevPlayers];
-        //             newPlayers[playerIndex] = {
-        //                 ...newPlayers[playerIndex],
-        //                 position: update.position,
-        //                 quaternion: update.quaternion,
-        //             };
-        //             return newPlayers;
-        //         }
-        //         return prevPlayers;
-        //     });
-        // });
 
         // Race starts for all players
         socket.on("race start", () => {
@@ -121,9 +84,8 @@ function Game() {
         socket.on("player ready", (readyPlayers, id, players) => {
             setGameStatus("waiting");
             setShowFinish(false);
-            setPlayerCount(players.length);
-            setPlayersInGame(readyPlayers);
-            if (playersInGame.length === playersRef.current.length) {
+            if (readyPlayers.length === playersRef.current.length && readyPlayers.length >= 2) {
+                playersRef.current = readyPlayers;
                 setShowButton(true);
             }
         });
@@ -136,7 +98,6 @@ function Game() {
             setShowFinish(true);
             if (playerId === me) {
                 setAllowMove(false);
-                setGameStatus("finished");
             }
         });
 
@@ -144,7 +105,6 @@ function Game() {
             socket.off("connected");
             socket.off("disconnected");
             socket.off("update players");
-            // socket.off("player moved");
             socket.off("race start");
             socket.off("player ready");
         };
@@ -173,11 +133,11 @@ function Game() {
         
         setTimeout(() => { 
             setTrafficLightState("green"); 
-            setAllowMove(true); 
         }, 2000);
         
         setTimeout(() => { 
             setTrafficLightState("off");
+            setAllowMove(true);
             setGameStatus("in progress");
         }, 3000);
     }
@@ -199,7 +159,7 @@ function Game() {
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white",
                 display: gameStatus === "waiting" ? "block" : "none"
             }}>
-                Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {playerCount}
+                Players Ready: {readyPlayers.length} / {playersRef.current.length}
             </h4>
 
             <h4 style={{ left: "100px", top: "-15px", zIndex: 256, position: "absolute", color: "white",
@@ -276,7 +236,7 @@ function Game() {
                 position: "absolute", 
                 color: "white", 
                 top:"40px",
-                display: playersInGame.length === 1 && gameStatus === "waiting" ? "" : "none",
+                display: playersRef.current.length === 1 && gameStatus === "waiting" ? "" : "none",
                 textShadow: "0 0 2px #ff8c00, 0 0 2px #ff8c00",
                 fontWeight: "bold",
             }}>At least 2 Players required to play.</h4>
@@ -288,7 +248,7 @@ function Game() {
                         zIndex: 256, 
                         position: "absolute", 
                         top: "60px", 
-                        display: showButton && gameStatus === "waiting" && playersInGame.length > 1 ? "block" : "none",
+                        display: showButton && gameStatus === "waiting" && playersRef.current.length > 1 ? "block" : "none",
                         backgroundColor: "#4a90e2",
                         color: "white", 
                         padding: "10px 20px",
@@ -353,13 +313,13 @@ function Game() {
                         carId={selectedCar}
                     />}
 
-                    {playersInGame.map((player) => {
+                    {playersRef.current.map((player) => {
                         if (player.id !== me) {
                             return (
                                 <ExternalCar
                                     key={player.id}
                                     playerId={player.id}
-                                    players={playersInGame}
+                                    players={playersRef.current}
                                     carId={player.kart} 
                                 />
                             );
@@ -387,7 +347,7 @@ function Game() {
           zIndex: 1000,
         }}
       >
-        {playersInGame.map((player) => {
+        {playersRef.current.map((player) => {
             if (player.position) {
           const { left, top } = worldToMinimap(player.position[0], player.position[2]);
           return (
