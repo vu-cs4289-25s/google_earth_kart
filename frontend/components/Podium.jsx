@@ -39,7 +39,8 @@ const Podium = () => {
     }, []);
 
     function reset() {
-        socket.emit("finish race");
+        console.log("Resetting game...");
+        socket.emit("reset game");
     }
 
     useEffect(() => {
@@ -48,6 +49,9 @@ const Podium = () => {
                 navigate("/podium");
             });
         }
+        return () => {
+            socket.off("finish race");
+        };
     },[socket]);
 
     return (
