@@ -15,6 +15,7 @@ import {
     getDocs,
     getFirestore,
 } from "firebase/firestore";
+import BackgroundMusic from "./BackgroundMusic.jsx";
 
 const KartSelection = () => {
     const [selectedKart, setSelectedKart] = useState("kia-soul"); // Default to Kia Soul
@@ -88,6 +89,11 @@ const KartSelection = () => {
 
     return (
         <div className="h-screen w-screen bg-gradient-to-b from-blue-400 to-purple-300 overflow-hidden">
+             <BackgroundMusic
+                src="/Main Menu - Mario Kart 8 Deluxe OST.mp3"
+                volume={0.3}
+                playOnStart={true}
+             />
             <Container
                 maxWidth="lg"
                 sx={{
