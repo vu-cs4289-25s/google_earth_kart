@@ -45,6 +45,8 @@ function Game() {
     const navigate = useNavigate();
     const [trafficLightState, setTrafficLightState] = useState("off");
     const [showFinish, setShowFinish] = useState(false);
+    const [startTime, setStartTime] = useState('');
+    const [myTime, setMyTime] = useState('');
 
     const [selectedCar, setSelectedCar] = useState(() => {
         return localStorage.getItem("selectedCar") || "kia-soul";
@@ -117,6 +119,16 @@ function Game() {
             countdown();
         });
 
+        socket.on('current-time', (currentTime) => {
+            console.log("current time:", currentTime);
+            console.log("start time", startTime);
+            const time = currentTime - startTime;
+            const minutes = String(time.getMinutes()).padStart(2, '0'); // Ensure 2 digits
+            const seconds = String(time.getSeconds()).padStart(2, '0'); // Ensure 2 digits
+            console.log("myTime", `${minutes}:${seconds}`);
+            setMyTime(`${minutes}:${seconds}`);
+        });
+
         // A player selected kart and is ready
         socket.on("player ready", (readyPlayers, id, players) => {
             setGameStatus("waiting");
@@ -174,6 +186,7 @@ function Game() {
         setTimeout(() => { 
             setTrafficLightState("green"); 
             setAllowMove(true); 
+            setStartTime(new Date().toISOString());
         }, 2000);
         
         setTimeout(() => { 
@@ -207,6 +220,20 @@ function Game() {
             }}>
                 Stuck? Press R to reset to the start!
             </h4>
+
+            <h3 style={{
+                zIndex: 256, 
+                position: "absolute", 
+                color: "white",
+                top: "20px", 
+                left: "50%", 
+                display: gameStatus === "in progress" ? "block" : "none",
+                transform: "translateX(-50%)",
+                textShadow: "0 0 4px #ff8c00, 0 0 4px #ff8c00",
+                fontWeight: "bold",
+            }}>
+                Race Time: {myTime}
+            </h3>
 
             {/* Traffic Light Component */}
             <div style={{

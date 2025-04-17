@@ -181,6 +181,10 @@ io.on("connection", (socket) => {
             checkpoints[player.id] = 0; 
         });
         io.emit("race start");
+        const interval = setInterval(() => {
+            const currentTime = new Date().toISOString();
+            socket.emit('current-time', currentTime);
+        }, 1000);
     });
 
     socket.on("player ready", (id, selectedKart, username) => {
