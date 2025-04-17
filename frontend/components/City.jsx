@@ -25,18 +25,19 @@ export default function City({ setLoaded }) {
         // For debugging, add "highlight: true" to any mesh to make it red so you can find it in the game.
         { size: [420 * 2, 70, 1], position: [-30 + 364, -30, -435 + 226], rotation: [0, 31, 0] },  // Rotate 45 degrees around Y-axis
         { size: [370 * 2, 70, 1], position: [-45+ 364, -30, -393+ 226], rotation: [0, 31.1, 0] }, // Rotate 30 degrees around X-axis
-        { size: [187 * 2, 70, 1], position: [-265+ 364, -30, -42+ 226], rotation: [0, 121.1, 0] }, // Rotate 90 degrees around Y-axis
-        { size: [185 * 2, 70, 1], position: [-296+ 364, -30, -70+ 226], rotation: [0, 122.1, 0] },
-        { size: [50* 2, 70, 1], position: [-203+ 364, -30, 136+ 226], rotation: [0, -96.1, 0] },
+        { size: [187 * 2, 70, 1], position: [-265+ 364, -30, -42+ 226], rotation: [0, 121.1, 0]}, // Rotate 90 degrees around Y-axis
+        { size: [185 * 2, 70, 1], position: [-296+ 364, -30, -70+ 226], rotation: [0, 120.5, 0]},
+        { size: [39* 2, 70, 1], position: [-203+ 364, -30, 136+ 226], rotation: [0, -96.1, 0]},
+        { size: [5* 2, 70, 1], position: [-200+ 364, -30, 93+ 226], rotation: [0, -65.1, 0] },
         { size: [41* 2, 70, 1], position: [-188+ 364, -30, 132+ 226], rotation: [0, -96.1, 0] },
         { size: [82* 2, 70, 1], position: [-111+ 364, -30, 182+ 226], rotation: [0, -6.7, 0] },
-        { size: [78* 2, 70, 1], position: [-130+ 364, -30, 195+ 226], rotation: [0, -6.7, 0] },
-        { size: [178* 2, 70, 1], position: [-55+ 364, -30, 367+ 226], rotation: [0, -96.1, 0] },
+        { size: [78* 2, 70, 1], position: [-130+ 364, -30, 195+ 226], rotation: [0, -6.7, 0]  },
+        { size: [178* 2, 70, 1], position: [-55+ 364, -30, 367+ 226], rotation: [0, -96.1, 0]},
         { size: [179* 2, 70, 1], position: [-72+ 364, -30, 382+ 226], rotation: [0, -96.3, 0]},
         { size: [230* 2, 70, 1], position: [127+ 364, -30, 581+ 228], rotation: [0, -7.1, 0] },
-        { size: [202* 2, 70, 1], position: [126+ 364, -30, 565+ 225], rotation: [0, -6.1, 0]},
-        { size: [466* 2, 70, 1], position: [398+ 364, -30, 150+ 226], rotation: [0, 83.4, 0] },
-        { size: [466* 2, 70, 1], position: [398+ 367, -30, 150+ 200], rotation: [0, 83.4, 0] },
+        { size: [202* 2, 70, 1], position: [126+ 364, -30, 565+ 225], rotation: [0, -6.1, 0] },
+        { size: [466* 2, 70, 1], position: [398+ 364, -30, 150+ 226], rotation: [0, 83.4, 0]  },
+        { size: [466* 2, 70, 1], position: [398+ 367, -30, 150+ 200], rotation: [0, 83.4, 0]},
         { size: [25* 2, 70, 1], position: [398+ 402, -30, 150+ -280], rotation: [0, 135.4, 0]},
         { size: [445* 2, 70, 1], position: [380+ 364, -30, 128+ 226], rotation: [0, 83.4, 0] },
         { size: [7* 2, 70, 1], position: [380+ 413, -30, 128+ -222], rotation: [0, 105.4, 0]},
