@@ -86,6 +86,10 @@ function Game() {
             setPlayerCount(playerList.length);
             setReadyPlayers([...playerList]);
             setPlayersInGame([...playerList]);
+            if (playerList === 1) {
+                setGameStatus("waiting");
+                setAllowMove(false);
+            }
         });
 
         // Update player locations
