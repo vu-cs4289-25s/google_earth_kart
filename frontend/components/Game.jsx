@@ -202,10 +202,20 @@ function Game() {
                 Players Ready: {playersInGame.length === 0 ? 1 : playersInGame.length} / {playerCount}
             </h4>
 
-            <h4 style={{ left: "100px", top: "-10px", zIndex: 256, position: "absolute", color: "white",
+            <h4 style={{ left: "100px", top: "-15px", zIndex: 256, position: "absolute", color: "white",
                 display: gameStatus === "in progress" ? "block" : "none"
             }}>
-                Stuck? Press R to reset to the start!
+                Stuck?
+            </h4>
+            <h4 style={{ left: "100px", top: "0px", zIndex: 256, position: "absolute", color: "white",
+                display: gameStatus === "in progress" ? "block" : "none"
+            }}>
+                Press R to reset to Start
+            </h4>
+            <h4 style={{ left: "100px", top: "15px", zIndex: 256, position: "absolute", color: "white",
+                display: gameStatus === "in progress" ? "block" : "none"
+            }}>
+                Press F to flip your car upright
             </h4>
 
             {/* Traffic Light Component */}

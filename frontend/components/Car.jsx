@@ -167,7 +167,7 @@ const Car = forwardRef(function Car(
 
     useFrame(() => {
         if (allowMove) {
-            const { backward, brake, forward, left, reset, right} =
+            const { backward, brake, forward, left, reset, right, flip} =
                 controls.current;
 
             for (let e = 2; e < 4; e++) {
@@ -189,6 +189,10 @@ const Car = forwardRef(function Car(
 
             for (let b = 2; b < 4; b++) {
                 vehicleApi.setBrake(brake ? maxBrake : 0, b);
+            }
+
+            if (flip) {
+                chassisApi.quaternion.set(0, 0, 0,1);
             }
 
             if (reset) {

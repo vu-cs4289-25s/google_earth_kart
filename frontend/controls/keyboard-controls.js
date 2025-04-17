@@ -30,6 +30,7 @@ const keyControlMap = {
     r: "reset",
     s: "backward",
     w: "forward",
+    f: "flip",
 };
 
 const keyCodes = Object.keys(keyControlMap);
@@ -43,6 +44,7 @@ export function useControls() {
         left: false,
         reset: false,
         right: false,
+        flip: false,
     });
 
     useKeyControls(controls, keyControlMap);
