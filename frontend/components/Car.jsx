@@ -12,6 +12,7 @@ import brakeMP3 from "../assets/brake.mp3";
 
 const bias = 0.003;
 
+
 const Car = forwardRef(function Car(
     {
         angularVelocity,
@@ -35,6 +36,7 @@ const Car = forwardRef(function Car(
     const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)];
     const controls = useControls();
     const lastPosition = useRef(new THREE.Vector3());
+
 
     const carWidth = carId === "model3" ? 1.5
                     : carId === "cybertruck" ? 0.9
@@ -117,7 +119,7 @@ const Car = forwardRef(function Car(
     const [chassisBody, chassisApi] = useBox(
         () => ({
             allowSleep: false,
-            angularVelocity,
+            angularVelocity: angularVelocity ?? [0, 0, 0],
             args: chassisArgs,
             mass: 500,
             // onCollide: () => console.log("bonk"),
@@ -165,7 +167,7 @@ const Car = forwardRef(function Car(
 
     useFrame(() => {
         if (allowMove) {
-            const { backward, brake, forward, left, reset, right } =
+            const { backward, brake, forward, left, reset, right} =
                 controls.current;
 
             for (let e = 2; e < 4; e++) {
@@ -192,8 +194,9 @@ const Car = forwardRef(function Car(
             if (reset) {
                 chassisApi.position.set(...position);
                 chassisApi.velocity.set(0, 0, 0);
-                chassisApi.angularVelocity.set(...angularVelocity);
-                chassisApi.rotation.set(...rotation);
+                chassisApi.angularVelocity.set(0, 0, 0);
+                chassisApi.rotation.set(0, 0, 0);
+                chassisApi.quaternion.set(0, 0, 0,1);
             }
 
             // Sound logic
