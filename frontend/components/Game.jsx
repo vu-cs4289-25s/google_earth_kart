@@ -14,6 +14,7 @@ import Leaderboard from "../components/Leaderboard.jsx";
 import useConfirmExit from '../components/ConfirmExit.jsx';
 import BackgroundMusic from "../components/BackgroundMusic";
 import { useNavigate } from "react-router-dom";
+import raceStartSoundMP3 from '/mario_kart_start.mp3'
 
 function Axis() {
     const axisRef = useRef();
@@ -48,6 +49,8 @@ function Game() {
         return localStorage.getItem("selectedCar") || "kia-soul";
     });
 
+    const raceStartAudio = useRef(null);
+
     // confirm with user before leaving
     useConfirmExit();
 
@@ -62,6 +65,12 @@ function Game() {
             top: MINIMAP_ORIGIN_Y - z * SCALE,
         };
       };
+
+    useEffect(() => {
+        raceStartAudio.current = new Audio(raceStartSoundMP3);
+        raceStartAudio.current.volume = 0.7;
+    }, []);
+
 
     useEffect(() => {
         // Player connects
@@ -142,6 +151,13 @@ function Game() {
         setShowButton(false);
         setCountDown("Ready?");
         setTrafficLightState("off");
+
+        if (raceStartAudio.current) {
+            raceStartAudio.current.currentTime = 0;
+            raceStartAudio.current.play().catch(error => {
+                console.warn("Race start audio play error:", error);
+            });
+        }
         
         setTimeout(() => { 
             setCountDown(""); 
@@ -174,7 +190,7 @@ function Game() {
 
     return (
         <>
-            <BackgroundMusic src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" volume={0.5} playOnStart={true} />
+            <BackgroundMusic src = "MKWOST.mp3" volume={0.5} playOnStart={true} />
             
             <Broadcast show={gameStatus === "waiting"}/>
             <h4 style={{ right: "20px", bottom: "5px", zIndex: 256, position: "absolute", color: "white",

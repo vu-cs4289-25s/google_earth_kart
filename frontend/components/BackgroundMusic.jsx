@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from "react";
 
 const BackgroundMusic = ({
   // Using an online sample track from SoundHelix
-  src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  // src = "https://www.youtube.com/watch?v=I-VUuq7zItM&ab_channel=FlipMyster",
+  src = "/MKWOST.mp3",
   volume = 0.1,
   playOnStart = true,
 }) => {
@@ -18,7 +19,7 @@ const BackgroundMusic = ({
         });
       }
     }
-  }, [playOnStart]);
+  }, [playOnStart, src]);
 
   // Update the audio element's volume whenever it changes
   useEffect(() => {
